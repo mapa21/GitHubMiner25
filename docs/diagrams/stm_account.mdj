@@ -39,6 +39,55 @@
 					"name": "StateMachine_account",
 					"ownedViews": [
 						{
+							"_type": "UMLFrameView",
+							"_id": "AAAAAAGGwTT+fdnDGjQ=",
+							"_parent": {
+								"$ref": "AAAAAAGGwTN2o9mYJIk="
+							},
+							"model": {
+								"$ref": "AAAAAAGGwTN2otmWNoQ="
+							},
+							"subViews": [
+								{
+									"_type": "LabelView",
+									"_id": "AAAAAAGGwTT+fdnEEJc=",
+									"_parent": {
+										"$ref": "AAAAAAGGwTT+fdnDGjQ="
+									},
+									"font": "Arial;13;0",
+									"left": 63.94091796875,
+									"top": 69,
+									"width": 47.97265625,
+									"height": 13,
+									"text": "Account"
+								},
+								{
+									"_type": "LabelView",
+									"_id": "AAAAAAGGwTT+ftnF3go=",
+									"_parent": {
+										"$ref": "AAAAAAGGwTT+fdnDGjQ="
+									},
+									"font": "Arial;13;1",
+									"left": 37,
+									"top": 69,
+									"width": 21.94091796875,
+									"height": 13,
+									"text": "stm"
+								}
+							],
+							"font": "Arial;13;0",
+							"left": 32,
+							"top": 64,
+							"width": 977,
+							"height": 873,
+							"nameLabel": {
+								"$ref": "AAAAAAGGwTT+fdnEEJc="
+							},
+							"frameTypeLabel": {
+								"$ref": "AAAAAAGGwTT+ftnF3go="
+							}
+						},
+						{
 							"_type": "UMLStateView",
 							"_id": "AAAAAAGGwTPaf9me2dk=",
 							"_parent": {
@@ -67,7 +116,7 @@
 											"visible": false,
 											"font": "Arial;13;0",
 											"left": 64,
-											"top": -224,
+											"top": -208,
 											"height": 13
 										},
 										{
@@ -78,7 +127,7 @@
 											},
 											"font": "Arial;13;1",
 											"left": 85,
-											"top": 335,
+											"top": 343,
 											"width": 879,
 											"height": 13,
 											"text": "ActiveAccount"
@@ -92,7 +141,7 @@
 											"visible": false,
 											"font": "Arial;13;0",
 											"left": 64,
-											"top": -224,
+											"top": -208,
 											"width": 38.27001953125,
 											"height": 13,
 											"text": "(from )"
@@ -106,14 +155,14 @@
 											"visible": false,
 											"font": "Arial;13;0",
 											"left": 64,
-											"top": -224,
+											"top": -208,
 											"height": 13,
 											"horizontalAlignment": 1
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 80,
-									"top": 328,
+									"top": 336,
 									"width": 889,
 									"height": 25,
 									"stereotypeLabel": {
@@ -140,8 +189,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 80,
-									"top": -64,
+									"left": 40,
+									"top": -240,
 									"width": 10,
 									"height": 10
 								},
@@ -156,8 +205,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 80,
-									"top": -64,
+									"left": 40,
+									"top": -240,
 									"width": 10,
 									"height": 10
 								},
@@ -172,14 +221,14 @@
 									},
 									"font": "Arial;13;0",
 									"left": 80,
-									"top": 353,
+									"top": 361,
 									"width": 889
 								}
 							],
 							"font": "Arial;13;0",
 							"containerChangeable": true,
 							"left": 80,
-							"top": 328,
+							"top": 336,
 							"width": 889,
 							"height": 561,
 							"nameCompartment": {
@@ -193,55 +242,6 @@
 							},
 							"decompositionCompartment": {
 								"$ref": "AAAAAAGGwTPagdmmrtQ="
-							}
-						},
-						{
-							"_type": "UMLFrameView",
-							"_id": "AAAAAAGGwTT+fdnDGjQ=",
-							"_parent": {
-								"$ref": "AAAAAAGGwTN2o9mYJIk="
-							},
-							"model": {
-								"$ref": "AAAAAAGGwTN2otmWNoQ="
-							},
-							"subViews": [
-								{
-									"_type": "LabelView",
-									"_id": "AAAAAAGGwTT+fdnEEJc=",
-									"_parent": {
-										"$ref": "AAAAAAGGwTT+fdnDGjQ="
-									},
-									"font": "Arial;13;0",
-									"left": 823.94091796875,
-									"top": 109,
-									"width": 47.97265625,
-									"height": 13,
-									"text": "Account"
-								},
-								{
-									"_type": "LabelView",
-									"_id": "AAAAAAGGwTT+ftnF3go=",
-									"_parent": {
-										"$ref": "AAAAAAGGwTT+fdnDGjQ="
-									},
-									"font": "Arial;13;1",
-									"left": 797,
-									"top": 109,
-									"width": 21.94091796875,
-									"height": 13,
-									"text": "stm"
-								}
-							],
-							"font": "Arial;13;0",
-							"left": 792,
-							"top": 104,
-							"width": 102.41357421875,
-							"height": 73,
-							"nameLabel": {
-								"$ref": "AAAAAAGGwTT+fdnEEJc="
-							},
-							"frameTypeLabel": {
-								"$ref": "AAAAAAGGwTT+ftnF3go="
 							}
 						},
 						{
@@ -346,9 +346,9 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 248,
-									"top": 368,
-									"width": 10,
+									"left": 792,
+									"top": 777,
+									"width": 152,
 									"height": 10
 								},
 								{
@@ -935,7 +935,7 @@
 											"top": 126,
 											"width": 159.65625,
 											"height": 13,
-											"text": "do/getPasswordFromUser()",
+											"text": "do/getInput(\"password\")",
 											"horizontalAlignment": 0
 										}
 									],
@@ -1301,7 +1301,7 @@
 									},
 									"font": "Arial;13;0",
 									"left": 222,
-									"top": 252,
+									"top": 256,
 									"width": 46.9599609375,
 									"height": 13,
 									"alpha": -4.741792130172916,
@@ -1324,7 +1324,7 @@
 									"visible": null,
 									"font": "Arial;13;0",
 									"left": 250,
-									"top": 252,
+									"top": 256,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 30,
@@ -1345,7 +1345,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 294,
-									"top": 253,
+									"top": 257,
 									"height": 13,
 									"alpha": -1.5707963267948966,
 									"distance": 15,
@@ -1363,7 +1363,7 @@
 								"$ref": "AAAAAAGGwTPaf9me2dk="
 							},
 							"lineStyle": 2,
-							"points": "280:328;280:191",
+							"points": "280:336;280:191",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAGGwoLFIdzHLpY="
@@ -1568,7 +1568,7 @@
 											"top": 422,
 											"width": 137.26806640625,
 											"height": 13,
-											"text": "do/getTokenFromUser()",
+											"text": "do/getInput(\"token\")",
 											"horizontalAlignment": 0
 										}
 									],
@@ -2105,7 +2105,7 @@
 											"top": 542,
 											"width": 215,
 											"height": 13,
-											"text": "entry/listRepos()",
+											"text": "entry/getRepos()",
 											"horizontalAlignment": 0
 										}
 									],
@@ -2205,7 +2205,7 @@
 											"font": "Arial;13;1",
 											"left": 229,
 											"top": 767,
-											"width": 140.8671875,
+											"width": 147.2529296875,
 											"height": 13,
 											"text": "AddingRepo"
 										},
@@ -2240,7 +2240,7 @@
 									"font": "Arial;13;0",
 									"left": 224,
 									"top": 760,
-									"width": 150.8671875,
+									"width": 157.2529296875,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAGGxboGFuAO1NY="
@@ -2277,9 +2277,9 @@
 											"font": "Arial;13;0",
 											"left": 229,
 											"top": 790,
-											"width": 140.8671875,
+											"width": 147.2529296875,
 											"height": 13,
-											"text": "do/getNameFromUser()",
+											"text": "do/getInput(\"repoName\")",
 											"horizontalAlignment": 0
 										},
 										{
@@ -2294,16 +2294,16 @@
 											"font": "Arial;13;0",
 											"left": 229,
 											"top": 805,
-											"width": 140.8671875,
+											"width": 147.2529296875,
 											"height": 13,
-											"text": "do/getOwnerFromUser()",
+											"text": "do/getInput(\"repoOwner\")",
 											"horizontalAlignment": 0
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 224,
 									"top": 785,
-									"width": 150.8671875,
+									"width": 157.2529296875,
 									"height": 38
 								},
 								{
@@ -2334,14 +2334,14 @@
 									"font": "Arial;13;0",
 									"left": 224,
 									"top": 823,
-									"width": 150.8671875
+									"width": 157.2529296875
 								}
 							],
 							"font": "Arial;13;0",
 							"containerChangeable": true,
 							"left": 224,
 							"top": 760,
-							"width": 150.8671875,
+							"width": 157.2529296875,
 							"height": 97,
 							"nameCompartment": {
 								"$ref": "AAAAAAGGxboGFuANCOs="
@@ -2386,7 +2386,7 @@
 										"$ref": "AAAAAAGGxbon9eAzDwE="
 									},
 									"edgePosition": 1,
-									"text": "addRepo(repo)"
+									"text": "addRepo()"
 								},
 								{
 									"_type": "EdgeLabelView",
@@ -2740,7 +2740,7 @@
 									},
 									"font": "Arial;13;0",
 									"left": 464,
-									"top": 292,
+									"top": 296,
 									"width": 91.0380859375,
 									"height": 13,
 									"alpha": -1.6721431328348468,
@@ -2763,7 +2763,7 @@
 									"visible": null,
 									"font": "Arial;13;0",
 									"left": 597,
-									"top": 298,
+									"top": 302,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 30,
@@ -2784,7 +2784,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 553,
-									"top": 299,
+									"top": 303,
 									"height": 13,
 									"alpha": -1.5707963267948966,
 									"distance": 15,
@@ -2802,7 +2802,7 @@
 								"$ref": "AAAAAAGGwUI1/9w5ZlM="
 							},
 							"lineStyle": 2,
-							"points": "568:282;568:328",
+							"points": "568:282;568:336",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAGGwUOX89x6TGs="
@@ -3196,6 +3196,7 @@
 									"model": {
 										"$ref": "AAAAAAGGxp1zMVMzpFA="
 									},
+									"visible": false,
 									"font": "Arial;13;0",
 									"left": 320,
 									"top": 695,
@@ -3206,8 +3207,7 @@
 									"hostEdge": {
 										"$ref": "AAAAAAGGxp1zMVM0zxE="
 									},
-									"edgePosition": 1,
-									"text": "cancel"
+									"edgePosition": 1
 								},
 								{
 									"_type": "EdgeLabelView",
@@ -3274,101 +3274,6 @@
 						},
 						{
 							"_type": "UMLTransitionView",
-							"_id": "AAAAAAGGxsn5klOgi5w=",
-							"_parent": {
-								"$ref": "AAAAAAGGwTN2o9mYJIk="
-							},
-							"model": {
-								"$ref": "AAAAAAGGxsn5klOf9hU="
-							},
-							"subViews": [
-								{
-									"_type": "EdgeLabelView",
-									"_id": "AAAAAAGGxsn5klOhDYE=",
-									"_parent": {
-										"$ref": "AAAAAAGGxsn5klOgi5w="
-									},
-									"model": {
-										"$ref": "AAAAAAGGxsn5klOf9hU="
-									},
-									"font": "Arial;13;0",
-									"left": 513,
-									"top": 811,
-									"width": 140.92431640625,
-									"height": 13,
-									"alpha": 1.5707963267948966,
-									"distance": 15,
-									"hostEdge": {
-										"$ref": "AAAAAAGGxsn5klOgi5w="
-									},
-									"edgePosition": 1,
-									"text": "selectRepo(addedRepo)"
-								},
-								{
-									"_type": "EdgeLabelView",
-									"_id": "AAAAAAGGxsn5klOiqb8=",
-									"_parent": {
-										"$ref": "AAAAAAGGxsn5klOgi5w="
-									},
-									"model": {
-										"$ref": "AAAAAAGGxsn5klOf9hU="
-									},
-									"visible": null,
-									"font": "Arial;13;0",
-									"left": 583,
-									"top": 796,
-									"height": 13,
-									"alpha": 1.5707963267948966,
-									"distance": 30,
-									"hostEdge": {
-										"$ref": "AAAAAAGGxsn5klOgi5w="
-									},
-									"edgePosition": 1
-								},
-								{
-									"_type": "EdgeLabelView",
-									"_id": "AAAAAAGGxsn5klOjgPw=",
-									"_parent": {
-										"$ref": "AAAAAAGGxsn5klOgi5w="
-									},
-									"model": {
-										"$ref": "AAAAAAGGxsn5klOf9hU="
-									},
-									"visible": false,
-									"font": "Arial;13;0",
-									"left": 583,
-									"top": 841,
-									"height": 13,
-									"alpha": -1.5707963267948966,
-									"distance": 15,
-									"hostEdge": {
-										"$ref": "AAAAAAGGxsn5klOgi5w="
-									},
-									"edgePosition": 1
-								}
-							],
-							"font": "Arial;13;0",
-							"head": {
-								"$ref": "AAAAAAGGwTXvAtosxS4="
-							},
-							"tail": {
-								"$ref": "AAAAAAGGxboGFuAMQG0="
-							},
-							"lineStyle": 2,
-							"points": "374:832;792:832",
-							"showVisibility": true,
-							"nameLabel": {
-								"$ref": "AAAAAAGGxsn5klOhDYE="
-							},
-							"stereotypeLabel": {
-								"$ref": "AAAAAAGGxsn5klOiqb8="
-							},
-							"propertyLabel": {
-								"$ref": "AAAAAAGGxsn5klOjgPw="
-							}
-						},
-						{
-							"_type": "UMLTransitionView",
 							"_id": "AAAAAAGGxsoswFOyVbE=",
 							"_parent": {
 								"$ref": "AAAAAAGGwTN2o9mYJIk="
@@ -3387,17 +3292,17 @@
 										"$ref": "AAAAAAGGxsoswFOxjSI="
 									},
 									"font": "Arial;13;0",
-									"left": 512,
+									"left": 504,
 									"top": 760,
-									"width": 99.71533203125,
+									"width": 103.71435546875,
 									"height": 13,
-									"alpha": 0.11710873698248858,
-									"distance": 154.05518491761322,
+									"alpha": 0.12184242881310609,
+									"distance": 148.0979405663698,
 									"hostEdge": {
 										"$ref": "AAAAAAGGxsoswFOyVbE="
 									},
 									"edgePosition": 1,
-									"text": "selectRepo(repo)"
+									"text": "enterRepo()"
 								},
 								{
 									"_type": "EdgeLabelView",
@@ -3492,7 +3397,7 @@
 										"$ref": "AAAAAAGGxtMlkFQLfVU="
 									},
 									"edgePosition": 1,
-									"text": "selectRepo(repo, delete = true)"
+									"text": "input = removeRepo"
 								},
 								{
 									"_type": "EdgeLabelView",
@@ -3672,7 +3577,7 @@
 											"top": 598,
 											"width": 137.3125,
 											"height": 13,
-											"text": "do/deleteRepo()",
+											"text": "do/removeRepo()",
 											"horizontalAlignment": 0
 										}
 									],
@@ -3883,7 +3788,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGGwUA9LNtwsME="
 									},
-									"name": "getPasswordFromUser()"
+									"name": "getInput(\"password\")"
 								}
 							]
 						},
@@ -3941,7 +3846,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGGwogZv90SiYY="
 									},
-									"name": "getTokenFromUser()"
+									"name": "getInput(\"token\")"
 								}
 							]
 						},
@@ -3983,7 +3888,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGGxbTxx98EB/A="
 									},
-									"name": "listRepos()"
+									"name": "getRepos()"
 								}
 							]
 						},
@@ -4026,7 +3931,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGGxboGFeALWeg="
 									},
-									"name": "getNameFromUser()"
+									"name": "getInput(\"repoName\")"
 								},
 								{
 									"_type": "UMLOpaqueBehavior",
@@ -4034,7 +3939,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGGxboGFeALWeg="
 									},
-									"name": "getOwnerFromUser()"
+									"name": "getInput(\"repoOwner\")"
 								}
 							]
 						},
@@ -4109,7 +4014,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGGxtbBJFSV11M="
 									},
-									"name": "deleteRepo()"
+									"name": "removeRepo()"
 								}
 							]
 						}
@@ -4451,7 +4356,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGGwTN2o9mXxog="
 							},
-							"name": "addRepo(repo)",
+							"name": "addRepo()",
 							"source": {
 								"$ref": "AAAAAAGGxbTxx98EB/A="
 							},
@@ -4601,7 +4506,6 @@
 							"_parent": {
 								"$ref": "AAAAAAGGwTN2o9mXxog="
 							},
-							"name": "cancel",
 							"source": {
 								"$ref": "AAAAAAGGxboGFeALWeg="
 							},
@@ -4615,7 +4519,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGGwTN2o9mXxog="
 							},
-							"name": "selectRepo(addedRepo)",
+							"name": "input = enterRepo",
 							"source": {
 								"$ref": "AAAAAAGGxboGFeALWeg="
 							},
@@ -4629,7 +4533,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGGwTN2o9mXxog="
 							},
-							"name": "selectRepo(repo)",
+							"name": "enterRepo()",
 							"source": {
 								"$ref": "AAAAAAGGxbTxx98EB/A="
 							},
@@ -4656,7 +4560,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGGwTN2o9mXxog="
 							},
-							"name": "selectRepo(repo, delete = true)",
+							"name": "input = removeRepo",
 							"source": {
 								"$ref": "AAAAAAGGxbTxx98EB/A="
 							},
