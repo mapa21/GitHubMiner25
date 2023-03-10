@@ -34,7 +34,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGGwTij+/X3yEs="
 							},
-							"name": "repoOptions",
+							"name": "Repository options",
 							"ownedElements": [
 								{
 									"_type": "UMLSequenceDiagram",
@@ -5417,7 +5417,7 @@
 													"top": 1149,
 													"width": 122.8291015625,
 													"height": 13,
-													"text": "repoOptions"
+													"text": "Repository options"
 												},
 												{
 													"_type": "LabelView",
