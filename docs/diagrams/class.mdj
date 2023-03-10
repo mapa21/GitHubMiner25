@@ -198,6 +198,7 @@
 											"model": {
 												"$ref": "AAAAAAGGywEkXrLPHVA="
 											},
+											"visible": false,
 											"font": "Arial;13;0",
 											"left": 1069,
 											"top": 515,
@@ -217,7 +218,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 1069,
-											"top": 530,
+											"top": 517,
 											"width": 199,
 											"height": 13,
 											"text": "+login(password: String): Boolean",
@@ -252,7 +253,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 1069,
-											"top": 545,
+											"top": 532,
 											"width": 199,
 											"height": 13,
 											"text": "-addRepo(): Int",
@@ -269,7 +270,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 1069,
-											"top": 560,
+											"top": 547,
 											"width": 199,
 											"height": 13,
 											"text": "-removeRepo(): Int",
@@ -286,7 +287,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 1069,
-											"top": 575,
+											"top": 562,
 											"width": 199,
 											"height": 13,
 											"text": "-enterRepo(): Int",
@@ -321,7 +322,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 1069,
-											"top": 590,
+											"top": 577,
 											"width": 199,
 											"height": 13,
 											"text": "-updateToken()",
@@ -332,7 +333,7 @@
 									"left": 1064,
 									"top": 510,
 									"width": 209,
-									"height": 98
+									"height": 85
 								},
 								{
 									"_type": "UMLReceptionCompartmentView",
@@ -372,7 +373,7 @@
 							"left": 1064,
 							"top": 432,
 							"width": 209,
-							"height": 176,
+							"height": 163,
 							"nameCompartment": {
 								"$ref": "AAAAAAGGvRlJIVa5DjA="
 							},
@@ -1134,7 +1135,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 1080,
-									"top": 665,
+									"top": 659,
 									"width": 83.80810546875,
 									"height": 13,
 									"alpha": -4.058752763363436,
@@ -1157,7 +1158,7 @@
 									"visible": null,
 									"font": "Arial;13;0",
 									"left": 1138,
-									"top": 628,
+									"top": 622,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 30,
@@ -1178,7 +1179,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 1182,
-									"top": 629,
+									"top": 623,
 									"height": 13,
 									"alpha": -1.5707963267948966,
 									"distance": 15,
@@ -1264,7 +1265,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 1153,
-									"top": 627,
+									"top": 614,
 									"height": 13,
 									"alpha": -0.5235987755982988,
 									"distance": 30,
@@ -1284,7 +1285,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 1139,
-									"top": 630,
+									"top": 617,
 									"height": 13,
 									"alpha": -0.7853981633974483,
 									"distance": 40,
@@ -1303,11 +1304,11 @@
 									},
 									"font": "Arial;13;0",
 									"left": 1177,
-									"top": 613,
+									"top": 607,
 									"width": 7.22998046875,
 									"height": 13,
-									"alpha": 0.7853983913846961,
-									"distance": 16.97056274847714,
+									"alpha": 0.5633164906706789,
+									"distance": 22.47220505424423,
 									"hostEdge": {
 										"$ref": "AAAAAAGGvRw/gVdmv+w="
 									},
@@ -1354,7 +1355,7 @@
 								"$ref": "AAAAAAGGvRwZVFc4ANQ="
 							},
 							"lineStyle": 1,
-							"points": "1168:663;1168:608",
+							"points": "1168:663;1168:595",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAGGvRw/gVdnuuM="
@@ -7067,20 +7068,6 @@
 							}
 						},
 						{
-							"_type": "UMLNoteView",
-							"_id": "AAAAAAGGxoqO9zpcSTw=",
-							"_parent": {
-								"$ref": "AAAAAAFF+qBtyKM79qY="
-							},
-							"fontColor": "#ff0000",
-							"font": "Arial;13;0",
-							"left": 912,
-							"top": 1464,
-							"width": 92,
-							"height": 116,
-							"text": "Explain: TextElement used in almost all classes, so not connected"
-						},
-						{
 							"_type": "UMLAssociationView",
 							"_id": "AAAAAAGGxz1njSjQn0o=",
 							"_parent": {
@@ -7877,7 +7864,7 @@
 									"font": "Arial;13;0",
 									"left": 776,
 									"top": 1206,
-									"width": 28.17724609375,
+									"width": 28.59619140625,
 									"height": 13,
 									"alpha": 1.434120189294804,
 									"distance": 39.20459156782532,
