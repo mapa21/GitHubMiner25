@@ -4400,7 +4400,7 @@
 											"top": 1166,
 											"width": 163.09033203125,
 											"height": 13,
-											"text": "#data: NameValue<Int>[1..*]",
+											"text": "#data: NameValue[1..*]",
 											"horizontalAlignment": 0
 										}
 									],
@@ -6261,35 +6261,6 @@
 						},
 						{
 							"_type": "UMLNoteView",
-							"_id": "AAAAAAGGvdrCjgvyzTQ=",
-							"_parent": {
-								"$ref": "AAAAAAFF+qBtyKM79qY="
-							},
-							"font": "Arial;13;0",
-							"left": 1368,
-							"top": 1024,
-							"width": 209,
-							"height": 77,
-							"text": "contentToString implementation depends on type of metric (MultipleData or SingleData) and is thus implemented in the abstract subclasses. "
-						},
-						{
-							"_type": "UMLNoteLinkView",
-							"_id": "AAAAAAGGvdtilRMl+Ms=",
-							"_parent": {
-								"$ref": "AAAAAAFF+qBtyKM79qY="
-							},
-							"font": "Arial;13;0",
-							"head": {
-								"$ref": "AAAAAAGGvR1BN1qvwFs="
-							},
-							"tail": {
-								"$ref": "AAAAAAGGvdrCjgvyzTQ="
-							},
-							"lineStyle": 1,
-							"points": "1367:1036;1305:1021"
-						},
-						{
-							"_type": "UMLNoteView",
 							"_id": "AAAAAAGGwU58Kq0BzEc=",
 							"_parent": {
 								"$ref": "AAAAAAFF+qBtyKM79qY="
@@ -6388,7 +6359,7 @@
 											"top": 1156,
 											"width": 92.498046875,
 											"height": 13,
-											"text": "NameValue<T>"
+											"text": "NameValue"
 										},
 										{
 											"_type": "LabelView",
@@ -6477,7 +6448,7 @@
 											"top": 1194,
 											"width": 92.498046875,
 											"height": 13,
-											"text": "+value: T",
+											"text": "+value: Int",
 											"horizontalAlignment": 0
 										}
 									],
@@ -6560,19 +6531,6 @@
 							}
 						},
 						{
-							"_type": "UMLNoteView",
-							"_id": "AAAAAAGGxikYM6dDBv4=",
-							"_parent": {
-								"$ref": "AAAAAAFF+qBtyKM79qY="
-							},
-							"font": "Arial;13;0",
-							"left": 848,
-							"top": 64,
-							"width": 161,
-							"height": 181,
-							"text": "All these classes have a \"main\" function/loop that handles the user interaction when it is active (e.g., when login succeeds on an Account the main loop of the account will get active and only return to the caller after the user has selected quit). For Repository this function is invoked by enter()"
-						},
-						{
 							"_type": "UMLNoteLinkView",
 							"_id": "AAAAAAGGxikssKfEakA=",
 							"_parent": {
@@ -6586,51 +6544,6 @@
 								"$ref": "AAAAAAGGxfJjmhTI0Z8="
 							},
 							"points": "1416:512;1336:512;1336:664"
-						},
-						{
-							"_type": "UMLNoteLinkView",
-							"_id": "AAAAAAGGxik296mJ+h8=",
-							"_parent": {
-								"$ref": "AAAAAAFF+qBtyKM79qY="
-							},
-							"font": "Arial;13;0",
-							"head": {
-								"$ref": "AAAAAAGGvRriH1b60Ao="
-							},
-							"tail": {
-								"$ref": "AAAAAAGGxikYM6dDBv4="
-							},
-							"points": "928:244;928:307;1024:307"
-						},
-						{
-							"_type": "UMLNoteLinkView",
-							"_id": "AAAAAAGGxilA+6wUR/0=",
-							"_parent": {
-								"$ref": "AAAAAAFF+qBtyKM79qY="
-							},
-							"font": "Arial;13;0",
-							"head": {
-								"$ref": "AAAAAAGGvRlJIVa4qeQ="
-							},
-							"tail": {
-								"$ref": "AAAAAAGGxikYM6dDBv4="
-							},
-							"points": "928:244;928:544;1064:544"
-						},
-						{
-							"_type": "UMLNoteLinkView",
-							"_id": "AAAAAAGGxilLW639ksw=",
-							"_parent": {
-								"$ref": "AAAAAAFF+qBtyKM79qY="
-							},
-							"font": "Arial;13;0",
-							"head": {
-								"$ref": "AAAAAAGGvRwZVFc4ANQ="
-							},
-							"tail": {
-								"$ref": "AAAAAAGGxikYM6dDBv4="
-							},
-							"points": "928:244;928:672;976:672"
 						},
 						{
 							"_type": "UMLDataTypeView",
@@ -7267,9 +7180,9 @@
 										"$ref": "AAAAAAGGxz1njSjNUAU="
 									},
 									"font": "Arial;13;0",
-									"left": 1177,
+									"left": 1176,
 									"top": 416,
-									"width": 5.05908203125,
+									"width": 6.5,
 									"height": 13,
 									"alpha": -0.8760583252989222,
 									"distance": 15.620499351813308,
@@ -7424,7 +7337,7 @@
 							"top": 616,
 							"width": 201,
 							"height": 51,
-							"text": "Singleton - singleton specific methods (like getInstance) omitted in this diagram"
+							"text": "Replace with methods (Singleton)"
 						},
 						{
 							"_type": "UMLNoteLinkView",
@@ -7710,6 +7623,32 @@
 							"headQualifiersCompartment": {
 								"$ref": "AAAAAAGGx4pa6suyVYQ="
 							}
+						},
+						{
+							"_type": "UMLNoteView",
+							"_id": "AAAAAAGGyrDtRar8qiI=",
+							"_parent": {
+								"$ref": "AAAAAAFF+qBtyKM79qY="
+							},
+							"font": "Arial;13;0",
+							"left": 1392,
+							"top": 168,
+							"width": 110,
+							"height": 77,
+							"text": "TODO: add main function to app (and account?)"
+						},
+						{
+							"_type": "UMLNoteView",
+							"_id": "AAAAAAGGyrK5or/AudM=",
+							"_parent": {
+								"$ref": "AAAAAAFF+qBtyKM79qY="
+							},
+							"font": "Arial;13;0",
+							"left": 1536,
+							"top": 1032,
+							"width": 90.07177734375,
+							"height": 40,
+							"text": "TODO: multiplicities"
 						}
 					]
 				},
@@ -9087,7 +9026,9 @@
 							},
 							"name": "data",
 							"visibility": "protected",
-							"type": "NameValue<Int>",
+							"type": {
+								"$ref": "AAAAAAGGxhaDoRE7XJc="
+							},
 							"multiplicity": "1..*"
 						}
 					],
@@ -9330,7 +9271,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": "NameValue<T>",
+					"name": "NameValue",
 					"attributes": [
 						{
 							"_type": "UMLAttribute",
@@ -9348,7 +9289,7 @@
 								"$ref": "AAAAAAGGxhaDoRE7XJc="
 							},
 							"name": "value",
-							"type": "T"
+							"type": "Int"
 						}
 					]
 				},
