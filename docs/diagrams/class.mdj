@@ -17,7 +17,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": " ",
+					"name": "GitHubMiner",
 					"defaultDiagram": true,
 					"ownedViews": [
 						{
@@ -49,7 +49,7 @@
 											"visible": false,
 											"font": "Arial;13;0",
 											"left": 944,
-											"top": 320,
+											"top": 304,
 											"height": 13
 										},
 										{
@@ -60,7 +60,7 @@
 											},
 											"font": "Arial;13;1",
 											"left": 1069,
-											"top": 447,
+											"top": 439,
 											"width": 199,
 											"height": 13,
 											"text": "Account"
@@ -74,7 +74,7 @@
 											"visible": false,
 											"font": "Arial;13;0",
 											"left": 944,
-											"top": 320,
+											"top": 304,
 											"width": 73.67724609375,
 											"height": 13,
 											"text": "(from Model)"
@@ -88,14 +88,14 @@
 											"visible": false,
 											"font": "Arial;13;0",
 											"left": 944,
-											"top": 320,
+											"top": 304,
 											"height": 13,
 											"horizontalAlignment": 1
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 1064,
-									"top": 440,
+									"top": 432,
 									"width": 209,
 									"height": 25,
 									"stereotypeLabel": {
@@ -132,7 +132,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 1069,
-											"top": 470,
+											"top": 462,
 											"width": 199,
 											"height": 13,
 											"text": "+name: String",
@@ -149,7 +149,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 1069,
-											"top": 485,
+											"top": 477,
 											"width": 199,
 											"height": 13,
 											"text": "-password: String",
@@ -166,7 +166,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 1069,
-											"top": 500,
+											"top": 492,
 											"width": 199,
 											"height": 13,
 											"text": "+token: String",
@@ -175,7 +175,7 @@
 									],
 									"font": "Arial;13;0",
 									"left": 1064,
-									"top": 465,
+									"top": 457,
 									"width": 209,
 									"height": 53
 								},
@@ -191,7 +191,6 @@
 									"subViews": [
 										{
 											"_type": "UMLOperationView",
-<<<<<<< HEAD
 											"_id": "AAAAAAGGywEkaLLSsa4=",
 											"_parent": {
 												"$ref": "AAAAAAGGvRlJIVa/g08="
@@ -210,8 +209,6 @@
 										},
 										{
 											"_type": "UMLOperationView",
-=======
->>>>>>> 211594d (Modfied: minor modifications to class and repo state)
 											"_id": "AAAAAAGGvbzh175qdAA=",
 											"_parent": {
 												"$ref": "AAAAAAGGvRlJIVa/g08="
@@ -221,11 +218,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 1069,
-<<<<<<< HEAD
 											"top": 517,
-=======
-											"top": 523,
->>>>>>> 211594d (Modfied: minor modifications to class and repo state)
 											"width": 199,
 											"height": 13,
 											"text": "+login(password: String): Boolean",
@@ -243,7 +236,7 @@
 											"visible": false,
 											"font": "Arial;13;0",
 											"left": 1165,
-											"top": 802,
+											"top": 786,
 											"width": 199,
 											"height": 13,
 											"text": "+getAction()",
@@ -260,11 +253,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 1069,
-<<<<<<< HEAD
 											"top": 532,
-=======
-											"top": 538,
->>>>>>> 211594d (Modfied: minor modifications to class and repo state)
 											"width": 199,
 											"height": 13,
 											"text": "-addRepo(): Int",
@@ -281,11 +270,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 1069,
-<<<<<<< HEAD
 											"top": 547,
-=======
-											"top": 553,
->>>>>>> 211594d (Modfied: minor modifications to class and repo state)
 											"width": 199,
 											"height": 13,
 											"text": "-removeRepo(): Int",
@@ -302,11 +287,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 1069,
-<<<<<<< HEAD
 											"top": 562,
-=======
-											"top": 568,
->>>>>>> 211594d (Modfied: minor modifications to class and repo state)
 											"width": 199,
 											"height": 13,
 											"text": "-enterRepo(): Int",
@@ -324,7 +305,7 @@
 											"visible": false,
 											"font": "Arial;13;0",
 											"left": 1165,
-											"top": 847,
+											"top": 831,
 											"width": 199,
 											"height": 13,
 											"text": "+Operation1()",
@@ -341,11 +322,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 1069,
-<<<<<<< HEAD
 											"top": 577,
-=======
-											"top": 583,
->>>>>>> 211594d (Modfied: minor modifications to class and repo state)
 											"width": 199,
 											"height": 13,
 											"text": "-updateToken()",
@@ -354,13 +331,9 @@
 									],
 									"font": "Arial;13;0",
 									"left": 1064,
-									"top": 518,
+									"top": 510,
 									"width": 209,
-<<<<<<< HEAD
 									"height": 85
-=======
-									"height": 83
->>>>>>> 211594d (Modfied: minor modifications to class and repo state)
 								},
 								{
 									"_type": "UMLReceptionCompartmentView",
@@ -374,7 +347,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 464,
-									"top": 160,
+									"top": 152,
 									"width": 10,
 									"height": 10
 								},
@@ -390,7 +363,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 464,
-									"top": 160,
+									"top": 152,
 									"width": 10,
 									"height": 10
 								}
@@ -398,13 +371,9 @@
 							"font": "Arial;13;0",
 							"containerChangeable": true,
 							"left": 1064,
-							"top": 440,
+							"top": 432,
 							"width": 209,
-<<<<<<< HEAD
 							"height": 163,
-=======
-							"height": 161,
->>>>>>> 211594d (Modfied: minor modifications to class and repo state)
 							"nameCompartment": {
 								"$ref": "AAAAAAGGvRlJIVa5DjA="
 							},
@@ -1166,11 +1135,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 1080,
-<<<<<<< HEAD
 									"top": 659,
-=======
-									"top": 662,
->>>>>>> 211594d (Modfied: minor modifications to class and repo state)
 									"width": 83.80810546875,
 									"height": 13,
 									"alpha": -4.058752763363436,
@@ -1193,11 +1158,7 @@
 									"visible": null,
 									"font": "Arial;13;0",
 									"left": 1138,
-<<<<<<< HEAD
 									"top": 622,
-=======
-									"top": 625,
->>>>>>> 211594d (Modfied: minor modifications to class and repo state)
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 30,
@@ -1218,11 +1179,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 1182,
-<<<<<<< HEAD
 									"top": 623,
-=======
-									"top": 626,
->>>>>>> 211594d (Modfied: minor modifications to class and repo state)
 									"height": 13,
 									"alpha": -1.5707963267948966,
 									"distance": 15,
@@ -1308,11 +1265,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 1153,
-<<<<<<< HEAD
 									"top": 614,
-=======
-									"top": 620,
->>>>>>> 211594d (Modfied: minor modifications to class and repo state)
 									"height": 13,
 									"alpha": -0.5235987755982988,
 									"distance": 30,
@@ -1332,11 +1285,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 1139,
-<<<<<<< HEAD
 									"top": 617,
-=======
-									"top": 623,
->>>>>>> 211594d (Modfied: minor modifications to class and repo state)
 									"height": 13,
 									"alpha": -0.7853981633974483,
 									"distance": 40,
@@ -1355,11 +1304,7 @@
 									},
 									"font": "Arial;13;0",
 									"left": 1177,
-<<<<<<< HEAD
 									"top": 607,
-=======
-									"top": 606,
->>>>>>> 211594d (Modfied: minor modifications to class and repo state)
 									"width": 7.22998046875,
 									"height": 13,
 									"alpha": 0.5633164906706789,
@@ -1410,11 +1355,7 @@
 								"$ref": "AAAAAAGGvRwZVFc4ANQ="
 							},
 							"lineStyle": 1,
-<<<<<<< HEAD
 							"points": "1168:663;1168:595",
-=======
-							"points": "1168:663;1168:601",
->>>>>>> 211594d (Modfied: minor modifications to class and repo state)
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAGGvRw/gVdnuuM="
@@ -2828,7 +2769,7 @@
 									},
 									"font": "Arial;13;0",
 									"left": 871,
-									"top": 743,
+									"top": 751,
 									"width": 68.28173828125,
 									"height": 13,
 									"alpha": -1.3086765019298379,
@@ -2851,7 +2792,7 @@
 									"visible": null,
 									"font": "Arial;13;0",
 									"left": 834,
-									"top": 753,
+									"top": 761,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 30,
@@ -2872,7 +2813,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 879,
-									"top": 754,
+									"top": 762,
 									"height": 13,
 									"alpha": -1.5707963267948966,
 									"distance": 15,
@@ -2893,7 +2834,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 950,
-									"top": 768,
+									"top": 776,
 									"height": 13,
 									"alpha": 0.5235987755982988,
 									"distance": 30,
@@ -2914,7 +2855,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 947,
-									"top": 782,
+									"top": 790,
 									"height": 13,
 									"alpha": 0.7853981633974483,
 									"distance": 40,
@@ -2934,7 +2875,7 @@
 									},
 									"font": "Arial;13;0",
 									"left": 950,
-									"top": 743,
+									"top": 751,
 									"width": 20,
 									"height": 13,
 									"alpha": -0.5585995962425652,
@@ -3047,7 +2988,7 @@
 								"$ref": "AAAAAAGGvRwZVFc4ANQ="
 							},
 							"lineStyle": 2,
-							"points": "976:760;864:760;864:544",
+							"points": "976:768;864:768;864:544",
 							"nameLabel": {
 								"$ref": "AAAAAAGGvXKvucxGbEQ="
 							},
@@ -3576,7 +3517,7 @@
 							"font": "Arial;13;0",
 							"left": 800,
 							"top": 832,
-							"width": 142.24072265625,
+							"width": 137,
 							"height": 116,
 							"text": "This list will be extended/modified during the development of the application, when need for other types will become clear"
 						},
@@ -4304,12 +4245,12 @@
 										"$ref": "AAAAAAGGvYTl0VWpnLM="
 									},
 									"font": "Arial;13;0",
-									"left": 1392,
-									"top": 742,
+									"left": 1400,
+									"top": 738,
 									"width": 43,
 									"height": 13,
-									"alpha": -0.1843244394382939,
-									"distance": 60.01666435249463,
+									"alpha": -0.2860514947958839,
+									"distance": 53.16013544000805,
 									"hostEdge": {
 										"$ref": "AAAAAAGGvYTl0lWr6Kk="
 									},
@@ -6165,12 +6106,12 @@
 										"$ref": "AAAAAAGGvaymDEMyWLc="
 									},
 									"font": "Arial;13;0",
-									"left": 959,
-									"top": 487,
+									"left": 966,
+									"top": 488,
 									"width": 60.68994140625,
 									"height": 13,
-									"alpha": -0.9600710335469431,
-									"distance": 12.206555615733702,
+									"alpha": 4.7123879803846895,
+									"distance": 10,
 									"hostEdge": {
 										"$ref": "AAAAAAGGvaymDUM24Fs="
 									},
@@ -7148,7 +7089,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 1152,
-									"top": 399,
+									"top": 395,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 15,
@@ -7169,7 +7110,7 @@
 									"visible": null,
 									"font": "Arial;13;0",
 									"left": 1137,
-									"top": 399,
+									"top": 395,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 30,
@@ -7190,7 +7131,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 1181,
-									"top": 400,
+									"top": 396,
 									"height": 13,
 									"alpha": -1.5707963267948966,
 									"distance": 15,
@@ -7210,7 +7151,7 @@
 									},
 									"font": "Arial;13;0",
 									"left": 1094,
-									"top": 424,
+									"top": 416,
 									"width": 61,
 									"height": 13,
 									"alpha": -4.946132079766537,
@@ -7233,7 +7174,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 1138,
-									"top": 405,
+									"top": 397,
 									"height": 13,
 									"alpha": 0.7853981633974483,
 									"distance": 40,
@@ -7253,7 +7194,7 @@
 									},
 									"font": "Arial;13;0",
 									"left": 1176,
-									"top": 424,
+									"top": 416,
 									"width": 7,
 									"height": 13,
 									"alpha": -0.8760583252989222,
@@ -7361,7 +7302,7 @@
 							"tail": {
 								"$ref": "AAAAAAGGvRlJIVa4qeQ="
 							},
-							"points": "1167:440;1167:373",
+							"points": "1167:432;1167:373",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAGGxz1njSjREvg="
@@ -7418,12 +7359,12 @@
 										"$ref": "AAAAAAGGx4pa6suj2O8="
 									},
 									"font": "Arial;13;0",
-									"left": 903,
+									"left": 910,
 									"top": 304,
 									"width": 68.28173828125,
 									"height": 13,
-									"alpha": 1.7069352034389678,
-									"distance": 73.68174807915459,
+									"alpha": 1.6951512401675708,
+									"distance": 80.62257748298549,
 									"hostEdge": {
 										"$ref": "AAAAAAGGx4pa6sunblk="
 									},
@@ -7689,9 +7630,9 @@
 									"font": "Arial;13;0",
 									"left": 624.6181640625,
 									"top": 237,
-									"width": 4.61181640625,
+									"width": 73.96630859375,
 									"height": 13,
-									"text": " "
+									"text": "GitHubMiner"
 								},
 								{
 									"_type": "LabelView",
@@ -8093,32 +8034,32 @@
 						},
 						{
 							"_type": "UMLNoteView",
-							"_id": "AAAAAAGGza98x+HZlIc=",
+							"_id": "AAAAAAGG5aTtuWMYs0Q=",
 							"_parent": {
 								"$ref": "AAAAAAFF+qBtyKM79qY="
 							},
 							"font": "Arial;13;0",
 							"left": 800,
 							"top": 968,
-							"width": 145,
+							"width": 128,
 							"height": 90,
 							"text": "Used in many classes, so connections are omitted in the diagram for better readability"
 						},
 						{
 							"_type": "UMLNoteLinkView",
-							"_id": "AAAAAAGGzbB8OQW393Y=",
+							"_id": "AAAAAAGG5aYV0nU5lG0=",
 							"_parent": {
 								"$ref": "AAAAAAFF+qBtyKM79qY="
 							},
 							"font": "Arial;13;0",
 							"head": {
-								"$ref": "AAAAAAGGvXZMKeYo7M8="
+								"$ref": "AAAAAAGG5aTtuWMYs0Q="
 							},
 							"tail": {
-								"$ref": "AAAAAAGGza98x+HZlIc="
+								"$ref": "AAAAAAGGvXZMKeYo7M8="
 							},
 							"lineStyle": 1,
-							"points": "799:1009;753:1008"
+							"points": "753:1008;799:1010"
 						}
 					]
 				},
@@ -8225,6 +8166,14 @@
 						}
 					],
 					"operations": [
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAGGywEkXrLPHVA=",
+							"_parent": {
+								"$ref": "AAAAAAGGvRlJIVa2I0E="
+							},
+							"name": "getAction"
+						},
 						{
 							"_type": "UMLOperation",
 							"_id": "AAAAAAGGvbzhyL5nZ9w=",
