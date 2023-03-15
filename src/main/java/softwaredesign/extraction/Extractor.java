@@ -4,10 +4,9 @@ import softwaredesign.extraction.metrics.NumberOfLinesAdded;
 import softwaredesign.extraction.metrics.TopCollaborators;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.*;
 
 public final class Extractor {
     // attributes
@@ -28,7 +27,7 @@ public final class Extractor {
     }
 
     public ExtractionResult extractMetrics(String path) {
-        Commit[] commits = {new Commit()}; //placeholder, replaces by extraction of commits
+        Commit[] commits = {new Commit("Tester", "tester@vu.nl", ZonedDateTime.parse("2011-12-03T10:15:30+01:00"), "Created project", Arrays.asList(new File("a.cpp", 0, 15), new File("b.S", 12, 14), new File("c.py", 22, 0)), "129ac84eb6a", 15, 2, Boolean.FALSE)}; //placeholder, replaces by extraction of commits
         List<Metric> metrics = new ArrayList<>();
 
         for (Class<? extends Metric> metric : classList) {
