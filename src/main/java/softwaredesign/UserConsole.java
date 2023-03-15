@@ -53,12 +53,12 @@ public class UserConsole {
 
             LineReaderBuilder builder = org.jline.reader.LineReaderBuilder.builder();
             builder.terminal(terminal);
-            builder.completer(new ArgumentCompleter(new StringsCompleter(optionsIgnoreCase), new NullCompleter()));
+            builder.completer(new ArgumentCompleter(new StringsCompleter(options), new NullCompleter()));
             LineReader reader = builder.build();
 
             //todo enable matching on case insensitive but only allow proper case to be returned
 
-            while (!optionsIgnoreCase.contains((line = reader.readLine(prompt + " > ")).toLowerCase().trim())) {
+            while (!options.contains((line = reader.readLine(prompt + " > ")).trim())) {
                 terminal.writer().write("Invalid\n");
             }
         }
