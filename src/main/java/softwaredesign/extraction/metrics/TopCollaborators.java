@@ -1,4 +1,5 @@
 package softwaredesign.extraction.metrics;
+
 import softwaredesign.extraction.Commit;
 import softwaredesign.extraction.SingleData;
 
