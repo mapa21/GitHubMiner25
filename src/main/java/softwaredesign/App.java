@@ -2,6 +2,7 @@ package softwaredesign;
 
 import softwaredesign.utilities.CommandSet;
 import softwaredesign.utilities.CommandSet.Command;
+import softwaredesign.utilities.MessageSet;
 import softwaredesign.utilities.TextElement;
 import softwaredesign.utilities.TextElement.FormatType;
 
@@ -20,10 +21,6 @@ public class App {
             Command.LIST_ACCOUNTS
     );
 
-    private static final class Messages {
-        public final static String NO_ACCOUNTS = "There are no accounts yet. Select " + CommandSet.getKeyword(Command.CREATE_ACCOUNT) + " to create a new account";
-    }
-
     //TODO add method to get all values out of map
 
     public static void main (String[] args) {
@@ -39,17 +36,34 @@ public class App {
                     //TODO: enterfdsa
                     break;
                 case CREATE_ACCOUNT:
-                    //TODO: create Account
+                    createAccount();
                     break;
                 case DELETE_ACCOUNT:
                     //delete
                     break;
             }
         }
+
+        UserConsole.println(new TextElement(MessageSet.Misc.GOODBYE, FormatType.BODY));
     }
 
     private static void createAccount() {
-
+        UserConsole.println(new TextElement(MessageSet.Account.START_CREATION, FormatType.HEADING));
+        String name;
+        while (true) {
+            name = UserConsole.getInput(MessageSet.Account.ENTER_NAME);
+            if (name.equals("") || name.contains(" ")) {
+                UserConsole.println(new TextElement(MessageSet.Account.INVALID_NAME, FormatType.ERROR));
+            }
+            else if (accounts.contains(new Account(name, ""))) {
+                UserConsole.println(new TextElement(MessageSet.Account.NAME_TAKEN, FormatType.ERROR));
+            }
+            else break;
+        }
+        UserConsole.println(new TextElement(MessageSet.Account.ENTER_NAME + ": " + name, FormatType.BODY));
+        String password = UserConsole.getInput(MessageSet.Account.ENTER_PASSWORD);
+        accounts.add(new Account(name, password));
+        UserConsole.println(new TextElement(MessageSet.Account.CREATED, FormatType.SUCCESS));
     }
 
     private static void deleteAccount() {
@@ -61,10 +75,12 @@ public class App {
     }
 
     private static void listAccounts() {
+        UserConsole.print(new TextElement(MessageSet.Account.ACCOUNTS_LIST, FormatType.HEADING));
+
         if (accounts.isEmpty()) {
-            UserConsole.print(new TextElement(Messages.NO_ACCOUNTS, FormatType.HINT));
+            UserConsole.println(new TextElement(" " + MessageSet.Account.NO_ACCOUNTS, FormatType.HINT));
         } else {
-            UserConsole.print(new TextElement(accounts.toString(), FormatType.BODY));
+            UserConsole.println(new TextElement(" " + accounts, FormatType.BODY));
         }
     }
 }
