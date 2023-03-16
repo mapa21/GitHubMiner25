@@ -1,14 +1,17 @@
 package softwaredesign;
 
+import org.checkerframework.checker.units.qual.A;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.impl.completer.ArgumentCompleter;
 import org.jline.reader.impl.completer.NullCompleter;
 import org.jline.reader.impl.completer.StringsCompleter;
+import org.jline.terminal.Attributes;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
+import org.w3c.dom.Attr;
 import softwaredesign.utilities.CommandSet;
 import softwaredesign.utilities.TextElement;
 
@@ -32,7 +35,7 @@ public class UserConsole {
 
     private static final int NO_COLOR = -1;
 
-    private static class Messages {
+    private final static class Messages {
         static final String INVALID_OPTION = "Invalid Option.";
         static final String OPTIONS = "Options are: ";
         static final String DIVIDER = "---------------";
@@ -54,11 +57,13 @@ public class UserConsole {
             entry(TextElement.FormatType.HEADING, TextStyles.HEADING),
             entry(TextElement.FormatType.BODY, TextStyles.DEFAULT),
             entry(TextElement.FormatType.STATISTIC, TextStyles.DEFAULT),
-            entry(TextElement.FormatType.DIVIDER, TextStyles.GREYED)
+            entry(TextElement.FormatType.DIVIDER, TextStyles.GREYED),
+            entry(TextElement.FormatType.ERROR, TextStyles.ERROR),
+            entry(TextElement.FormatType.SUCCESS, TextStyles.SUCCESS)
     );
 
     private static String getStyledPrompt(String prompt, String Seperator) {
-        return getStyledText(prompt, TextStyles.PROMPT).toAnsi();
+        return getStyledText(prompt + Seperator, TextStyles.PROMPT).toAnsi();
     }
 
     private static String getStyledPrompt(String prompt) {
@@ -79,9 +84,9 @@ public class UserConsole {
         builder.terminal(terminal);
         builder.completer(new ArgumentCompleter(new StringsCompleter(options), new NullCompleter()));
         LineReader reader = builder.build();
-
+        reader.option(LineReader.Option.ERASE_LINE_ON_FINISH, true);
         String command;
-        while (!options.contains(command = reader.readLine(getStyledPrompt(prompt, Messages.INPUT_SEPARATOR)).trim())
+        while (!options.contains(command = reader.readLine(getStyledPrompt(prompt)).trim())
                 && options.size() > 0) {
             terminal.writer().println(errorInvalid.toAnsi());
             terminal.flush();
@@ -90,14 +95,43 @@ public class UserConsole {
     }
 
     public static String getInput(String prompt) {
+        Attributes test = new Attributes(terminal.getAttributes());
+//        test.setLocalFlag(Attributes.LocalFlag.ECHO, false);
+//        test.setLocalFlag(Attributes.LocalFlag.ECHOE, true);
+////        test.setLocalFlag(Attributes.LocalFlag.ICANON, false);
+////        test.setLocalFlag(Attributes.LocalFlag.ECHOCTL, true);
+//
+//        terminal.setAttributes(test);
+//        try {
+//            Integer test2 = terminal.reader().read();
+//            return test2.toString();
+//        }
+//        catch (IOException e) {
+//            //
+//        }
+//
+//        return "no";
         LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();
-        return reader.readLine(getStyledPrompt(prompt));
+        reader.option(LineReader.Option.ERASE_LINE_ON_FINISH, true);
+        return reader.readLine(getStyledPrompt(prompt, Messages.INPUT_SEPARATOR)).trim();
+
     }
 
     public static void print(TextElement data) {
         print(List.of(data));
     }
 
+    public static void println(TextElement data) {
+        print(List.of(new TextElement(data.content + "\n", data.type)));
+    }
+
+    public static void println(List<TextElement> data) {
+        List<TextElement> newData = new ArrayList<>();
+        data.forEach(line -> {
+            newData.add(new TextElement(line.content + "\n", line.type));
+        });
+        print(newData);
+    }
     public static void print(List<TextElement> data) {
         AttributedStringBuilder string = new AttributedStringBuilder();
 
@@ -106,7 +140,7 @@ public class UserConsole {
             if (element.type == TextElement.FormatType.DIVIDER) {
                 content = Messages.DIVIDER;
             }
-            string.append(getStyledText(content + "\n", typeToStyle.getOrDefault(element.type, TextStyles.DEFAULT)));
+            string.append(getStyledText(content, typeToStyle.getOrDefault(element.type, TextStyles.DEFAULT)));
         }
 
         terminal.writer().print(string.toAnsi());
@@ -132,7 +166,7 @@ public class UserConsole {
             string.style(string.style().underline());
         }
         string.append(text);
-//        string.style(AttributedStyle.DEFAULT);
+        string.style(AttributedStyle.DEFAULT);
         return string;
     }
 
@@ -172,7 +206,7 @@ public class UserConsole {
             terminal.writer().println(getStyledText("\n" + fallback + "\n", TextStyles.BOLD_UNDERLINED).toAnsi());
         }
         catch (NoSuchElementException e) {
-            //
+            //TODO catch properly
         }
 
         terminal.flush();
