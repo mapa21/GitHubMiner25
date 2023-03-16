@@ -20,7 +20,7 @@ public final class Extractor {
     List<Class<? extends Metric>> classList = new ArrayList<>();
 
     public ExtractionResult extractMetrics(String path) {
-        Commit[] commits = {new Commit("Tester", "tester@vu.nl", ZonedDateTime.parse("2011-12-03T10:15:30+01:00"), "Created project", Arrays.asList(new File("a.cpp", 0, 15), new File("b.S", 12, 14), new File("c.py", 22, 0)), "129ac84eb6a", 15, 2, Boolean.FALSE)}; //placeholder, replaces by extraction of commits
+        Commit[] commits = {new Commit("Tester", "tester@vu.nl", ZonedDateTime.parse("2011-12-03T10:15:30+01:00"), "Created project", 3, "129ac84eb6a", 15, 2, Boolean.FALSE)}; //placeholder, replaces by extraction of commits
         List<Metric> metrics = new ArrayList<>();
 
         for (Class<? extends Metric> metric : classList) {
