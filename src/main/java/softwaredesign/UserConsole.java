@@ -9,18 +9,16 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
+import softwaredesign.utilities.CommandSet;
 import softwaredesign.utilities.TextElement;
 
 import javax.naming.SizeLimitExceededException;
 import java.io.*;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static java.util.Map.entry;
 
 public class UserConsole {
-
     private UserConsole() {}
     private static Terminal terminal;
 
@@ -28,7 +26,7 @@ public class UserConsole {
         try {
             terminal = TerminalBuilder.builder().encoding("UTF-8").build();
         } catch (IOException e) {
-            //TODO: handle exception;
+            System.exit(1);
         }
     }
 
@@ -38,6 +36,8 @@ public class UserConsole {
         static final String INVALID_OPTION = "Invalid Option.";
         static final String OPTIONS = "Options are: ";
         static final String DIVIDER = "---------------";
+        static final String PROMPT_SEPARATOR = " > ";
+        static final String INPUT_SEPARATOR = ": ";
     }
 
     private static class TextStyles {
@@ -47,6 +47,7 @@ public class UserConsole {
         static final TextStyle HEADING = new TextStyle(AttributedStyle.BLUE, NO_COLOR, true, false, true);
         static final TextStyle GREYED = new TextStyle(AttributedStyle.BRIGHT, NO_COLOR, false, false, false);
         static final TextStyle BOLD_UNDERLINED = new TextStyle(NO_COLOR, NO_COLOR, true, false, true);
+        static final TextStyle PROMPT = new TextStyle(AttributedStyle.BRIGHT, NO_COLOR, false, false, false);
     }
 
     private static Map<TextElement.FormatType, TextStyle> typeToStyle = Map.ofEntries(
@@ -56,23 +57,45 @@ public class UserConsole {
             entry(TextElement.FormatType.DIVIDER, TextStyles.GREYED)
     );
 
-    public static String getInput(String prompt, Set<String> options) {
+    private static String getStyledPrompt(String prompt, String Seperator) {
+        return getStyledText(prompt, TextStyles.PROMPT).toAnsi();
+    }
 
+    private static String getStyledPrompt(String prompt) {
+        return getStyledPrompt(prompt, Messages.PROMPT_SEPARATOR);
+    }
+
+    //Separate methods for getting strings and getting keywords?
+    public static CommandSet.Command getCommandInput(String prompt, Set<CommandSet.Command> options) {
+        return CommandSet.getCommand(getInput(prompt, CommandSet.getKeywords(options)));
+    }
+
+    public static String getInput(String prompt, Set<String> options) {
         AttributedStringBuilder errorInvalid = getStyledText(Messages.INVALID_OPTION, TextStyles.ERROR)
                 .append(getStyledText(" ", TextStyles.DEFAULT))
                 .append(getStyledText(Messages.OPTIONS + options, TextStyles.DEFAULT));
 
-        LineReaderBuilder builder = org.jline.reader.LineReaderBuilder.builder();
+        LineReaderBuilder builder = LineReaderBuilder.builder();
         builder.terminal(terminal);
         builder.completer(new ArgumentCompleter(new StringsCompleter(options), new NullCompleter()));
         LineReader reader = builder.build();
 
-        String line;
-        while (!options.contains((line = reader.readLine(prompt + " > ")).trim())) {
+        String command;
+        while (!options.contains(command = reader.readLine(getStyledPrompt(prompt, Messages.INPUT_SEPARATOR)).trim())
+                && options.size() > 0) {
             terminal.writer().println(errorInvalid.toAnsi());
             terminal.flush();
         }
-        return line;
+        return command;
+    }
+
+    public static String getInput(String prompt) {
+        LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();
+        return reader.readLine(getStyledPrompt(prompt));
+    }
+
+    public static void print(TextElement data) {
+        print(List.of(data));
     }
 
     public static void print(List<TextElement> data) {
@@ -83,10 +106,8 @@ public class UserConsole {
             if (element.type == TextElement.FormatType.DIVIDER) {
                 content = Messages.DIVIDER;
             }
-            string.append(getStyledText(content + "\n", typeToStyle.get(element.type)));
+            string.append(getStyledText(content + "\n", typeToStyle.getOrDefault(element.type, TextStyles.DEFAULT)));
         }
-
-        System.out.println(terminal);
 
         terminal.writer().print(string.toAnsi());
         terminal.flush();
@@ -151,7 +172,7 @@ public class UserConsole {
             terminal.writer().println(getStyledText("\n" + fallback + "\n", TextStyles.BOLD_UNDERLINED).toAnsi());
         }
         catch (NoSuchElementException e) {
-            System.out.println("Error: " + e);
+            //
         }
 
         terminal.flush();

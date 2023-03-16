@@ -7,6 +7,7 @@ public class TextElement {
         BODY,
         STATISTIC,
         DIVIDER,
+        HINT,
         TITLE
     }
 
