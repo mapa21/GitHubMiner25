@@ -18,23 +18,26 @@ public class Repository {
 
     public void enter(){}
     protected Boolean clone(){
+        // TODO: how to get userName? Maybe when user is selected we run 'cd <userDir>'?
+        String userName = "bob";
+
+        // TODO: get this OS-dependent
+        String parentDir = "data";
+
         Process process;
-        String[] commands = {"git clone https://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@github.com/ComputerScienceEducation/co-lab.git", "git log"};
-        String[] locations = {"res/", "res/co-lab/"};
-        for (int i = 0; i < commands.length; i++) {
-            System.out.println(commands[i] + " at " + locations[i]);
-            try {
-                process = Runtime.getRuntime().exec(commands[i], null, new File(locations[i]));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+        String path = parentDir + "/" + userName + "/" + name;
+
+        try {
+            process = Runtime.getRuntime().exec("git clone https://" + token + "@github.com/" + owner + "/" + name + ".git " + path);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
             }
-            List<String> output = null;
-            try {
-                output = getOutput(process);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            System.out.println(output);
+            reader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
         return true;
     }
