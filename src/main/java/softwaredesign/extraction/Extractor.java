@@ -16,7 +16,7 @@ public final class Extractor {
     @Getter
     private final Set<String> metricTypes = new HashSet<>();
     @Getter
-    private String listHash;
+    private final String listHash;
     List<Class<? extends Metric>> classList = new ArrayList<>();
 
     public ExtractionResult extractMetrics(String path) {
@@ -46,6 +46,6 @@ public final class Extractor {
         }
 
         // TODO: hash contents of list and save result in listHash
-
+        listHash = "";
     }
 }
