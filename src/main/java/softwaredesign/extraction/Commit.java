@@ -10,18 +10,18 @@ public class Commit {
     public String description;
     public List<File> files;
     public String hash;
-    public Integer additions;
+    public Integer insertions;
     public Integer deletions;
     public Boolean isMerge;
 
-    public Commit(String authorName, String authorEmail, ZonedDateTime date, String description, List<File> files, String hash, Integer additions, Integer deletions, Boolean isMerge) {
+    public Commit(String authorName, String authorEmail, ZonedDateTime date, String description, List<File> files, String hash, Integer insertions, Integer deletions, Boolean isMerge) {
         this.authorName = authorName;
         this.authorEmail = authorEmail;
         this.date = date;
         this.description = description;
         this.files = files;
         this.hash = hash;
-        this.additions = additions;
+        this.insertions = insertions;
         this.deletions = deletions;
         this.isMerge = isMerge;
     }
