@@ -8,6 +8,8 @@ public class TextElement {
         STATISTIC,
         DIVIDER,
         HINT,
+        ERROR,
+        SUCCESS,
         TITLE
     }
 
