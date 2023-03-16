@@ -18,6 +18,9 @@ dependencies {
 //    implementation group: 'info.picocli', name: 'picocli', version: '4.7.1'
     testImplementation group: 'junit', name: 'junit', version: '4.13.1'
 
+    // Github API
+    implementation group: 'org.kohsuke', name: 'github-api', version: '1.302'
+
 }
 
 jar {
