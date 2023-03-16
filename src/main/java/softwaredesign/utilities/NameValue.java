@@ -1,4 +1,4 @@
-package softwaredesign.Utilitites;
+package softwaredesign.utilities;
 
 public class NameValue<T> {
     public String name;

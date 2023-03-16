@@ -1,4 +1,4 @@
-package softwaredesign.Utilitites;
+package softwaredesign.utilities;
 
 import jline.console.completer.StringsCompleter;
 
