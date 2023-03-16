@@ -5,11 +5,16 @@ import org.kohsuke.github.*;
 import org.jetbrains.annotations.NotNull;
 
 public class Account implements Comparable<Account>{
-    public String name;
-    private String password;
-    public String token;
+    public final String name;
+    private final String password;
+    public String token = null;
     public Boolean login(String password){
         return true;
+    }
+
+    public Account(String name, String password) {
+        this.name = name;
+        this.password = password;
     }
 
     public int addRepo() {
