@@ -2,7 +2,9 @@ package softwaredesign;
 import org.kohsuke.github.*;
 
 
-public class Account {
+import org.jetbrains.annotations.NotNull;
+
+public class Account implements Comparable<Account>{
     public String name;
     private String password;
     public String token;
@@ -41,5 +43,26 @@ public class Account {
             System.out.println("bleh.");
         }
         return isValid;
+    }
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
+    @Override
+    public int compareTo(@NotNull Account rhs) {
+        if (this == rhs) return 0;
+        return (this.name.compareToIgnoreCase(rhs.name));
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || o.getClass() != this.getClass()) {
+            return false;
+        }
+        return this.compareTo((Account) o) == 0;
+    }
+    @Override
+    public int hashCode() {
+        return this.name.toLowerCase().hashCode();
     }
 }
