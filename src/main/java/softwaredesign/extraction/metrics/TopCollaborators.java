@@ -4,10 +4,7 @@ import softwaredesign.extraction.Commit;
 import softwaredesign.extraction.MultipleData;
 import softwaredesign.utilities.NameValue;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.lang.Math.min;
 
@@ -20,9 +17,9 @@ public class TopCollaborators extends MultipleData {
         Map<String, Integer> collaboratorCommits = new HashMap<>();
 
         for (Commit commit : commits) {
-            Integer currentCommits = collaboratorCommits.get(commit.authorName);
-            if (currentCommits == null) {
-                currentCommits = 0;
+            int currentCommits = 0;
+            if (collaboratorCommits.containsKey(commit.authorName)) {
+                currentCommits = collaboratorCommits.get(commit.authorName);;
             }
             collaboratorCommits.put(commit.authorName, currentCommits + 1);
         }
@@ -35,6 +32,9 @@ public class TopCollaborators extends MultipleData {
                 break;
             }
         }
+        Collections.sort(data);
+        Collections.reverse(data);
+
         this.data = data;
     }
 }
