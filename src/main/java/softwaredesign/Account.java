@@ -13,8 +13,8 @@ public class Account implements Comparable<Account>{
     }
 
     public int addRepo() {
-        String repoName = UserConsole.getInput("Enter the repository name: ", null);
-        String repoOwner = UserConsole.getInput("Enter the repository's owner: ",  null);
+        String repoName = UserConsole.getInput("Enter the repository name");
+        String repoOwner = UserConsole.getInput("Enter the repository's owner");
 
         // TODO: instantiate new Repo class
         return 0;
@@ -22,7 +22,7 @@ public class Account implements Comparable<Account>{
     }
 
     protected void setToken() {
-        String newToken = UserConsole.getInput("Enter a token: ", null);
+        String newToken = UserConsole.getInput("Enter a token");
 
         if (!isTokenValid(newToken)) {
             // TODO: change output format
