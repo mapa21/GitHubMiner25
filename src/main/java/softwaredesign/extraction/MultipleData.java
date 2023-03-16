@@ -1,6 +1,6 @@
 package softwaredesign.extraction;
 
-import softwaredesign.Utilitites.NameValue;
+import softwaredesign.utilities.NameValue;
 
 public abstract class MultipleData extends Metric{
     protected NameValue<Integer>[] data;

@@ -1,6 +1,6 @@
 package softwaredesign.extraction.metrics;
 
-import softwaredesign.Utilitites.NameValue;
+import softwaredesign.utilities.NameValue;
 import softwaredesign.extraction.Commit;
 import softwaredesign.extraction.MultipleData;
 

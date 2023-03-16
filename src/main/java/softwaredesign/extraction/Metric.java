@@ -1,6 +1,6 @@
 package softwaredesign.extraction;
 
-import softwaredesign.Utilitites.TextElement;
+import softwaredesign.utilities.TextElement;
 
 public abstract class Metric {
     protected String description;
