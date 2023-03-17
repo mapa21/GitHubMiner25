@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import softwaredesign.extraction.Metric;
+import softwaredesign.extraction.Commit;
 
 public class Repository {
     public String name;
@@ -50,8 +52,17 @@ public class Repository {
         String[] locations = {"res/", "res/" + this.name};
 
         for (int i = 0; i < commands.length; i++){
-            process = Runtime.getRuntime().exec(commands[i], null, new File(locations[i]));
-            List<String> output = getOutput(process);
+            try {
+                process = Runtime.getRuntime().exec(commands[i], null, new File(locations[i]));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            List<String> output = null;
+            try {
+                output = getOutput(process);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             List<Commit> commits = parseLog(output);
         }
 
@@ -100,6 +111,9 @@ public class Repository {
             counter++;
 
             //skip line
+            while (!output.get(counter).isEmpty() && output.get(counter).contains("    ")) {
+                counter++;
+            }
             counter++;
 
             //Get insertions, deletions
@@ -107,16 +121,24 @@ public class Repository {
             int deletions = 0;
             int nrOfFilesChanged = 0;
 
-            currLine = output.get(counter);
-            while (!currLine.isEmpty()) {
-                String[] elements = currLine.split("`{6}`");
-                insertions += Integer.parseInt(elements[0]);
-                deletions += Integer.parseInt(elements[1].trim());
-                nrOfFilesChanged++;
+            if (!isMerge){
+                currLine = output.get(counter);
+                while (!currLine.isEmpty()) {
+                    String[] elements = currLine.split("\\s+");
+                    if (!elements[0].equals("-")){
+                        insertions += Integer.parseInt(elements[0]);
+                    }
+                    if (!elements[1].equals("-")){
+                        deletions += Integer.parseInt(elements[1].trim());
+                    }
+                    nrOfFilesChanged++;
 
-                currLine = output.get(++counter);
+                    counter++;
+                    if (counter >= output.size()) break;
+                    currLine = output.get(counter);
+                }
+                counter++;
             }
-            counter++;
 
             //create Commit
             Commit currCommit = new Commit(authorName, authorEmail, dateTime, description, nrOfFilesChanged, hash, insertions, deletions, isMerge);
