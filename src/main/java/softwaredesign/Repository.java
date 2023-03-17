@@ -58,6 +58,74 @@ public class Repository {
         return true;
     }
 
+    private List<Commit> parseLog(List<String> output){
+        final int commitInd = 7;
+        List<Commit> commits = new ArrayList<>();
+
+        int counter = 0;
+        String currLine;
+        while (counter < output.size()) {
+            //Get commit hash
+            currLine = output.get(counter);
+            assert currLine.contains("commit");
+            String hash = currLine.substring(commitInd);
+            counter++;
+
+            //Check if merge
+            currLine = output.get(counter);
+            Boolean isMerge = currLine.contains("Merge");
+            if (isMerge) {
+                counter++;
+                currLine = output.get(counter);
+            }
+
+            //Get authorName and authorEmail
+            String authorName = currLine.substring(currLine.indexOf(":") + 2, currLine.indexOf("<") - 1);
+            String authorEmail = currLine.substring(currLine.indexOf("<") + 1, currLine.indexOf(">"));
+            counter++;
+
+            //Get Date
+            currLine = output.get(counter);
+            currLine = currLine.substring(currLine.indexOf(":") + 4);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ccc LLL d HH:mm:ss yyyy xxxx", Locale.US);
+            ZonedDateTime dateTime = ZonedDateTime.parse(currLine, formatter);
+            counter++;
+
+            //skip line
+            counter++;
+
+            //Get description
+            currLine = output.get(counter);
+            String description = currLine.trim();
+            counter++;
+
+            //skip line
+            counter++;
+
+            //Get insertions, deletions
+            int insertions = 0;
+            int deletions = 0;
+            int nrOfFilesChanged = 0;
+
+            currLine = output.get(counter);
+            while (!currLine.isEmpty()) {
+                String[] elements = currLine.split("`{6}`");
+                insertions += Integer.parseInt(elements[0]);
+                deletions += Integer.parseInt(elements[1].trim());
+                nrOfFilesChanged++;
+
+                currLine = output.get(++counter);
+            }
+            counter++;
+
+            //create Commit
+            Commit currCommit = new Commit(authorName, authorEmail, dateTime, description, nrOfFilesChanged, hash, insertions, deletions, isMerge);
+            commits.add(currCommit);
+        }
+        assert !commits.isEmpty();      //TODO: DELETE
+        return commits;
+    }
+
     public static List<String> getOutput(Process process) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         List<String> lines = new ArrayList<>();
