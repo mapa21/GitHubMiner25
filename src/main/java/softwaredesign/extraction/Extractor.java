@@ -1,5 +1,6 @@
 package softwaredesign.extraction;
 
+import lombok.Getter;
 import softwaredesign.extraction.metrics.NumberOfLinesAdded;
 import softwaredesign.extraction.metrics.TopCollaborators;
 
@@ -10,24 +11,16 @@ import java.util.*;
 
 public final class Extractor {
     // attributes
+    @Getter
     private final Extractor instance = new Extractor();
+    @Getter
     private final Set<String> metricTypes = new HashSet<>();
-    private String listHash;
+    @Getter
+    private final String listHash;
     List<Class<? extends Metric>> classList = new ArrayList<>();
 
-    // getters:
-    public Extractor getInstance() {
-        return instance;
-    }
-    public Set<String> getMetricTypes() {
-        return new HashSet<>(metricTypes);
-    }
-    public String getListHash() {
-        return listHash;
-    }
-
     public ExtractionResult extractMetrics(String path) {
-        Commit[] commits = {new Commit("Tester", "tester@vu.nl", ZonedDateTime.parse("2011-12-03T10:15:30+01:00"), "Created project", Arrays.asList(new File("a.cpp", 0, 15), new File("b.S", 12, 14), new File("c.py", 22, 0)), "129ac84eb6a", 15, 2, Boolean.FALSE)}; //placeholder, replaces by extraction of commits
+        Commit[] commits = {new Commit("Tester", "tester@vu.nl", ZonedDateTime.parse("2011-12-03T10:15:30+01:00"), "Created project", 3, "129ac84eb6a", 15, 2, Boolean.FALSE)}; //placeholder, replaces by extraction of commits
         List<Metric> metrics = new ArrayList<>();
 
         for (Class<? extends Metric> metric : classList) {
@@ -53,6 +46,6 @@ public final class Extractor {
         }
 
         // TODO: hash contents of list and save result in listHash
-
+        listHash = "";
     }
 }

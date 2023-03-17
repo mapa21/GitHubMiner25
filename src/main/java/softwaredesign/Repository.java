@@ -1,8 +1,5 @@
 package softwaredesign;
 
-import softwaredesign.extraction.Commit;
-import softwaredesign.extraction.Metric;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +28,12 @@ public class Repository {
 
     public void enter(){}
     protected Boolean clone(){
+        // TODO: how to get userName? Maybe when user is selected we run 'cd <userDir>'?
+        String userName = "bob";
+
+        // TODO: get this OS-dependent
+        String parentDir = "data";
+
         Process process;
         //create res folder
         File file = new File("res");

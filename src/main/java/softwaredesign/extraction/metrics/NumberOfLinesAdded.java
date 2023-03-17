@@ -1,16 +1,19 @@
 package softwaredesign.extraction.metrics;
 
-import softwaredesign.utilities.NameValue;
 import softwaredesign.extraction.Commit;
-import softwaredesign.extraction.MultipleData;
+import softwaredesign.extraction.SingleData;
 
-public class NumberOfLinesAdded extends MultipleData {
+import java.util.List;
+
+public class NumberOfLinesAdded extends SingleData {
     protected String name = "Number of Lines Added";
-    protected String description = "Sample Description";
+    protected String description = "Returns the number of lines added across all files that were ever created in the project";
 
-    protected NumberOfLinesAdded(Commit[] commits) {
-        NameValue<Integer>[] data = null;
-        //implementation
-        this.data = data;
+    public NumberOfLinesAdded(List<Commit> commits) {
+        int value = 0;
+        for (Commit commit : commits) {
+            value += commit.insertions;
+        }
+        this.value = value;
     }
 }

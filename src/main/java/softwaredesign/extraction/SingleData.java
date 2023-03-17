@@ -10,4 +10,9 @@ public abstract class SingleData extends Metric {
 
         return null;
     }
+
+    // TODO: remove after testing
+    public Integer getValue() {
+        return value;
+    }
 }

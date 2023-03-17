@@ -1,0 +1,39 @@
+package softwaredesign.extraction.metrics;
+
+import softwaredesign.extraction.Commit;
+import softwaredesign.extraction.MultipleData;
+import softwaredesign.utilities.NameValue;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static java.lang.Math.min;
+
+public class CommitsPerDay extends MultipleData {
+    protected String name = "Commits Per Day";
+    protected String description = "Returns the list of commits added for each day of the week";
+
+    public CommitsPerDay(List<Commit> commits) {
+        List<NameValue<Integer>> data = new ArrayList<>();
+        Map<String, Integer> commitsPerDay = new HashMap<>();
+        String[] daysOfWeek = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+        for (String day : daysOfWeek) {
+            commitsPerDay.put(day, 0);
+        }
+
+        for (Commit commit : commits) {
+            String dayOfWeekUppercase = String.valueOf(commit.date.getDayOfWeek());
+            String dayOfWeek = dayOfWeekUppercase.charAt(0) + dayOfWeekUppercase.substring(1).toLowerCase();
+            int currentCommits = commitsPerDay.get(dayOfWeek);
+            commitsPerDay.put(dayOfWeek, currentCommits + 1);
+        }
+
+        for (String day : daysOfWeek) {
+            data.add(new NameValue<>(day, commitsPerDay.get(day)));
+        }
+
+        this.data = data;
+    }
+}
