@@ -1,6 +1,5 @@
 package softwaredesign;
 
-import org.checkerframework.checker.units.qual.A;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.impl.completer.ArgumentCompleter;
@@ -12,8 +11,10 @@ import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
 import org.w3c.dom.Attr;
+import org.w3c.dom.Text;
 import softwaredesign.utilities.CommandSet;
 import softwaredesign.utilities.TextElement;
+import softwaredesign.utilities.TextElement.FormatType;
 
 import javax.naming.SizeLimitExceededException;
 import java.io.*;
@@ -22,6 +23,7 @@ import java.util.*;
 import static java.util.Map.entry;
 
 public class UserConsole {
+
     private UserConsole() {}
     private static Terminal terminal;
 
@@ -43,42 +45,38 @@ public class UserConsole {
         static final String INPUT_SEPARATOR = ": ";
     }
 
-    private static class TextStyles {
-        static final TextStyle ERROR = new TextStyle(AttributedStyle.RED, NO_COLOR, true, false, false);
-        static final TextStyle SUCCESS = new TextStyle(AttributedStyle.GREEN, NO_COLOR, true, false ,false);
-        static final TextStyle DEFAULT = new TextStyle(NO_COLOR, NO_COLOR, false ,false, false);
-        static final TextStyle HEADING = new TextStyle(AttributedStyle.BLUE, NO_COLOR, true, false, true);
-        static final TextStyle GREYED = new TextStyle(AttributedStyle.BRIGHT, NO_COLOR, false, false, false);
-        static final TextStyle BOLD_UNDERLINED = new TextStyle(NO_COLOR, NO_COLOR, true, false, true);
-        static final TextStyle PROMPT = new TextStyle(AttributedStyle.BRIGHT, NO_COLOR, false, false, false);
-    }
+    private final static TextStyle DEFAULT_STYLE = new TextStyle(NO_COLOR, NO_COLOR, false ,false, false);
+    private final static TextStyle GREYED_STYLE = new TextStyle(NO_COLOR, NO_COLOR, false ,false, false);
 
-    private static Map<TextElement.FormatType, TextStyle> typeToStyle = Map.ofEntries(
-            entry(TextElement.FormatType.HEADING, TextStyles.HEADING),
-            entry(TextElement.FormatType.BODY, TextStyles.DEFAULT),
-            entry(TextElement.FormatType.STATISTIC, TextStyles.DEFAULT),
-            entry(TextElement.FormatType.DIVIDER, TextStyles.GREYED),
-            entry(TextElement.FormatType.ERROR, TextStyles.ERROR),
-            entry(TextElement.FormatType.SUCCESS, TextStyles.SUCCESS)
+    private static Map<FormatType, TextStyle> typeToStyle = Map.ofEntries(
+            entry(FormatType.HEADING, new TextStyle(AttributedStyle.BLUE, NO_COLOR, true, false, true)),
+            entry(FormatType.BODY, DEFAULT_STYLE),
+            entry(FormatType.STATISTIC, DEFAULT_STYLE),
+            entry(FormatType.DIVIDER, new TextStyle(AttributedStyle.BRIGHT, NO_COLOR, false, false, false)),
+            entry(FormatType.ERROR, new TextStyle(AttributedStyle.RED, NO_COLOR, true, false, false)),
+            entry(FormatType.SUCCESS, new TextStyle(AttributedStyle.GREEN, NO_COLOR, true, false ,false)),
+            entry(FormatType.PROMPT, new TextStyle(AttributedStyle.BRIGHT, NO_COLOR, false, false, false)),
+            entry(FormatType.WAIT, new TextStyle(AttributedStyle.YELLOW, NO_COLOR, false, true, false))
     );
 
     private static String getStyledPrompt(String prompt, String Seperator) {
-        return getStyledText(prompt + Seperator, TextStyles.PROMPT).toAnsi();
+        return getStyledText(prompt + Seperator, typeToStyle.getOrDefault(FormatType.PROMPT, DEFAULT_STYLE)).toAnsi();
     }
 
     private static String getStyledPrompt(String prompt) {
         return getStyledPrompt(prompt, Messages.PROMPT_SEPARATOR);
     }
 
-    //Separate methods for getting strings and getting keywords?
     public static CommandSet.Command getCommandInput(String prompt, Set<CommandSet.Command> options) {
         return CommandSet.getCommand(getInput(prompt, CommandSet.getKeywords(options)));
     }
 
     public static String getInput(String prompt, Set<String> options) {
-        AttributedStringBuilder errorInvalid = getStyledText(Messages.INVALID_OPTION, TextStyles.ERROR)
-                .append(getStyledText(" ", TextStyles.DEFAULT))
-                .append(getStyledText(Messages.OPTIONS + options, TextStyles.DEFAULT));
+        List<TextElement> errorInvalid = List.of(
+                new TextElement(Messages.INVALID_OPTION, FormatType.ERROR),
+                new TextElement(" "),
+                new TextElement(Messages.OPTIONS + options + "\n")
+        );
 
         LineReaderBuilder builder = LineReaderBuilder.builder();
         builder.terminal(terminal);
@@ -88,33 +86,52 @@ public class UserConsole {
         String command;
         while (!options.contains(command = reader.readLine(getStyledPrompt(prompt)).trim())
                 && options.size() > 0) {
-            terminal.writer().println(errorInvalid.toAnsi());
+            print(errorInvalid);
             terminal.flush();
         }
         return command;
     }
 
     public static String getInput(String prompt) {
-        Attributes test = new Attributes(terminal.getAttributes());
-//        test.setLocalFlag(Attributes.LocalFlag.ECHO, false);
-//        test.setLocalFlag(Attributes.LocalFlag.ECHOE, true);
-////        test.setLocalFlag(Attributes.LocalFlag.ICANON, false);
-////        test.setLocalFlag(Attributes.LocalFlag.ECHOCTL, true);
-//
-//        terminal.setAttributes(test);
-//        try {
-//            Integer test2 = terminal.reader().read();
-//            return test2.toString();
-//        }
-//        catch (IOException e) {
-//            //
-//        }
-//
-//        return "no";
         LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();
         reader.option(LineReader.Option.ERASE_LINE_ON_FINISH, true);
         return reader.readLine(getStyledPrompt(prompt, Messages.INPUT_SEPARATOR)).trim();
+    }
 
+    public static String getPassword(String prompt) {
+        terminal.writer().print(getStyledPrompt(prompt, Messages.INPUT_SEPARATOR));
+        terminal.flush();
+
+        Attributes attr = terminal.getAttributes();
+        Attributes prevAttr = new Attributes(attr);
+        attr.setLocalFlag(Attributes.LocalFlag.ECHO, false);
+        attr.setLocalFlag(Attributes.LocalFlag.ECHOK, false);
+        terminal.setAttributes(attr);
+
+        int inChar = 0;
+        StringBuilder readString = new StringBuilder();
+
+        try {
+            do {
+                inChar = terminal.reader().read();
+                readString.append((char) inChar);
+
+            } while (inChar != (int) '\n');
+
+        }
+        catch (IOException e) {
+            readString.append('\n');
+        }
+
+        terminal.setAttributes(prevAttr);
+        terminal.writer().print('\r');
+        if (readString.length() < 2) return readString.toString();
+        else return readString.substring(0, readString.length() - 2).toString();
+
+    }
+
+    public static void print(String data) {
+        print(new TextElement(data, FormatType.BODY));
     }
 
     public static void print(TextElement data) {
@@ -122,16 +139,17 @@ public class UserConsole {
     }
 
     public static void println(TextElement data) {
-        print(List.of(new TextElement(data.content + "\n", data.type)));
+        print(List.of(new TextElement(data.content + "\n", data.type, false)));
     }
 
     public static void println(List<TextElement> data) {
         List<TextElement> newData = new ArrayList<>();
         data.forEach(line -> {
-            newData.add(new TextElement(line.content + "\n", line.type));
+            newData.add(new TextElement(line.content + "\n", line.type, false));
         });
         print(newData);
     }
+
     public static void print(List<TextElement> data) {
         AttributedStringBuilder string = new AttributedStringBuilder();
 
@@ -140,7 +158,7 @@ public class UserConsole {
             if (element.type == TextElement.FormatType.DIVIDER) {
                 content = Messages.DIVIDER;
             }
-            string.append(getStyledText(content, typeToStyle.getOrDefault(element.type, TextStyles.DEFAULT)));
+            string.append(getStyledText(content, typeToStyle.getOrDefault(element.type, DEFAULT_STYLE)));
         }
 
         terminal.writer().print(string.toAnsi());
@@ -190,20 +208,20 @@ public class UserConsole {
 
             for (int i = 0; i < rowsPre; i++) {
                 String line = titleScanner.nextLine();
-                terminal.writer().println(getStyledText(line, TextStyles.GREYED).toAnsi());
+                terminal.writer().println(getStyledText(line, GREYED_STYLE).toAnsi());
             }
             for (int i = 0; i < rowsMain; i++) {
                 String line = titleScanner.nextLine();
-                terminal.writer().println(getStyledText(line, TextStyles.DEFAULT).toAnsi());
+                terminal.writer().println(getStyledText(line, DEFAULT_STYLE).toAnsi());
             }
             for (int i = 0; i < rowsSub; i++) {
                 String line = titleScanner.nextLine();
-                terminal.writer().println(getStyledText(line, TextStyles.GREYED).toAnsi());
+                terminal.writer().println(getStyledText(line, GREYED_STYLE).toAnsi());
             }
             titleScanner.close();
         }
         catch (FileNotFoundException | SizeLimitExceededException e) {
-            terminal.writer().println(getStyledText("\n" + fallback + "\n", TextStyles.BOLD_UNDERLINED).toAnsi());
+            terminal.writer().println(getStyledText("\n" + fallback + "\n", typeToStyle.getOrDefault(FormatType.TITLE, DEFAULT_STYLE)).toAnsi());
         }
         catch (NoSuchElementException e) {
             //TODO catch properly

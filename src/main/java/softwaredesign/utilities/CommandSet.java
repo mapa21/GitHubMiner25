@@ -2,6 +2,7 @@ package softwaredesign.utilities;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import com.google.common.collect.HashBiMap;
 
@@ -11,8 +12,14 @@ public class CommandSet {
         ENTER_ACCOUNT,
         CREATE_ACCOUNT,
         DELETE_ACCOUNT,
+        SET_TOKEN,
+        ADD_REPO,
+        REMOVE_REPO,
+        ENTER_REPO,
+        LOG_OUT,
         QUIT,
         INVALID
+
     }
 
     private static final HashBiMap<Command, String> commandKeywordMap = HashBiMap.create();
@@ -23,10 +30,15 @@ public class CommandSet {
         commandKeywordMap.put(Command.CREATE_ACCOUNT, "createAccount");
         commandKeywordMap.put(Command.DELETE_ACCOUNT, "deleteAccount");
         commandKeywordMap.put(Command.QUIT, "quit");
+        commandKeywordMap.put(Command.SET_TOKEN, "setToken");
+        commandKeywordMap.put(Command.ADD_REPO, "addRepo");
+        commandKeywordMap.put(Command.REMOVE_REPO, "removeRepo");
+        commandKeywordMap.put(Command.ENTER_REPO, "enterRepo");
+        commandKeywordMap.put(Command.LOG_OUT, "logOut");
     }
 
     public static Set<String> getKeywords(Set<Command> commands) {
-        Set<String> keywords = new HashSet<>();
+        Set<String> keywords = new TreeSet<>();
         commands.forEach(kw -> {
             if (commandKeywordMap.containsKey(kw)) {
                 keywords.add(commandKeywordMap.get(kw));
