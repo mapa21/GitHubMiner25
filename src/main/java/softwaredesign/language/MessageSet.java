@@ -73,6 +73,17 @@ public final class MessageSet {
         public static final String REMOVE_SUCCESS = "Repository removed";
     }
 
+    public static final class Repo {
+        private Repo() {
+            throw new IllegalStateException("Utility class");
+        }
+        public static final String INFO_TITLE = "Repository Info";
+        public static final String INFO_NAME = "";
+        public static final String INFO_OWNER = "by: ";
+        public static final String INFO_LAST_UPDATED = "Last local update: ";
+
+    }
+
     public static final class Icons {
         private Icons() {
             throw new IllegalStateException("Utility class");
@@ -81,12 +92,14 @@ public final class MessageSet {
         public static final String ICON_CHECK = getFileIcon("icon_check");
         public static final String ICON_CROSS = getFileIcon("icon_cross");
         public static final String ICON_CLOCK = getFileIcon("icon_clock");
+        public static final String ICON_INFO = getFileIcon("icon_info");
 
         private static final String FOLDER_PATH = "res/icons/";
         private static String getFileIcon(String path) {
             try (Scanner scanner = new Scanner(new File(FOLDER_PATH + path + ".txt"), StandardCharsets.UTF_8)) {
                 return scanner.nextLine();
             } catch (IOException | NoSuchElementException e) {
+                System.out.println("not found");
                 return "";
             }
         }

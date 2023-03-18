@@ -7,12 +7,16 @@ import java.io.InputStreamReader;
 import java.security.InvalidParameterException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+
+import org.kohsuke.github.GHCompare;
+import softwaredesign.extraction.ExtractionResult;
 import softwaredesign.extraction.Metric;
 import softwaredesign.extraction.Commit;
+import softwaredesign.extraction.Extractor;
+import softwaredesign.language.CommandSet.Command;
+import softwaredesign.language.MessageSet;
+import softwaredesign.utilities.TextElement;
 
 public class Repository {
     public String name;
@@ -21,11 +25,17 @@ public class Repository {
     private Date lastUpdated;
     private String path;
     private String metricsListHash;
-    private List<Metric> metrics;
+    private Map<String, Metric> metrics = new TreeMap<>();
 
-    private enum COMMANDS {
+    private Set<Command> COMMANDS = Set.of(
+            Command.QUIT,
+            Command.PRINT_INFO,
+            Command.PRINT_METRIC,
+            Command.UPDATE,
+            Command.EXIT_REPO
+    );
 
-    }
+
 
     public Repository(String name, String owner, String token) throws InvalidParameterException {
         this.name = name;
@@ -34,16 +44,72 @@ public class Repository {
         if (!cloneRepo()) {
             throw(new InvalidParameterException("Invalid repository details or insufficient access rights with the given token"));
         }
+        getMetrics();
+    }
+
+    public void enter(){
+        Command command;
+        while ((command = UserConsole.getCommandInput(owner + '/' + name, COMMANDS)) != Command.EXIT_REPO) {
+            switch (command) {
+                case PRINT_INFO:
+                    printInfo();
+                    break;
+                case PRINT_METRIC:
+                    printMetric();
+                    break;
+                case UPDATE:
+                    update();
+                    break;
+                case QUIT:
+                    App.exit(0);
+                    break;
+                default:
+            }
+        }
+    }
+
+    private void printInfo() {
+        UserConsole.println(List.of (
+                new TextElement(MessageSet.Repo.INFO_TITLE, TextElement.FormatType.TITLE),
+                //TODO: add collaborators?
+                new TextElement(MessageSet.Repo.INFO_NAME + name),
+                new TextElement(MessageSet.Repo.INFO_OWNER + owner),
+                new TextElement(MessageSet.Repo.INFO_LAST_UPDATED + lastUpdated)
+        ));
+    }
+
+    private void printMetric() {
+        String choice = UserConsole.getInput("select metric", metrics.keySet());
+        UserConsole.println(metrics.get(choice).getMetric());
+    }
+
+    private void update() {
+        //TODO: Do pull and check for changes
+        if (pullChanges()) {
+
+        }
+    }
+
+    private void getMetrics() {
+        ExtractionResult result = Extractor.get().extractMetrics("");
+        metrics = result.metrics;
+        metricsListHash = result.listHash;
+        lastUpdated = new Date();
+        UserConsole.log("metrics extracted");
+    }
+
+    private boolean pullChanges() {
+
+        return true;
     }
 
     public void delete() {
         // delete files
     }
 
-    public void enter(){
 
 
-    }
+
     protected boolean cloneRepo(){
         // TODO: how to get userName? Maybe when user is selected we run 'cd <userDir>'?
         String userName = "bob";

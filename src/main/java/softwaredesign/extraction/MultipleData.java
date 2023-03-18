@@ -6,9 +6,12 @@ import java.util.List;
 
 public abstract class MultipleData extends Metric{
     protected List<NameValue<Integer>> data;
-//    protected MultipleData(List<NameValue<Integer>> data) { //not sure if this is needed
-//        this.data = data;
-//    }
+
+    protected MultipleData(String name, String description, List<NameValue<Integer>> data) {
+        super(name, description);
+        this.data = data;
+    }
+
     @Override
     protected String contentToString() {
         //convert data array to string

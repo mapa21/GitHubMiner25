@@ -66,7 +66,6 @@ public class Account implements Comparable<Account>{
                     break;
                 default:
             }
-
         }
         //print logging out
         return true;
