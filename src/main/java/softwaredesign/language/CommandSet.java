@@ -18,6 +18,10 @@ public class CommandSet {
         LIST_REPOS,
         ENTER_REPO,
         LOG_OUT,
+        EXIT_REPO,
+        PRINT_INFO,
+        PRINT_METRIC,
+        UPDATE,
         QUIT,
         INVALID
 
@@ -37,6 +41,10 @@ public class CommandSet {
         commandKeywordMap.put(Command.ENTER_REPO, "enterRepo");
         commandKeywordMap.put(Command.LIST_REPOS, "listRepos");
         commandKeywordMap.put(Command.LOG_OUT, "logOut");
+        commandKeywordMap.put(Command.EXIT_REPO, "exit");
+        commandKeywordMap.put(Command.PRINT_INFO, "printInfo");
+        commandKeywordMap.put(Command.PRINT_METRIC, "printMetric");
+        commandKeywordMap.put(Command.UPDATE, "update");
     }
 
     public static Set<String> getKeywords(Set<Command> commands) {

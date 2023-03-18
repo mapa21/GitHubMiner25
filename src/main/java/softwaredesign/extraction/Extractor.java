@@ -1,37 +1,43 @@
 package softwaredesign.extraction;
 
 import lombok.Getter;
-import softwaredesign.extraction.metrics.NumberOfLinesAdded;
-import softwaredesign.extraction.metrics.TopCollaborators;
+import softwaredesign.UserConsole;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+//TODO: Idea! Use multithreading for extraction?
+
 public final class Extractor {
     // attributes
-    @Getter
     private static final Extractor instance = new Extractor();
-//    public static Extractor getInstance() {
-//        return instance;
-//    }
+    public static synchronized Extractor get() {
+        return instance;
+    }
     @Getter
     private final Set<String> metricTypes = new HashSet<>();
     @Getter
     private final String listHash;
-    List<Class<? extends Metric>> classList = new ArrayList<>();
+    Set<Class<? extends Metric>> classes = new HashSet<>();
+
 
     public ExtractionResult extractMetrics(String path) {
-        Commit[] commits = {new Commit("Tester", "tester@vu.nl", ZonedDateTime.parse("2011-12-03T10:15:30+01:00"), "Created project", 3, "129ac84eb6a", 15, 2, Boolean.FALSE)}; //placeholder, replaces by extraction of commits
-        List<Metric> metrics = new ArrayList<>();
 
-        for (Class<? extends Metric> metric : classList) {
+        List<Commit> commits = List.of(new Commit("Tester", "tester@vu.nl", ZonedDateTime.parse("2011-12-03T10:15:30+01:00"), "Created project", 3, "129ac84eb6a", 15, 2, Boolean.FALSE)); //placeholder, replaces by extraction of commits
+        Map<String, Metric> metrics = new HashMap<>();
+
+        for (Class<? extends Metric> metric : classes) {
             try {
-                metrics.add(metric.getConstructor(Commit[].class).newInstance((Object) commits));
+                Metric metricInstance = metric.getConstructor(List.class).newInstance((Object) commits);
+                metrics.put(metricInstance.getName(), metricInstance);
+                UserConsole.log(metricInstance.getName() + " extracted");
             }
             catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                UserConsole.log(e.toString());
                 //TODO: handle exception? => Should never occur
             }
         }
@@ -40,17 +46,38 @@ public final class Extractor {
     }
 
     private Extractor() {
-        classList.add(TopCollaborators.class);
-        classList.add(NumberOfLinesAdded.class);
-        // ...
-
-        for (Class<? extends Metric> c : classList) {
-            System.out.println(c.getName());
-            // TODO: remove unnecessary package information from string and add to metricTypes list
+        //TODO Lennart: Possibly a way to do this even without the list.
+        try (Scanner classes = new Scanner(new File("res/metric_types.txt"))) {
+            Set<String> metricNames = new HashSet<>();
+            while (classes.hasNext()) {
+                String name = classes.next();
+                if (name.length() > 0) metricNames.add(name);
+            }
+            initClassSet(metricNames);
+        }
+        catch (FileNotFoundException e) {
+            UserConsole.log("metric_types file not found. Exiting the Application");
+            System.exit(1);
         }
 
-        // TODO: hash contents of list and save result in listHash
-        listHash = "";
+        listHash = Integer.toString(Objects.hash(classes));
+        //TODO: replace with better hash function?
+    }
+
+    private void initClassSet(Set<String> metricNames) {
+        String packageName = this.getClass().getPackageName() + ".metrics.";
+        for (String name : metricNames) {
+            try {
+                Class<?> metricClass = Class.forName(packageName + name);
+                if (Metric.class.isAssignableFrom(metricClass)) {
+                    this.classes.add((Class<? extends Metric>) metricClass);
+                }
+                else throw (new ClassCastException(metricClass.getName() + " does not extend the 'Metric' class"));
+            }
+            catch (ClassNotFoundException | ClassCastException e) {
+                UserConsole.log(e.toString());
+            }
+        }
     }
 
     private List<Commit> parseLog(List<String> output){

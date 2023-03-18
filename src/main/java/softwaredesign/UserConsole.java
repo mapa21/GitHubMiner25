@@ -65,6 +65,10 @@ public class UserConsole {
         return CommandSet.getCommand(getInput(prompt, CommandSet.getKeywords(options)));
     }
 
+    public static void log(String message) {
+        terminal.writer().print(MessageSet.Icons.ICON_INFO + " " + message);
+    }
+
     public static String getInput(String prompt, Set<String> options) {
         List<TextElement> errorInvalid = List.of(
                 new TextElement(MessageSet.Console.INVALID_OPTION, FormatType.ERROR),

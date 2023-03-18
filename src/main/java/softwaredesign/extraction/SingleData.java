@@ -2,9 +2,12 @@ package softwaredesign.extraction;
 
 public abstract class SingleData extends Metric {
     protected Integer value;
-//    protected SingleData(Integer value) { //not sure if this is needed
-//        this.value = value;
-//    }
+
+    protected SingleData(String name, String description, Integer value) {
+        super(name, description);
+        this.value = value;
+    }
+
     @Override
     protected String contentToString() {
 

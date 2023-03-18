@@ -1,0 +1,6 @@
+CommitsPerDay
+NumberOfFilesModified
+NumberOfLinesAdded
+NumberOfLinesDeleted
+NumberOfMerges
+TopCollaborators

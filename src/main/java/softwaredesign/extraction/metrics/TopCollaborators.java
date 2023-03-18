@@ -9,10 +9,17 @@ import java.util.*;
 import static java.lang.Math.min;
 
 public class TopCollaborators extends MultipleData {
-    protected String name = "Top Collaborators";
-    protected String description = "Returns the list of Top 10 collaborators sorted by the number of commits in decreasing order";
+   //TODO Dovydas: descriptions will be printed and should thus be something rather like "These are the Top 10 Collaborators"
 
     public TopCollaborators(List<Commit> commits) {
+        super(
+                "Top Collaborators",
+                "Returns the list of Top 10 collaborators sorted by the number of commits in decreasing order",
+                extract(commits)
+        );
+    }
+
+    private static List<NameValue<Integer>> extract(List<Commit> commits) {
         List<NameValue<Integer>> data = new ArrayList<>();
         Map<String, Integer> collaboratorCommits = new HashMap<>();
 
@@ -35,6 +42,6 @@ public class TopCollaborators extends MultipleData {
         Collections.sort(data);
         Collections.reverse(data);
 
-        this.data = data;
+        return data;
     }
 }

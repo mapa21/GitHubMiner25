@@ -1,5 +1,6 @@
 package softwaredesign;
 
+import softwaredesign.extraction.Extractor;
 import softwaredesign.language.CommandSet.Command;
 import softwaredesign.language.MessageSet;
 import softwaredesign.utilities.TextElement;
@@ -20,6 +21,12 @@ public class App {
     );
 
     public static void main (String[] args) {
+        try {
+            Extractor.get(); //eager evaluation of instance does not seem to work
+        } catch (Exception e) { //TODO: add proper error handling
+            exit(1);
+        }
+
         try {
             UserConsole.printTitle("res/title.txt", 5, 6, 3, "Welcome to GitHubMiner (by Pirates)");
             Command command;

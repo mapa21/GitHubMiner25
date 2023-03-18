@@ -12,13 +12,20 @@ import java.util.Map;
 import static java.lang.Math.min;
 
 public class CommitsPerDay extends MultipleData {
-    protected String name = "Commits Per Day";
-    protected String description = "Returns the list of commits added for each day of the week";
 
     public CommitsPerDay(List<Commit> commits) {
+        super(
+                "Commits Per Day",
+                "Returns the list of commits added for each day of the week",
+                extract(commits)
+        );
+    }
+
+    private static List<NameValue<Integer>> extract(List<Commit> commits) {
         List<NameValue<Integer>> data = new ArrayList<>();
         Map<String, Integer> commitsPerDay = new HashMap<>();
         String[] daysOfWeek = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+
         for (String day : daysOfWeek) {
             commitsPerDay.put(day, 0);
         }
@@ -33,7 +40,6 @@ public class CommitsPerDay extends MultipleData {
         for (String day : daysOfWeek) {
             data.add(new NameValue<>(day, commitsPerDay.get(day)));
         }
-
-        this.data = data;
+        return data;
     }
 }

@@ -6,14 +6,20 @@ import softwaredesign.extraction.SingleData;
 import java.util.List;
 
 public class NumberOfFilesModified extends SingleData {
-    protected String name = "Number of Files Modified";
-    protected String description = "Returns the number of file renaming instances throughout the project";
 
     public NumberOfFilesModified(List<Commit> commits) {
+        super(
+                "Number of Files Modified",
+                "Returns the number of file renaming instances throughout the project",
+                extract(commits)
+        );
+    }
+
+    private static Integer extract(List<Commit> commits) {
         int value = 0;
         for (Commit commit : commits) {
-            value += commit.filesModified;
+            value += commit.filesModified; //TODO: i don't think it works this way, if a file would be modified many times, it would be counted many times
         }
-        this.value = value;
+        return value;
     }
 }
