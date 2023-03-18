@@ -11,10 +11,6 @@ import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
 import org.jline.utils.InfoCmp;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Text;
-import softwaredesign.utilities.CommandSet;
-import softwaredesign.utilities.MessageSet;
 import softwaredesign.utilities.TextElement;
 import softwaredesign.utilities.TextElement.FormatType;
 
@@ -32,6 +28,7 @@ public class UserConsole {
     static {
         try {
             terminal = TerminalBuilder.builder().encoding("UTF-8").build();
+            terminal.trackMouse(Terminal.MouseTracking.Off);
         } catch (IOException e) {
             System.exit(1);
         }
@@ -91,10 +88,23 @@ public class UserConsole {
         println(new TextElement(prompt + MessageSet.Console.INPUT_SET + result));
     }
 
-    public static String getInput(String prompt) {
+    public static String getInput(String prompt, boolean allowSpaces, boolean allowEmpty) {
         LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();
         reader.option(LineReader.Option.ERASE_LINE_ON_FINISH, true);
-        return reader.readLine(getStyledPrompt(prompt, MessageSet.Console.INPUT_SEPARATOR)).trim();
+        reader.setAutosuggestion(LineReader.SuggestionType.COMPLETER);
+        String input;
+        while (true) {
+            input = reader.readLine(getStyledPrompt(prompt, MessageSet.Console.INPUT_SEPARATOR)).trim();
+            if (!allowSpaces && input.contains(" ")) {
+                println(new TextElement(prompt + MessageSet.Console.CONTAINS_SPACES_ERROR, FormatType.ERROR));
+            }
+            else if (!allowEmpty && input.length() == 0) {
+                println(new TextElement(prompt + MessageSet.Console.IS_EMPTY_ERROR, FormatType.ERROR));
+            }
+            else break;
+        }
+
+        return input;
     }
 
     public static String getPassword(String prompt) {

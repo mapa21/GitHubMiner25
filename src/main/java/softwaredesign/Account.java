@@ -3,15 +3,13 @@ import org.kohsuke.github.*;
 
 
 import org.jetbrains.annotations.NotNull;
-import softwaredesign.utilities.CommandSet.Command;
-import softwaredesign.utilities.CommandSet;
-import softwaredesign.utilities.MessageSet;
+import softwaredesign.CommandSet.Command;
 import softwaredesign.utilities.TextElement;
 import softwaredesign.utilities.TextElement.FormatType;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Set;
+import java.security.InvalidParameterException;
+import java.util.*;
 
 public class Account implements Comparable<Account>{
     public final String name;
@@ -24,6 +22,7 @@ public class Account implements Comparable<Account>{
             Command.ADD_REPO,
             Command.REMOVE_REPO,
             Command.ENTER_REPO,
+            Command.LIST_REPOS,
             Command.LOG_OUT,
             Command.QUIT
     );
@@ -57,6 +56,9 @@ public class Account implements Comparable<Account>{
                 case ENTER_REPO:
                     enterRepo();
                     break;
+                case LIST_REPOS:
+                    listRepos();
+                    break;
                 case QUIT:
                     App.exit(0);
                     break;
@@ -71,31 +73,53 @@ public class Account implements Comparable<Account>{
     private boolean tokenIsValid() {
         if (token.equals("")) {
             UserConsole.print(List.of(
-                    new TextElement(MessageSet.Repo.NO_TOKEN, FormatType.ERROR),
-                    new TextElement(" " + MessageSet.Repo.INVALID_TOKEN_HINT + "\n", FormatType.HINT)
+                    new TextElement(MessageSet.Account.NO_TOKEN, FormatType.ERROR),
+                    new TextElement(MessageSet.Account.INVALID_TOKEN_HINT, FormatType.HINT)
             ));
             return false;
         }
         else {
-            //TODO: Print success message
             return true;
         }
     }
 
     private void removeRepo() {
+        if (listRepos()) {
+            String id = getRepoChoice();
+            repositories.get(id).delete();  //getRepoChoice only returns existing repos, so default is not needed
+            repositories.remove(id);
+            UserConsole.println(new TextElement(MessageSet.Account.REMOVE_SUCCESS, FormatType.SUCCESS));
+        }
+    }
 
+    private String getRepoChoice() {
+        return UserConsole.getInput(MessageSet.Account.SELECT_REPO, new TreeSet<>(repositories.keySet()));
     }
 
     private void enterRepo() {
+        if(listRepos()) {
+            repositories.get(getRepoChoice()).enter();
+        }
+    }
 
+    private boolean listRepos() {
+        UserConsole.print(new TextElement(MessageSet.Account.REPOS_LIST, FormatType.HEADING));
+
+        if (repositories.isEmpty()) {
+            UserConsole.println(new TextElement(" " + MessageSet.Account.NO_REPOS, FormatType.HINT));
+            return false;
+        } else {
+            UserConsole.println(new TextElement(" " + repositories.keySet(), FormatType.BODY));
+            return true;
+        }
     }
 
     private void addRepo() {
         UserConsole.println(new TextElement(MessageSet.Account.START_ADDING, FormatType.HEADING));
 
-        String repoName = UserConsole.getInput(MessageSet.Account.ENTER_REPO_NAME);
+        String repoName = UserConsole.getInput(MessageSet.Account.ENTER_REPO_NAME, false, false);
         UserConsole.printInputResult(MessageSet.Account.ENTER_REPO_NAME, repoName);
-        String repoOwner = UserConsole.getInput(MessageSet.Account.ENTER_REPO_OWNER);
+        String repoOwner = UserConsole.getInput(MessageSet.Account.ENTER_REPO_OWNER, false, false);
         UserConsole.printInputResult(MessageSet.Account.ENTER_REPO_OWNER, repoOwner);
 
         String id = repoOwner + "/" + repoName;
@@ -112,21 +136,22 @@ public class Account implements Comparable<Account>{
                 ));
             }
         }
-
-
     }
 
     private void setToken() {
-        UserConsole.println(new TextElement(MessageSet.Repo.TOKEN_HEADING, FormatType.HEADING));
-        String newToken = UserConsole.getInput(MessageSet.Repo.TOKEN_PROMPT);
-        UserConsole.println(new TextElement(MessageSet.Repo.VALIDATE_TOKEN, FormatType.WAIT));
+        UserConsole.println(new TextElement(MessageSet.Account.TOKEN_HEADING, FormatType.HEADING));
+        String newToken = UserConsole.getInput(MessageSet.Account.TOKEN_PROMPT,false, false);
+        UserConsole.println(new TextElement(MessageSet.Account.VALIDATE_TOKEN, FormatType.WAIT));
         if (!newToken.equals("1234") && !isTokenValid(newToken)) {
             UserConsole.print(List.of(
-                    new TextElement(MessageSet.Repo.INVALID_TOKEN, FormatType.ERROR),
-                    new TextElement(" " + MessageSet.Repo.INVALID_TOKEN_HINT + "\n", FormatType.HINT)
+                    new TextElement(MessageSet.Account.INVALID_TOKEN, FormatType.ERROR),
+                    new TextElement(MessageSet.Account.INVALID_TOKEN_HINT, FormatType.HINT)
             ));
         }
-        else token = newToken;
+        else {
+            UserConsole.println(new TextElement(MessageSet.Account.TOKEN_SUCCESS, FormatType.SUCCESS));
+            token = newToken;
+        }
     }
 
     protected boolean isTokenValid(String newToken) {

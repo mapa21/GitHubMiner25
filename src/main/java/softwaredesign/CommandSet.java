@@ -1,4 +1,4 @@
-package softwaredesign.utilities;
+package softwaredesign;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +15,7 @@ public class CommandSet {
         SET_TOKEN,
         ADD_REPO,
         REMOVE_REPO,
+        LIST_REPOS,
         ENTER_REPO,
         LOG_OUT,
         QUIT,
@@ -34,6 +35,7 @@ public class CommandSet {
         commandKeywordMap.put(Command.ADD_REPO, "addRepo");
         commandKeywordMap.put(Command.REMOVE_REPO, "removeRepo");
         commandKeywordMap.put(Command.ENTER_REPO, "enterRepo");
+        commandKeywordMap.put(Command.LIST_REPOS, "listRepos");
         commandKeywordMap.put(Command.LOG_OUT, "logOut");
     }
 

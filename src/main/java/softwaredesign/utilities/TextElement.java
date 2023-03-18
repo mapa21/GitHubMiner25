@@ -1,5 +1,7 @@
 package softwaredesign.utilities;
 
+import softwaredesign.MessageSet;
+
 public class TextElement {
 
     public enum FormatType {

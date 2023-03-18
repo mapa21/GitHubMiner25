@@ -1,4 +1,4 @@
-package softwaredesign.utilities;
+package softwaredesign;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,13 +28,16 @@ public final class MessageSet {
         public static final String PROMPT_SEPARATOR = " > ";
         public static final String INPUT_SEPARATOR = ": ";
         public static final String INPUT_SET = " = ";
+        public static final String CONTAINS_SPACES_ERROR = " cannot contain any spaces";
+        public static final String IS_EMPTY_ERROR = " cannot be empty";
     }
+
     public static final class App {
         private App() {throw new IllegalStateException("Utility class");}
         public static final String ENTER_NAME = "Name";
-        public static final String INVALID_NAME = "Name must be a non-empty string without spaces";
         public static final String NAME_TAKEN = "This name is already taken";
         public static final String ENTER_PASSWORD = "Password";
+        public static final String ENTER_PASSWORD_REPEAT = "Repeat Password";
         public static final String START_CREATION = "Create a new Account";
         public static final String NO_ACCOUNTS = "There are no accounts yet. Select " + CommandSet.getKeyword(CommandSet.Command.CREATE_ACCOUNT) + " to create a new account";
         public static final String ACCOUNTS_LIST = "Accounts:";
@@ -42,6 +45,7 @@ public final class MessageSet {
         public static final String DELETE_SUCCESS = "Account deleted";
         public static final String INVALID_PASSWORD = "Invalid password";
         public static final String SELECT_ACCOUNT = "Select Account";
+        public static final String PASSWORDS_NO_MATCH = "Passwords don't match";
     }
 
     public static final class Account {
@@ -61,6 +65,10 @@ public final class MessageSet {
         public static final String REPO_ADDED = "The repository was successfully added";
         public static final String INVALID_REPO = "The repository could not be added.";
         public static final String INVALID_REPO_HINT = " Check whether the given details are correct and the repository is accessible with the current token. If the issue persists check your network connection\n";
+        public static final String REPOS_LIST = "Repositories:";
+        public static final String NO_REPOS = "There are no repositories yet. Select " + CommandSet.getKeyword(CommandSet.Command.ADD_REPO) + " to add a new repository";
+        public static final String SELECT_REPO = "Select Repository";
+        public static final String REMOVE_SUCCESS = "Repository removed";
     }
 
     public static final class Icons {
