@@ -1,6 +1,6 @@
 package softwaredesign.utilities;
 
-import softwaredesign.MessageSet;
+import softwaredesign.language.MessageSet;
 
 public class TextElement {
 

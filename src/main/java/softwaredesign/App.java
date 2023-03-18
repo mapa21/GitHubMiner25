@@ -1,6 +1,7 @@
 package softwaredesign;
 
-import softwaredesign.CommandSet.Command;
+import softwaredesign.language.CommandSet.Command;
+import softwaredesign.language.MessageSet;
 import softwaredesign.utilities.TextElement;
 import softwaredesign.utilities.TextElement.FormatType;
 

@@ -1,4 +1,6 @@
-package softwaredesign;
+package softwaredesign.language;
+
+import softwaredesign.language.CommandSet;
 
 import java.io.File;
 import java.io.IOException;

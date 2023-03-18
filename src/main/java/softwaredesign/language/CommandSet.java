@@ -1,4 +1,4 @@
-package softwaredesign;
+package softwaredesign.language;
 
 import java.util.HashSet;
 import java.util.Set;
