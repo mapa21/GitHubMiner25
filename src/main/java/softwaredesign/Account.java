@@ -17,6 +17,7 @@ public class Account implements Comparable<Account>{
     public final String name;
     private final String password;
     private String token = "";
+    private Map<String, Repository> repositories = new TreeMap<>();
 
     private static final Set<Command> COMMANDS = Set.of(
             Command.SET_TOKEN,
@@ -89,13 +90,30 @@ public class Account implements Comparable<Account>{
 
     }
 
-    private int addRepo() {
-        String repoName = UserConsole.getInput("Enter the repository name");
-        String repoOwner = UserConsole.getInput("Enter the repository's owner");
+    private void addRepo() {
+        UserConsole.println(new TextElement(MessageSet.Account.START_ADDING, FormatType.HEADING));
 
-        // TODO: instantiate new Repo class
-        return 0;
-//        return (Repository.clone()) ? 1 : 0;
+        String repoName = UserConsole.getInput(MessageSet.Account.ENTER_REPO_NAME);
+        UserConsole.printInputResult(MessageSet.Account.ENTER_REPO_NAME, repoName);
+        String repoOwner = UserConsole.getInput(MessageSet.Account.ENTER_REPO_OWNER);
+        UserConsole.printInputResult(MessageSet.Account.ENTER_REPO_OWNER, repoOwner);
+
+        String id = repoOwner + "/" + repoName;
+        if (!repositories.containsKey(id)) {
+            try {
+                Repository repo = new Repository(repoName, repoOwner, token);
+                repositories.put(id, repo);
+                UserConsole.println(new TextElement(MessageSet.Account.REPO_ADDED, FormatType.SUCCESS));
+            }
+            catch (InvalidParameterException e) {
+                UserConsole.print(List.of(
+                        new TextElement(MessageSet.Account.INVALID_REPO, FormatType.ERROR),
+                        new TextElement(MessageSet.Account.INVALID_REPO_HINT, FormatType.HINT)
+                ));
+            }
+        }
+
+
     }
 
     private void setToken() {
