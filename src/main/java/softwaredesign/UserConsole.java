@@ -189,6 +189,7 @@ public class UserConsole {
     }
 
     public static void printTitle(String location, int rowsPre, int rowsMain, int rowsSub, String fallback) {
+        terminal.puts(InfoCmp.Capability.clear_screen);
         try {
             File titleFile = new File(location);
             Scanner titleScanner = new Scanner(titleFile, "UTF-8");
