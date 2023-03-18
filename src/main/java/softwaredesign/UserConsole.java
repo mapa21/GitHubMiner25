@@ -10,9 +10,11 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
+import org.jline.utils.InfoCmp;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Text;
 import softwaredesign.utilities.CommandSet;
+import softwaredesign.utilities.MessageSet;
 import softwaredesign.utilities.TextElement;
 import softwaredesign.utilities.TextElement.FormatType;
 
@@ -37,26 +39,19 @@ public class UserConsole {
 
     private static final int NO_COLOR = -1;
 
-    private final static class Messages {
-        static final String INVALID_OPTION = "Invalid Option.";
-        static final String OPTIONS = "Options are: ";
-        static final String DIVIDER = "---------------";
-        static final String PROMPT_SEPARATOR = " > ";
-        static final String INPUT_SEPARATOR = ": ";
-    }
-
     private final static TextStyle DEFAULT_STYLE = new TextStyle(NO_COLOR, NO_COLOR, false ,false, false);
     private final static TextStyle GREYED_STYLE = new TextStyle(NO_COLOR, NO_COLOR, false ,false, false);
 
     private static Map<FormatType, TextStyle> typeToStyle = Map.ofEntries(
-            entry(FormatType.HEADING, new TextStyle(AttributedStyle.BLUE, NO_COLOR, true, false, true)),
+            entry(FormatType.TITLE, new TextStyle(true, false, true)),
+            entry(FormatType.HEADING, new TextStyle(AttributedStyle.BLUE, true, false, true)),
             entry(FormatType.BODY, DEFAULT_STYLE),
             entry(FormatType.STATISTIC, DEFAULT_STYLE),
-            entry(FormatType.DIVIDER, new TextStyle(AttributedStyle.BRIGHT, NO_COLOR, false, false, false)),
-            entry(FormatType.ERROR, new TextStyle(AttributedStyle.RED, NO_COLOR, true, false, false)),
-            entry(FormatType.SUCCESS, new TextStyle(AttributedStyle.GREEN, NO_COLOR, true, false ,false)),
-            entry(FormatType.PROMPT, new TextStyle(AttributedStyle.BRIGHT, NO_COLOR, false, false, false)),
-            entry(FormatType.WAIT, new TextStyle(AttributedStyle.YELLOW, NO_COLOR, false, true, false))
+            entry(FormatType.DIVIDER, new TextStyle(AttributedStyle.BRIGHT, false, false, false)),
+            entry(FormatType.ERROR, new TextStyle(AttributedStyle.RED, true, false, false)),
+            entry(FormatType.SUCCESS, new TextStyle(AttributedStyle.GREEN, true, false ,false)),
+            entry(FormatType.PROMPT, new TextStyle(AttributedStyle.BRIGHT, false, false, false)),
+            entry(FormatType.WAIT, new TextStyle(AttributedStyle.YELLOW, false, true, false))
     );
 
     private static String getStyledPrompt(String prompt, String Seperator) {
@@ -64,7 +59,7 @@ public class UserConsole {
     }
 
     private static String getStyledPrompt(String prompt) {
-        return getStyledPrompt(prompt, Messages.PROMPT_SEPARATOR);
+        return getStyledPrompt(prompt, MessageSet.Console.PROMPT_SEPARATOR);
     }
 
     public static CommandSet.Command getCommandInput(String prompt, Set<CommandSet.Command> options) {
@@ -73,9 +68,9 @@ public class UserConsole {
 
     public static String getInput(String prompt, Set<String> options) {
         List<TextElement> errorInvalid = List.of(
-                new TextElement(Messages.INVALID_OPTION, FormatType.ERROR),
+                new TextElement(MessageSet.Console.INVALID_OPTION, FormatType.ERROR),
                 new TextElement(" "),
-                new TextElement(Messages.OPTIONS + options + "\n")
+                new TextElement(MessageSet.Console.OPTIONS + options + "\n")
         );
 
         LineReaderBuilder builder = LineReaderBuilder.builder();
@@ -83,7 +78,7 @@ public class UserConsole {
         builder.completer(new ArgumentCompleter(new StringsCompleter(options), new NullCompleter()));
         LineReader reader = builder.build();
         reader.option(LineReader.Option.ERASE_LINE_ON_FINISH, true);
-        String command;
+            String command;
         while (!options.contains(command = reader.readLine(getStyledPrompt(prompt)).trim())
                 && options.size() > 0) {
             print(errorInvalid);
@@ -92,14 +87,18 @@ public class UserConsole {
         return command;
     }
 
+    public static void printInputResult(String prompt, String result) {
+        println(new TextElement(prompt + MessageSet.Console.INPUT_SET + result));
+    }
+
     public static String getInput(String prompt) {
         LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();
         reader.option(LineReader.Option.ERASE_LINE_ON_FINISH, true);
-        return reader.readLine(getStyledPrompt(prompt, Messages.INPUT_SEPARATOR)).trim();
+        return reader.readLine(getStyledPrompt(prompt, MessageSet.Console.INPUT_SEPARATOR)).trim();
     }
 
     public static String getPassword(String prompt) {
-        terminal.writer().print(getStyledPrompt(prompt, Messages.INPUT_SEPARATOR));
+        terminal.writer().print(getStyledPrompt(prompt, MessageSet.Console.INPUT_SEPARATOR));
         terminal.flush();
 
         Attributes attr = terminal.getAttributes();
@@ -156,7 +155,7 @@ public class UserConsole {
         for (TextElement element : data) {
             String content = element.content;
             if (element.type == TextElement.FormatType.DIVIDER) {
-                content = Messages.DIVIDER;
+                content = MessageSet.Console.DIVIDER;
             }
             string.append(getStyledText(content, typeToStyle.getOrDefault(element.type, DEFAULT_STYLE)));
         }
@@ -244,6 +243,14 @@ public class UserConsole {
             this.bold = bold;
             this.italic = italic;
             this.underlined = underlined;
+        }
+
+        public TextStyle(int fgColor, boolean bold, boolean italic, boolean underlined) {
+            this(fgColor, NO_COLOR, bold, italic, underlined);
+        }
+
+        public TextStyle(boolean bold, boolean italic, boolean underlined) {
+            this(NO_COLOR, NO_COLOR, bold, italic, underlined);
         }
     }
 }

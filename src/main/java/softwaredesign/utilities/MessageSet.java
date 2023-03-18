@@ -20,8 +20,17 @@ public final class MessageSet {
         private General() {throw new IllegalStateException("Utility class");}
         public static final String ACTION_PROMPT = "Select Action";
     }
-    public static final class Account {
-        private Account() {throw new IllegalStateException("Utility class");}
+    public static final class Console {
+        private Console() {throw new IllegalStateException("Utility class");}
+        public static final String INVALID_OPTION = "Invalid Option.";
+        public static final String OPTIONS = "Options are: ";
+        public static final String DIVIDER = "---------------";
+        public static final String PROMPT_SEPARATOR = " > ";
+        public static final String INPUT_SEPARATOR = ": ";
+        public static final String INPUT_SET = " = ";
+    }
+    public static final class App {
+        private App() {throw new IllegalStateException("Utility class");}
         public static final String ENTER_NAME = "Name";
         public static final String INVALID_NAME = "Name must be a non-empty string without spaces";
         public static final String NAME_TAKEN = "This name is already taken";
@@ -35,16 +44,23 @@ public final class MessageSet {
         public static final String SELECT_ACCOUNT = "Select Account";
     }
 
-    public static final class Repo {
-        private Repo() {
+    public static final class Account {
+        private Account() {
             throw new IllegalStateException("Utility class");
         }
         public static final String INVALID_TOKEN = "The entered token is invalid.";
-        public static final String INVALID_TOKEN_HINT = "Select " + CommandSet.getKeyword(CommandSet.Command.SET_TOKEN) + " to try again";
+        public static final String INVALID_TOKEN_HINT = " Select " + CommandSet.getKeyword(CommandSet.Command.SET_TOKEN) + " to try again\n";
         public static final String TOKEN_HEADING = "Add a GH access token";
         public static final String TOKEN_PROMPT = "Token";
         public static final String VALIDATE_TOKEN = "Validating Token...";
         public static final String NO_TOKEN = "You have not added a valid token yet.";
+        public static final String TOKEN_SUCCESS = "Token successfully added";
+        public static final String START_ADDING = "Add a new repository to be tracked";
+        public static final String ENTER_REPO_NAME = "Repo Name";
+        public static final String ENTER_REPO_OWNER = "Repo Owner";
+        public static final String REPO_ADDED = "The repository was successfully added";
+        public static final String INVALID_REPO = "The repository could not be added.";
+        public static final String INVALID_REPO_HINT = " Check whether the given details are correct and the repository is accessible with the current token. If the issue persists check your network connection\n";
     }
 
     public static final class Icons {
