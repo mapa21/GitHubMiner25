@@ -126,13 +126,12 @@ public class UserConsole {
 
         int inChar = 0;
         StringBuilder readString = new StringBuilder();
-
         try {
             do {
                 inChar = terminal.reader().read();
                 readString.append((char) inChar);
 
-            } while (inChar != (int) '\n');
+            } while (inChar != '\n' && inChar != '\r');
 
         }
         catch (IOException e) {
