@@ -23,10 +23,13 @@ public final class Extractor {
     }
     @Getter
     private final Set<String> metricTypes = new HashSet<>();
-    @Getter
+
     private final String listHash;
     Set<Class<? extends Metric>> classes = new HashSet<>();
 
+    public String getListHash() {
+        return listHash;
+    }
 
     public ExtractionResult extractMetrics(String path) {
 
