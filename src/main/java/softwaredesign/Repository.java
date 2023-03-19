@@ -16,6 +16,7 @@ import softwaredesign.extraction.Commit;
 import softwaredesign.extraction.Extractor;
 import softwaredesign.language.CommandSet.Command;
 import softwaredesign.language.MessageSet;
+import softwaredesign.utilities.FileManager;
 import softwaredesign.utilities.TextElement;
 
 public class Repository {
@@ -35,19 +36,20 @@ public class Repository {
             Command.EXIT_REPO
     );
 
-    public Repository(String name, String owner, String token) throws InvalidParameterException {
+    public Repository(String name, String owner, String token, String accountName) throws InvalidParameterException {
         this.name = name;
         this.owner = owner;
         this.token = token;
+        this.path = FileManager.getSource() + accountName;
         if (!cloneRepo()) {
             throw(new InvalidParameterException("Invalid repository details or insufficient access rights with the given token"));
         }
-        getMetrics();
+        getMetricsList();
     }
 
     public void enter(){
         if (!metricsListHash.equals(Extractor.get().getListHash())) {
-            getMetrics();
+            getMetricsList();
         }
         Command command;
         while ((command = UserConsole.getCommandInput(owner + '/' + name, COMMANDS)) != Command.EXIT_REPO) {
@@ -87,13 +89,13 @@ public class Repository {
     private void update() {
         //TODO: Print to user
         if (pullChanges()) {
-            getMetrics();
+            getMetricsList();
         }
     }
 
-    //TODO: maybe rename this class to a better name?
-    private void getMetrics() {
-        ExtractionResult result = Extractor.get().extractMetrics("");
+    private void getMetricsList() {
+        assert this.path != null;
+        ExtractionResult result = Extractor.get().extractMetrics(this.path);
         metrics = result.metrics;
         metricsListHash = result.listHash;
     }
@@ -109,11 +111,13 @@ public class Repository {
     }
 
     protected boolean cloneRepo(){
-        // TODO: how to get userName? Maybe when user is selected we run 'cd <userDir>'?
-        String userName = "bob";
-
-        // TODO: get this OS-dependent
-        String parentDir = "data";
+        Process process;
+        String url = "https://" + this.token + "@github.com/" + this.owner + "/" + this.name + ".git";
+        try {
+            process = Runtime.getRuntime().exec("git clone " + url, null, new File(this.path));
+        } catch (IOException e) {
+            return false;
+        }
         lastUpdated = new Date();
         return true;
 //
