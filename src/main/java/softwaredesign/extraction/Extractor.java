@@ -28,6 +28,7 @@ public final class Extractor {
         return listHash;
     }
 
+    //TODO: handle exceptions
     private List<String> gitLog(String path){
         Process process;
         try {
