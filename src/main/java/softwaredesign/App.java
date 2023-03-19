@@ -27,6 +27,9 @@ public class App {
             exit(1);
         }
 
+        // extract accounts from JSON
+        initAccounts();
+
         try {
             UserConsole.printTitle("title.txt", 5, 6, 3, "Welcome to GitHubMiner (by Pirates)");
             Command command;
@@ -54,6 +57,14 @@ public class App {
             exit(0);
         }
     }
+
+    // initialize accounts from JSON file
+    private static void initAccounts() {
+        // if JSON file doesnt exist, create empty file and return
+
+        // (else) extract info
+    }
+
 
     private static void createAccount() {
         UserConsole.println(new TextElement(MessageSet.App.START_CREATION, FormatType.HEADING));
