@@ -3,6 +3,7 @@ package softwaredesign;
 import softwaredesign.extraction.Extractor;
 import softwaredesign.language.CommandSet.Command;
 import softwaredesign.language.MessageSet;
+import softwaredesign.utilities.FileManager;
 import softwaredesign.utilities.TextElement;
 import softwaredesign.utilities.TextElement.FormatType;
 
@@ -21,6 +22,8 @@ public class App {
     );
 
     public static void main (String[] args) {
+        //TODO: handle return
+        FileManager.createFolder(FileManager.getAppName());
         try {
             Extractor.get(); //eager evaluation of instance does not seem to work
         } catch (Exception e) { //TODO: add proper error handling
@@ -89,6 +92,9 @@ public class App {
 
         accounts.put(name, new Account(name, password));
         UserConsole.println(new TextElement(MessageSet.App.CREATED, FormatType.SUCCESS));
+
+        //TODO: handle return
+        FileManager.createFolder(FileManager.getAppName() + name);
     }
 
     private static void deleteAccount() {
