@@ -4,10 +4,7 @@ import lombok.Getter;
 import softwaredesign.App;
 import softwaredesign.UserConsole;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -31,9 +28,36 @@ public final class Extractor {
         return listHash;
     }
 
-    public ExtractionResult extractMetrics(String path) {
+    private List<String> gitLog(String path){
+        Process process;
+        try {
+            process = Runtime.getRuntime().exec("git log --numstat", null, new File(path));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        List<String> output;
+        try {
+            output = getOutput(process);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return output;
+    }
 
-        List<Commit> commits = List.of(new Commit("Tester", "tester@vu.nl", ZonedDateTime.parse("2011-12-03T10:15:30+01:00"), "Created project", 3, "129ac84eb6a", 15, 2, Boolean.FALSE)); //placeholder, replaces by extraction of commits
+    public static List<String> getOutput(Process process) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        List<String> lines = new ArrayList<>();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            lines.add(line);
+        }
+        return lines;
+    }
+
+    public ExtractionResult extractMetrics(String path) {
+        List<String> output = gitLog(path);
+        List<Commit> commits = parseLog(output);
+        //List<Commit> commits = List.of(new Commit("Tester", "tester@vu.nl", ZonedDateTime.parse("2011-12-03T10:15:30+01:00"), "Created project", 3, "129ac84eb6a", 15, 2, Boolean.FALSE)); //placeholder, replaces by extraction of commits
         Map<String, Metric> metrics = new HashMap<>();
 
         for (Class<? extends Metric> metric : classes) {
