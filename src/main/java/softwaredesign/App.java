@@ -23,7 +23,7 @@ public class App {
 
     public static void main (String[] args) {
         //TODO: handle return
-        FileManager.createFolder(FileManager.getAppName());
+        FileManager.initRootFolder();
         try {
             Extractor.get(); //eager evaluation of instance does not seem to work
         } catch (Exception e) { //TODO: add proper error handling
@@ -94,7 +94,7 @@ public class App {
         UserConsole.println(new TextElement(MessageSet.App.CREATED, FormatType.SUCCESS));
 
         //TODO: handle return
-        FileManager.createFolder(FileManager.getAppName() + name);
+        FileManager.createFolder(name);
     }
 
     private static void deleteAccount() {

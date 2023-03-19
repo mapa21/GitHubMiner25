@@ -40,7 +40,8 @@ public class Repository {
         this.name = name;
         this.owner = owner;
         this.token = token;
-        this.path = FileManager.getSource() + accountName;
+        this.path = accountName + FileManager.SEPARATOR + owner + FileManager.SEPARATOR;
+        FileManager.createFolder(this.path);
         if (!cloneRepo()) {
             throw(new InvalidParameterException("Invalid repository details or insufficient access rights with the given token"));
         }
@@ -95,7 +96,7 @@ public class Repository {
 
     private void getMetricsList() {
         assert this.path != null;
-        ExtractionResult result = Extractor.get().extractMetrics(this.path + this.name);
+        ExtractionResult result = Extractor.get().extractMetrics(FileManager.getSource() + this.path + this.name);
         metrics = result.metrics;
         metricsListHash = result.listHash;
     }
@@ -114,8 +115,10 @@ public class Repository {
         Process process;
         String url = "https://" + this.token + "@github.com/" + this.owner + "/" + this.name + ".git";
         try {
-            process = Runtime.getRuntime().exec("git clone " + url, null, new File(this.path));
-        } catch (IOException e) {
+            process = Runtime.getRuntime().exec("git clone " + url, null, new File(FileManager.getSource() + this.path));
+            process.waitFor();
+        } catch (IOException | InterruptedException e) {
+            UserConsole.log(e.getMessage());
             return false;
         }
         lastUpdated = new Date();

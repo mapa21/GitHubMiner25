@@ -58,6 +58,10 @@ public final class Extractor {
     public ExtractionResult extractMetrics(String path) {
         List<String> output = gitLog(path);
         List<Commit> commits = parseLog(output);
+        UserConsole.log("COMMITS:");
+        for (Commit c : commits) {
+            UserConsole.log(c.authorName + " " + c.hash);
+        }
         //List<Commit> commits = List.of(new Commit("Tester", "tester@vu.nl", ZonedDateTime.parse("2011-12-03T10:15:30+01:00"), "Created project", 3, "129ac84eb6a", 15, 2, Boolean.FALSE)); //placeholder, replaces by extraction of commits
         Map<String, Metric> metrics = new HashMap<>();
 
