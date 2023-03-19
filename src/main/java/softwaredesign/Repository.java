@@ -95,7 +95,7 @@ public class Repository {
 
     private void getMetricsList() {
         assert this.path != null;
-        ExtractionResult result = Extractor.get().extractMetrics(this.path);
+        ExtractionResult result = Extractor.get().extractMetrics(this.path + this.name);
         metrics = result.metrics;
         metricsListHash = result.listHash;
     }
@@ -120,50 +120,5 @@ public class Repository {
         }
         lastUpdated = new Date();
         return true;
-//
-//        Process process;
-//        //create res folder
-//        File file = new File("res");
-//        if (file.mkdir()) {
-//            System.out.println("dir created successfully");
-//        } else {
-//            System.out.println("Unsuccessful dir creation");
-//        }
-//
-//        String url = "https://" + this.token + "@github.com/" + this.owner + "/" + this.name + ".git";
-//        url = "https://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@github.com/ComputerScienceEducation/co-lab.git";    //DELETE
-//
-//        String[] commands = {"git clone " + url, "git log --stat"};
-//        String[] locations = {"res/", "res/" + this.name};
-//
-//        for (int i = 0; i < commands.length; i++){
-//            try {
-//                process = Runtime.getRuntime().exec(commands[i], null, new File(locations[i]));
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//            List<String> output = null;
-//            try {
-//                output = getOutput(process);
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//            List<Commit> commits = Extractor.parseLog(output);
-//        }
-//        Extractor.get().extractMetrics(commits);
-//
-//        return true;
-    }
-
-
-
-    public static List<String> getOutput(Process process) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        List<String> lines = new ArrayList<>();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            lines.add(line);
-        }
-        return lines;
     }
 }
