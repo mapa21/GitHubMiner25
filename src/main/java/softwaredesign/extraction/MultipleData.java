@@ -5,7 +5,7 @@ import softwaredesign.utilities.NameValue;
 import java.util.List;
 
 public abstract class MultipleData extends Metric{
-    protected List<NameValue<Integer>> data;
+    private final List<NameValue<Integer>> data;
 
     protected MultipleData(String name, String description, List<NameValue<Integer>> data) {
         super(name, description);

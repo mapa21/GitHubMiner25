@@ -19,23 +19,21 @@ import softwaredesign.language.MessageSet;
 import softwaredesign.utilities.TextElement;
 
 public class Repository {
-    public String name;
-    public String owner;
+    public final String name;
+    public final String owner;
     private String token;
     private Date lastUpdated;
     private String path;
     private String metricsListHash;
     private Map<String, Metric> metrics = new TreeMap<>();
 
-    private Set<Command> COMMANDS = Set.of(
+    private static final Set<Command> COMMANDS = Set.of(
             Command.QUIT,
             Command.PRINT_INFO,
             Command.PRINT_METRIC,
             Command.UPDATE,
             Command.EXIT_REPO
     );
-
-
 
     public Repository(String name, String owner, String token) throws InvalidParameterException {
         this.name = name;
@@ -48,6 +46,9 @@ public class Repository {
     }
 
     public void enter(){
+        if (!metricsListHash.equals(Extractor.get().getListHash())) {
+            getMetrics();
+        }
         Command command;
         while ((command = UserConsole.getCommandInput(owner + '/' + name, COMMANDS)) != Command.EXIT_REPO) {
             switch (command) {
@@ -86,29 +87,27 @@ public class Repository {
     private void update() {
         //TODO: Do pull and check for changes
         if (pullChanges()) {
-
+            getMetrics();
         }
     }
 
+    //TODO: maybe rename this class to a better name?
     private void getMetrics() {
         ExtractionResult result = Extractor.get().extractMetrics("");
         metrics = result.metrics;
         metricsListHash = result.listHash;
-        lastUpdated = new Date();
         UserConsole.log("metrics extracted");
     }
 
     private boolean pullChanges() {
+        lastUpdated = new Date();
 
         return true;
     }
 
     public void delete() {
-        // delete files
+        //TODO: delete files
     }
-
-
-
 
     protected boolean cloneRepo(){
         // TODO: how to get userName? Maybe when user is selected we run 'cd <userDir>'?
@@ -116,8 +115,9 @@ public class Repository {
 
         // TODO: get this OS-dependent
         String parentDir = "data";
-
+        lastUpdated = new Date();
         return true;
+
 //
 //        Process process;
 //        //create res folder
@@ -163,6 +163,4 @@ public class Repository {
         }
         return lines;
     }
-
-
 }

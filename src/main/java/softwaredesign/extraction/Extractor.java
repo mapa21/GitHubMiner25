@@ -1,10 +1,13 @@
 package softwaredesign.extraction;
 
 import lombok.Getter;
+import softwaredesign.App;
 import softwaredesign.UserConsole;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -33,8 +36,8 @@ public final class Extractor {
         for (Class<? extends Metric> metric : classes) {
             try {
                 Metric metricInstance = metric.getConstructor(List.class).newInstance((Object) commits);
-                metrics.put(metricInstance.getName(), metricInstance);
-                UserConsole.log(metricInstance.getName() + " extracted");
+                metrics.put(metricInstance.getCommand(), metricInstance);
+                UserConsole.log(metricInstance.getCommand() + " extracted");
             }
             catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 UserConsole.log(e.toString());
@@ -46,22 +49,21 @@ public final class Extractor {
     }
 
     private Extractor() {
-        //TODO Lennart: Possibly a way to do this even without the list.
-        try (Scanner classes = new Scanner(new File("res/metric_types.txt"))) {
+        try (InputStream input = ClassLoader.getSystemResourceAsStream("metric_types.txt")){
+            if (input == null) throw (new FileNotFoundException("Metric list file not found in resources"));
+            Scanner inputReader = new Scanner(input);
             Set<String> metricNames = new HashSet<>();
-            while (classes.hasNext()) {
-                String name = classes.next();
+            while (inputReader.hasNext()) {
+                String name = inputReader.next();
                 if (name.length() > 0) metricNames.add(name);
             }
             initClassSet(metricNames);
         }
-        catch (FileNotFoundException e) {
-            UserConsole.log("metric_types file not found. Exiting the Application");
+        catch (IOException e) {
+            UserConsole.log(e.getMessage());
             System.exit(1);
         }
-
         listHash = Integer.toString(Objects.hash(classes));
-        //TODO: replace with better hash function?
     }
 
     private void initClassSet(Set<String> metricNames) {

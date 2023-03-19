@@ -18,6 +18,7 @@ import softwaredesign.utilities.TextElement.FormatType;
 
 import javax.naming.SizeLimitExceededException;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static java.util.Map.entry;
@@ -66,7 +67,7 @@ public class UserConsole {
     }
 
     public static void log(String message) {
-        terminal.writer().print(MessageSet.Icons.ICON_INFO + " " + message);
+        terminal.writer().println(MessageSet.Icons.ICON_INFO + " " + message);
     }
 
     public static String getInput(String prompt, Set<String> options) {
@@ -205,9 +206,11 @@ public class UserConsole {
 
     public static void printTitle(String location, int rowsPre, int rowsMain, int rowsSub, String fallback) {
         terminal.puts(InfoCmp.Capability.clear_screen);
+
         try {
-            File titleFile = new File(location);
-            Scanner titleScanner = new Scanner(titleFile, "UTF-8");
+            InputStream input = ClassLoader.getSystemResourceAsStream(location);
+            if (input == null) throw (new FileNotFoundException("Title file (" + location + ") not Found"));
+            Scanner titleScanner = new Scanner(input, StandardCharsets.UTF_8);
             int maxLength = 0;
             while (titleScanner.hasNext()) {
                 String line = titleScanner.nextLine();
@@ -219,8 +222,10 @@ public class UserConsole {
             if (maxLength > terminal.getWidth()) {
                 throw new SizeLimitExceededException();
             }
-
-            titleScanner = new Scanner(titleFile, "UTF-8");
+            //TODO: Lennart make nicer
+            input = ClassLoader.getSystemResourceAsStream(location);
+            if (input == null) throw (new FileNotFoundException("Title file (" + location + ") not Found"));
+            titleScanner = new Scanner(input, "UTF-8");
 
             for (int i = 0; i < rowsPre; i++) {
                 String line = titleScanner.nextLine();

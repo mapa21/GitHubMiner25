@@ -1,9 +1,12 @@
 package softwaredesign.language;
 
+import softwaredesign.UserConsole;
 import softwaredesign.language.CommandSet;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -94,12 +97,17 @@ public final class MessageSet {
         public static final String ICON_CLOCK = getFileIcon("icon_clock");
         public static final String ICON_INFO = getFileIcon("icon_info");
 
-        private static final String FOLDER_PATH = "res/icons/";
+        private static final String FOLDER_PATH = "icons/";
+
         private static String getFileIcon(String path) {
-            try (Scanner scanner = new Scanner(new File(FOLDER_PATH + path + ".txt"), StandardCharsets.UTF_8)) {
+            try {
+                InputStream input = ClassLoader.getSystemResourceAsStream(FOLDER_PATH + path + ".txt");
+                if (input == null) throw (new FileNotFoundException(path + " does not exist at " + FOLDER_PATH));
+                Scanner scanner = new Scanner(input, StandardCharsets.UTF_8);
                 return scanner.nextLine();
-            } catch (IOException | NoSuchElementException e) {
-                System.out.println("not found");
+            }
+            catch (FileNotFoundException e) {
+                UserConsole.log(e.getMessage());
                 return "";
             }
         }

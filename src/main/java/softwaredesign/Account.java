@@ -17,7 +17,7 @@ public class Account implements Comparable<Account>{
     public final String name;
     private final String password;
     private String token = "";
-    private Map<String, Repository> repositories = new TreeMap<>();
+    private final Map<String, Repository> repositories = new TreeMap<>();
 
     private static final Set<Command> COMMANDS = Set.of(
             Command.SET_TOKEN,

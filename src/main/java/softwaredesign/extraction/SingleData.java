@@ -1,7 +1,7 @@
 package softwaredesign.extraction;
 
 public abstract class SingleData extends Metric {
-    protected Integer value;
+    private final Integer value;
 
     protected SingleData(String name, String description, Integer value) {
         super(name, description);

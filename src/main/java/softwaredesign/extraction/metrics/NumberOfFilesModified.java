@@ -18,7 +18,7 @@ public class NumberOfFilesModified extends SingleData {
     private static Integer extract(List<Commit> commits) {
         int value = 0;
         for (Commit commit : commits) {
-            value += commit.filesModified; //TODO: i don't think it works this way, if a file would be modified many times, it would be counted many times
+            value += commit.filesModified;
         }
         return value;
     }

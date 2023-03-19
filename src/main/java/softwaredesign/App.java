@@ -28,7 +28,7 @@ public class App {
         }
 
         try {
-            UserConsole.printTitle("res/title.txt", 5, 6, 3, "Welcome to GitHubMiner (by Pirates)");
+            UserConsole.printTitle("title.txt", 5, 6, 3, "Welcome to GitHubMiner (by Pirates)");
             Command command;
 
             while ((command = UserConsole.getCommandInput("", COMMANDS)) != Command.QUIT) {
@@ -45,6 +45,7 @@ public class App {
                     case DELETE_ACCOUNT:
                         deleteAccount();
                         break;
+                    default:
                 }
             }
             exit(0);

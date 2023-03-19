@@ -25,11 +25,23 @@ dependencies {
 
 }
 
+//sourceSets {
+//    main {
+//        resources {
+//            srcDirs "src/main/resources"
+//        }
+//    }
+//}
+
 jar {
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
+    from('src/main/resources') {
+        include '*.txt'
+    }
     manifest {
-        attributes "Main-Class": 'softwaredesign.App'
+        attributes 'Main-Class': 'softwaredesign.App',
+                'Implementation-Title': 'Executable Fat Jar'
     }
 }

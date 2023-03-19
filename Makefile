@@ -1,6 +1,8 @@
+THIS_FILE := $(lastword $(MAKEFILE_LIST))
+
 make:
 	./gradlew jar
-	java -jar build/libs/software-design-vu-2020-1.0-SNAPSHOT.jar
+	$(MAKE) -f $(THIS_FILE) run
 
 run:
-	java -jar build/libs/software-design-vu-2020-1.0-SNAPSHOT.jar
+	java -jar build/libs/githubminer-by-pirates-1.0-SNAPSHOT.jar
