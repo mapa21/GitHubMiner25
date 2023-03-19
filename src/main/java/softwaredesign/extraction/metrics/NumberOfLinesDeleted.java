@@ -10,7 +10,7 @@ public class NumberOfLinesDeleted extends SingleData {
     public NumberOfLinesDeleted(List<Commit> commits) {
         super(
                 "Number of Lines Deleted",
-                "Returns the number of lines deleted across all files that were ever created in the project",
+                "This is the number of lines deleted across all files that were ever created in the project",
                 extract(commits)
         );
     }

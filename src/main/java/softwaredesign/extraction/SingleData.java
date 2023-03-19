@@ -10,12 +10,6 @@ public abstract class SingleData extends Metric {
 
     @Override
     protected String contentToString() {
-
-        return null;
-    }
-
-    // TODO: remove after testing
-    public Integer getValue() {
-        return value;
+        return value.toString() + "\n";
     }
 }

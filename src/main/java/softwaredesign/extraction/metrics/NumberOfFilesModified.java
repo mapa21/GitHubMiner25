@@ -10,7 +10,7 @@ public class NumberOfFilesModified extends SingleData {
     public NumberOfFilesModified(List<Commit> commits) {
         super(
                 "Number of Files Modified",
-                "Returns the number of file renaming instances throughout the project",
+                "This is number of file modification instances throughout the project",
                 extract(commits)
         );
     }

@@ -10,7 +10,7 @@ public class NumberOfLinesAdded extends SingleData {
     public NumberOfLinesAdded(List<Commit> commits) {
         super(
                 "Number of Lines Added",
-                "Returns the number of lines added across all files that were ever created in the project",
+                "This is the number of lines added across all files that were ever created in the project",
                 extract(commits)
         );
     }
