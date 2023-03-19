@@ -37,7 +37,7 @@ public final class Extractor {
             try {
                 Metric metricInstance = metric.getConstructor(List.class).newInstance((Object) commits);
                 metrics.put(metricInstance.getCommand(), metricInstance);
-                UserConsole.log(metricInstance.getCommand() + " extracted");
+//                UserConsole.log(metricInstance.getCommand() + " extracted");
             }
             catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 UserConsole.log(e.toString());
@@ -82,7 +82,7 @@ public final class Extractor {
         }
     }
 
-    private List<Commit> parseLog(List<String> output){
+    public static List<Commit> parseLog(List<String> output){
         final int commitInd = 7;
         List<Commit> commits = new ArrayList<>();
 
