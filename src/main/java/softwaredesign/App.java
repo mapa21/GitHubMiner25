@@ -6,8 +6,11 @@ import softwaredesign.language.MessageSet;
 import softwaredesign.utilities.FileManager;
 import softwaredesign.utilities.TextElement;
 import softwaredesign.utilities.TextElement.FormatType;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.util.*;
 
 public class App {
@@ -55,6 +58,7 @@ public class App {
                     default:
                 }
             }
+
             exit(0);
         }
         catch (org.jline.reader.UserInterruptException e) {
@@ -62,14 +66,32 @@ public class App {
         }
     }
 
+    // load accounts to json file
+    private static void saveAccounts() {
+        String filePath = "data/data.json";
+
+        try {
+            GsonBuilder builder = new GsonBuilder();
+            builder.setPrettyPrinting();
+            Gson gson = builder.create();
+            String jsonString = gson.toJson(accounts.values().toArray(new Account[0]));
+            System.out.println("JSON String:\n" + jsonString);
+
+            FileWriter fileWriter = new FileWriter(filePath);
+            fileWriter.write(jsonString);
+            fileWriter.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     // initialize accounts from JSON file
     private static void initAccounts() {
-        String filePath = "data/";
-        String fileName = "data.json";
+        String filePath = "data/data.json";
 
-        // if JSON file doesnt exist, create empty file and return
         try {
-            File myFile = new File(filePath + fileName);
+            File myFile = new File(filePath);
             myFile.getParentFile().mkdirs(); // create parentdirs if they do not exist
 
             if (myFile.createNewFile()) {
@@ -79,17 +101,30 @@ public class App {
 
             System.out.println("File already exists... Let's extract all info");
 
+            Scanner fileReader = new Scanner(myFile);
+            String jsonString = "";
+
+            while (fileReader.hasNextLine()) {
+                jsonString += fileReader.nextLine();
+            }
+            fileReader.close();
+
+            // loadFromString()
+            GsonBuilder builder = new GsonBuilder();
+            builder.setPrettyPrinting();
+            Gson gson = builder.create();
+
+            Account[] fileAccounts = gson.fromJson(jsonString, Account[].class);
+            if (fileAccounts == null) return;
+
+            for (Account account : fileAccounts) {
+                accounts.put(account.name, account);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-
-
-        // (else) extract info
-
     }
-
 
     private static void createAccount() {
         UserConsole.println(new TextElement(MessageSet.App.START_CREATION, FormatType.HEADING));
@@ -150,6 +185,7 @@ public class App {
     public static void exit(int status) {
         UserConsole.println(new TextElement(MessageSet.Misc.GOODBYE, FormatType.BODY));
         //save data
+        saveAccounts();
         System.exit(0);
     }
 }
