@@ -9,12 +9,11 @@ import java.util.*;
 import static java.lang.Math.min;
 
 public class TopCollaborators extends MultipleData {
-   //TODO Dovydas: descriptions will be printed and should thus be something rather like "These are the Top 10 Collaborators"
 
     public TopCollaborators(List<Commit> commits) {
         super(
                 "Top Collaborators",
-                "Returns the list of Top 10 collaborators sorted by the number of commits in decreasing order",
+                "These are the Top 10 collaborators ordered by the number of commits",
                 extract(commits)
         );
     }
@@ -26,7 +25,7 @@ public class TopCollaborators extends MultipleData {
         for (Commit commit : commits) {
             int currentCommits = 0;
             if (collaboratorCommits.containsKey(commit.authorName)) {
-                currentCommits = collaboratorCommits.get(commit.authorName);;
+                currentCommits = collaboratorCommits.get(commit.authorName);
             }
             collaboratorCommits.put(commit.authorName, currentCommits + 1);
         }

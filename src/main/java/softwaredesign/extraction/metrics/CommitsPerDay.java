@@ -16,7 +16,7 @@ public class CommitsPerDay extends MultipleData {
     public CommitsPerDay(List<Commit> commits) {
         super(
                 "Commits Per Day",
-                "Returns the list of commits added for each day of the week",
+                "These are the commits added for each day of the week",
                 extract(commits)
         );
     }

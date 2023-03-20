@@ -126,7 +126,7 @@ public class Account implements Comparable<Account>{
         String id = repoOwner + "/" + repoName;
         if (!repositories.containsKey(id)) {
             try {
-                Repository repo = new Repository(repoName, repoOwner, token);
+                Repository repo = new Repository(repoName, repoOwner, token, this.name);
                 repositories.put(id, repo);
                 UserConsole.println(new TextElement(MessageSet.Account.REPO_ADDED, FormatType.SUCCESS));
             }

@@ -10,7 +10,7 @@ public class NumberOfMerges extends SingleData {
     public NumberOfMerges(List<Commit> commits) {
         super(
                 "Number of Merges",
-                "Returns the number of branch merges",
+                "This is the number of branch merges",
                 extract(commits)
         );
     }

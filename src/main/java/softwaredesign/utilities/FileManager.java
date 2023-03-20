@@ -1,26 +1,56 @@
 package softwaredesign.utilities;
 
-import lombok.Getter;
+import softwaredesign.UserConsole;
 
 import java.io.File;
 
-public class FileManager {
-    private static String homeDir;
-    private static String appName;
-    private static String source;
+public final class FileManager {
+    private static final String WIN = "Windows";
+    private static final String MAC = "Mac";
+    private static final String homeDir = System.getProperty("user.home");
+    private static final String APP_NAME = "GitHubMiner";
+    private static final String os = System.getProperty("os.name");
+    public static final String SEPARATOR = getSystemSeparator();
+    private static final String source = buildPath();
 
-    public static String getAppName(){ return appName;}
+    public static String getAppName(){ return APP_NAME;}
     public static String getSource(){ return source;}
 
-    private FileManager(){
-        this.homeDir = System.getProperty("user.home");
-        this.appName = "GitHubMiner";
-        this.source = homeDir + appName;
+    private FileManager(){ throw new IllegalStateException("Utility class"); }
+
+    private static String buildPath(){
+        String appPath = homeDir;
+        if (os.contains(WIN)){
+            appPath += "\\AppData\\Roaming\\";
+        } else if (os.contains(MAC)){
+            appPath += "/Library/Application Support/";
+        }
+        return appPath + APP_NAME + SEPARATOR;
+    }
+
+    private static String getSystemSeparator(){
+        UserConsole.log(os);
+        UserConsole.log(String.valueOf(os.contains(MAC)));
+        String separator = "";
+        if (os.contains(WIN)) separator = "\\";
+        else if (os.contains(MAC)) {
+            separator = "/";
+        }
+        return separator;
+    }
+
+    public static Boolean initRootFolder() {
+        return createFolder("");
+
     }
 
     //TODO: return values for existing folder?
     public static Boolean createFolder(String path){
-        File folder = new File(homeDir + "\\" + path);
+
+        UserConsole.log("Separator = " + SEPARATOR);
+        File folder = new File(source + path);
+        UserConsole.log(source + path);
+        UserConsole.log(folder.toString());
         try{
             if (folder.mkdir()) {
                 System.out.println("Folder created: " + folder.getName() + " in " + folder.getAbsolutePath());

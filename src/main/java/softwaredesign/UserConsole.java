@@ -68,6 +68,7 @@ public class UserConsole {
 
     public static void log(String message) {
         terminal.writer().println(MessageSet.Icons.ICON_INFO + " " + message);
+        terminal.writer().flush();
     }
 
     public static String getInput(String prompt, Set<String> options) {

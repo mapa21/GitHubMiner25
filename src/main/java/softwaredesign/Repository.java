@@ -16,6 +16,7 @@ import softwaredesign.extraction.Commit;
 import softwaredesign.extraction.Extractor;
 import softwaredesign.language.CommandSet.Command;
 import softwaredesign.language.MessageSet;
+import softwaredesign.utilities.FileManager;
 import softwaredesign.utilities.TextElement;
 
 public class Repository {
@@ -35,19 +36,21 @@ public class Repository {
             Command.EXIT_REPO
     );
 
-    public Repository(String name, String owner, String token) throws InvalidParameterException {
+    public Repository(String name, String owner, String token, String accountName) throws InvalidParameterException {
         this.name = name;
         this.owner = owner;
         this.token = token;
+        this.path = accountName + FileManager.SEPARATOR + owner + FileManager.SEPARATOR;
+        FileManager.createFolder(this.path);
         if (!cloneRepo()) {
             throw(new InvalidParameterException("Invalid repository details or insufficient access rights with the given token"));
         }
-        getMetrics();
+        getMetricsList();
     }
 
     public void enter(){
         if (!metricsListHash.equals(Extractor.get().getListHash())) {
-            getMetrics();
+            getMetricsList();
         }
         Command command;
         while ((command = UserConsole.getCommandInput(owner + '/' + name, COMMANDS)) != Command.EXIT_REPO) {
@@ -87,13 +90,13 @@ public class Repository {
     private void update() {
         //TODO: Print to user
         if (pullChanges()) {
-            getMetrics();
+            getMetricsList();
         }
     }
 
-    //TODO: maybe rename this class to a better name?
-    private void getMetrics() {
-        ExtractionResult result = Extractor.get().extractMetrics("");
+    private void getMetricsList() {
+        assert this.path != null;
+        ExtractionResult result = Extractor.get().extractMetrics(FileManager.getSource() + this.path + this.name);
         metrics = result.metrics;
         metricsListHash = result.listHash;
     }
@@ -109,57 +112,16 @@ public class Repository {
     }
 
     protected boolean cloneRepo(){
-        // TODO: how to get userName? Maybe when user is selected we run 'cd <userDir>'?
-        String userName = "bob";
-
-        // TODO: get this OS-dependent
-        String parentDir = "data";
+        Process process;
+        String url = "https://" + this.token + "@github.com/" + this.owner + "/" + this.name + ".git";
+        try {
+            process = Runtime.getRuntime().exec("git clone " + url, null, new File(FileManager.getSource() + this.path));
+            process.waitFor();
+        } catch (IOException | InterruptedException e) {
+            UserConsole.log(e.getMessage());
+            return false;
+        }
         lastUpdated = new Date();
         return true;
-//
-//        Process process;
-//        //create res folder
-//        File file = new File("res");
-//        if (file.mkdir()) {
-//            System.out.println("dir created successfully");
-//        } else {
-//            System.out.println("Unsuccessful dir creation");
-//        }
-//
-//        String url = "https://" + this.token + "@github.com/" + this.owner + "/" + this.name + ".git";
-//        url = "https://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@github.com/ComputerScienceEducation/co-lab.git";    //DELETE
-//
-//        String[] commands = {"git clone " + url, "git log --stat"};
-//        String[] locations = {"res/", "res/" + this.name};
-//
-//        for (int i = 0; i < commands.length; i++){
-//            try {
-//                process = Runtime.getRuntime().exec(commands[i], null, new File(locations[i]));
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//            List<String> output = null;
-//            try {
-//                output = getOutput(process);
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//            List<Commit> commits = Extractor.parseLog(output);
-//        }
-//        Extractor.get().extractMetrics(commits);
-//
-//        return true;
-    }
-
-
-
-    public static List<String> getOutput(Process process) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        List<String> lines = new ArrayList<>();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            lines.add(line);
-        }
-        return lines;
     }
 }

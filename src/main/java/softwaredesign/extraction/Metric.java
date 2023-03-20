@@ -37,7 +37,10 @@ public abstract class Metric {
     }
     protected abstract String contentToString();
     public List<TextElement> getMetric() {
-        //TODO: combine name, description, and contentToString
-        return List.of(new TextElement(this.name + " " + this.description));
+        return List.of(
+                new TextElement(this.name, TextElement.FormatType.TITLE),
+                new TextElement(this.description, TextElement.FormatType.HINT),
+                new TextElement("", TextElement.FormatType.DIVIDER),
+                new TextElement("\n" + this.contentToString()));
     }
 }
