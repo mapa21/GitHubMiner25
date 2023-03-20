@@ -6,6 +6,7 @@ import softwaredesign.language.MessageSet;
 import softwaredesign.utilities.TextElement;
 import softwaredesign.utilities.TextElement.FormatType;
 
+import java.io.File;
 import java.util.*;
 
 public class App {
@@ -60,9 +61,30 @@ public class App {
 
     // initialize accounts from JSON file
     private static void initAccounts() {
+        String filePath = "data/";
+        String fileName = "data.json";
+
         // if JSON file doesnt exist, create empty file and return
+        try {
+            File myFile = new File(filePath + fileName);
+            myFile.getParentFile().mkdirs(); // create parentdirs if they do not exist
+
+            if (myFile.createNewFile()) {
+                System.out.println("New file created");
+                return;
+            }
+
+            System.out.println("File already exists... Let's extract all info");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
 
         // (else) extract info
+
     }
 
 
