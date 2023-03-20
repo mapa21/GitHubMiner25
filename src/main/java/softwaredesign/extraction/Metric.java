@@ -1,6 +1,5 @@
 package softwaredesign.extraction;
 
-import com.google.common.base.CaseFormat;
 import softwaredesign.utilities.TextElement;
 
 import java.util.List;

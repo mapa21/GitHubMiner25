@@ -29,7 +29,6 @@ public class Account implements Comparable<Account>{
             Command.QUIT
     );
 
-
     public Account(String name, String password) {
         this.name = name;
         this.password = password;

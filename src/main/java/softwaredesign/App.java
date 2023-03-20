@@ -1,8 +1,10 @@
 package softwaredesign;
 
 import softwaredesign.extraction.Extractor;
+import softwaredesign.extraction.Metric;
 import softwaredesign.language.CommandSet.Command;
 import softwaredesign.language.MessageSet;
+import softwaredesign.utilities.AbstractMetricsAdapter;
 import softwaredesign.utilities.FileManager;
 import softwaredesign.utilities.TextElement;
 import softwaredesign.utilities.TextElement.FormatType;
@@ -66,13 +68,14 @@ public class App {
         }
     }
 
-    // load accounts to json file
+    // load accounts to JSON file
     private static void saveAccounts() {
         String filePath = "data/data.json";
 
         try {
             GsonBuilder builder = new GsonBuilder();
             builder.setPrettyPrinting();
+            builder.registerTypeAdapter(Metric.class, new AbstractMetricsAdapter());
             Gson gson = builder.create();
             String jsonString = gson.toJson(accounts.values().toArray(new Account[0]));
             System.out.println("JSON String:\n" + jsonString);
@@ -112,6 +115,7 @@ public class App {
             // loadFromString()
             GsonBuilder builder = new GsonBuilder();
             builder.setPrettyPrinting();
+            builder.registerTypeAdapter(Metric.class, new AbstractMetricsAdapter());
             Gson gson = builder.create();
 
             Account[] fileAccounts = gson.fromJson(jsonString, Account[].class);
