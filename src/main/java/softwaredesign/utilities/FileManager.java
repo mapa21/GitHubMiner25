@@ -6,8 +6,9 @@ import softwaredesign.Account;
 import softwaredesign.UserConsole;
 import softwaredesign.extraction.Metric;
 
-import java.io.File;
-import java.io.FileWriter;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Scanner;
@@ -100,20 +101,13 @@ public final class FileManager {
     public static String getJsonStringFromFile() {
         String filePath = SOURCE + JSON_FILE;
 
-        try {
-            File myFile = new File(filePath);
-
-            if (myFile.createNewFile()) {
-                return "";
-            }
-
-            Scanner fileReader = new Scanner(myFile);
+        try (BufferedReader in = new BufferedReader(new FileReader(filePath))){
             StringBuilder jsonString = new StringBuilder();
+            String tmp;
 
-            while (fileReader.hasNextLine()) {
-                jsonString.append(fileReader.nextLine());
+            while ((tmp = in.readLine()) != null ) {
+                jsonString.append(tmp);
             }
-            fileReader.close();
 
             return jsonString.toString();
         } catch (Exception e) {
@@ -126,12 +120,9 @@ public final class FileManager {
     public static void saveJsonStringToFile(String jsonString) {
         String filePath = SOURCE + JSON_FILE;
         try {
-            FileWriter fileWriter = new FileWriter(filePath);
-            fileWriter.write(jsonString);
-            fileWriter.close();
-        } catch (Exception e) {
+            Files.write(Paths.get(filePath), jsonString.getBytes());
+        } catch (IOException e) {
             e.printStackTrace();
-            UserConsole.log("File write has failed.");
         }
     }
 }
