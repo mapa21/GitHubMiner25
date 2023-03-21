@@ -28,35 +28,36 @@ public final class Extractor {
         return listHash;
     }
 
-    //TODO: handle exceptions
-    private List<String> gitLog(String path){
-        Process process;
+    public static List<String> runCommand(String command, String path) {
+        Process process = null;
         try {
-            process = Runtime.getRuntime().exec("git log --numstat", null, new File(path));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            process = Runtime.getRuntime().exec(command, null, new File(path));
+            process.waitFor();
+        } catch (IOException | InterruptedException e) {
+            UserConsole.log(e.getMessage());
+            Thread.currentThread().interrupt();
         }
-        List<String> output;
-        try {
-            output = getOutput(process);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return output;
+        assert process != null;
+        return getOutput(process);
     }
 
-    public static List<String> getOutput(Process process) throws IOException {
+    public static List<String> getOutput(Process process) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         List<String> lines = new ArrayList<>();
         String line;
-        while ((line = reader.readLine()) != null) {
-            lines.add(line);
+        while (true) {
+            try {
+                if ((line = reader.readLine()) == null) break;
+                lines.add(line);
+            } catch (IOException e) {
+                UserConsole.log(e.getMessage());
+            }
         }
         return lines;
     }
 
     public ExtractionResult extractMetrics(String path) {
-        List<String> output = gitLog(path);
+        List<String> output = runCommand("git log --numstat", path);
         List<Commit> commits = parseLog(output);
         UserConsole.log("COMMITS:");
         for (Commit c : commits) {

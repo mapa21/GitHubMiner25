@@ -103,7 +103,7 @@ public class Repository {
 
     private boolean pullChanges() {
         lastUpdated = new Date();
-
+        //runCommand("git pull", this.path);
         return true;
     }
 
@@ -114,14 +114,23 @@ public class Repository {
     protected boolean cloneRepo(){
         Process process;
         String url = "https://" + this.token + "@github.com/" + this.owner + "/" + this.name + ".git";
-        try {
-            process = Runtime.getRuntime().exec("git clone " + url, null, new File(FileManager.getSource() + this.path));
-            process.waitFor();
-        } catch (IOException | InterruptedException e) {
-            UserConsole.log(e.getMessage());
+        List<String> output = Extractor.runCommand("git clone " + url, FileManager.getSource() + this.path);
+        if (!successfulClone(output)) {
+            //TODO: delete folder this.path
+            System.out.println("Unsuccessful cloning");
             return false;
         }
         lastUpdated = new Date();
+        return true;
+    }
+
+    private boolean successfulClone(List<String> output) {
+        System.out.println(output);
+        //TODO: how to identify if unsuccessful cloning
+        //if (output.isEmpty()) return false;
+        for (String line: output){
+            if (line.contains("fatal")) return false;
+        }
         return true;
     }
 }
