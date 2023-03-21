@@ -1,23 +1,17 @@
 package softwaredesign;
 
 import softwaredesign.extraction.Extractor;
-import softwaredesign.extraction.Metric;
 import softwaredesign.language.CommandSet.Command;
 import softwaredesign.language.MessageSet;
-import softwaredesign.utilities.AbstractMetricsAdapter;
 import softwaredesign.utilities.FileManager;
 import softwaredesign.utilities.TextElement;
 import softwaredesign.utilities.TextElement.FormatType;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.util.*;
 
 public class App {
 
-    private static final Map<String, Account> accounts = new TreeMap<>();
+    private static final Map<String, Account> accounts = FileManager.initAccounts();
 
     private static final Set<Command> COMMANDS = Set.of(
             Command.QUIT,
@@ -35,9 +29,6 @@ public class App {
         } catch (Exception e) { //TODO: add proper error handling
             exit(1);
         }
-
-        // extract accounts from JSON
-        initAccounts();
 
         try {
             UserConsole.printTitle("title.txt", 5, 6, 3, "Welcome to GitHubMiner (by Pirates)");
@@ -65,68 +56,6 @@ public class App {
         }
         catch (org.jline.reader.UserInterruptException e) {
             exit(0);
-        }
-    }
-
-    // load accounts to JSON file
-    private static void saveAccounts() {
-        String filePath = "data/data.json";
-
-        try {
-            GsonBuilder builder = new GsonBuilder();
-            builder.setPrettyPrinting();
-            builder.registerTypeAdapter(Metric.class, new AbstractMetricsAdapter());
-            Gson gson = builder.create();
-            String jsonString = gson.toJson(accounts.values().toArray(new Account[0]));
-            System.out.println("JSON String:\n" + jsonString);
-
-            FileWriter fileWriter = new FileWriter(filePath);
-            fileWriter.write(jsonString);
-            fileWriter.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    // initialize accounts from JSON file
-    private static void initAccounts() {
-        String filePath = "data/data.json";
-
-        try {
-            File myFile = new File(filePath);
-            myFile.getParentFile().mkdirs(); // create parentdirs if they do not exist
-
-            if (myFile.createNewFile()) {
-                System.out.println("New file created");
-                return;
-            }
-
-            System.out.println("File already exists... Let's extract all info");
-
-            Scanner fileReader = new Scanner(myFile);
-            String jsonString = "";
-
-            while (fileReader.hasNextLine()) {
-                jsonString += fileReader.nextLine();
-            }
-            fileReader.close();
-
-            // loadFromString()
-            GsonBuilder builder = new GsonBuilder();
-            builder.setPrettyPrinting();
-            builder.registerTypeAdapter(Metric.class, new AbstractMetricsAdapter());
-            Gson gson = builder.create();
-
-            Account[] fileAccounts = gson.fromJson(jsonString, Account[].class);
-            if (fileAccounts == null) return;
-
-            for (Account account : fileAccounts) {
-                accounts.put(account.name, account);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -188,8 +117,7 @@ public class App {
 
     public static void exit(int status) {
         UserConsole.println(new TextElement(MessageSet.Misc.GOODBYE, FormatType.BODY));
-        //save data
-        saveAccounts();
-        System.exit(0);
+        FileManager.saveAccounts(accounts);
+        System.exit(status);
     }
 }

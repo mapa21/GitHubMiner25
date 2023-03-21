@@ -22,7 +22,6 @@ public class AbstractMetricsAdapter implements JsonSerializer<Metric>, JsonDeser
 
     @Override
     public Metric deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        // handle here !!!!!!!!!
         JsonObject jsonObject = json.getAsJsonObject();
         String type = jsonObject.get("type").getAsString();
         JsonElement element = jsonObject.get("properties");
