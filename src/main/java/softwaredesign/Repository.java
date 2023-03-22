@@ -10,6 +10,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import org.kohsuke.github.GHCompare;
+import org.kohsuke.github.GHRepository;
+import org.kohsuke.github.GitHub;
 import softwaredesign.extraction.ExtractionResult;
 import softwaredesign.extraction.Metric;
 import softwaredesign.extraction.Commit;
@@ -41,10 +43,16 @@ public class Repository {
         this.owner = owner;
         this.token = token;
         this.path = accountName + FileManager.SEPARATOR + owner + FileManager.SEPARATOR;
-        FileManager.createFolder(this.path);
-        if (!cloneRepo()) {
+
+        if (!validateRepo()) {
             throw(new InvalidParameterException("Invalid repository details or insufficient access rights with the given token"));
         }
+
+        FileManager.createFolder(this.path);
+        cloneRepo();
+//        if (!cloneRepo()) {
+//            throw(new InvalidParameterException("Invalid repository details or insufficient access rights with the given token"));
+//        }
         getMetricsList();
     }
 
@@ -111,26 +119,18 @@ public class Repository {
         //TODO: delete files
     }
 
-    protected boolean cloneRepo(){
-        Process process;
-        String url = "https://" + this.token + "@github.com/" + this.owner + "/" + this.name + ".git";
-        List<String> output = Extractor.runCommand("git clone " + url, FileManager.getSource() + this.path);
-        if (!successfulClone(output)) {
-            //TODO: delete folder this.path
-            System.out.println("Unsuccessful cloning");
+    protected boolean validateRepo(){
+        try {
+            GitHub.connectUsingOAuth(this.token).getRepository(this.owner + "/" + this.name);
+        } catch (IOException e) {
             return false;
         }
-        lastUpdated = new Date();
         return true;
     }
 
-    private boolean successfulClone(List<String> output) {
-        System.out.println(output);
-        //TODO: how to identify if unsuccessful cloning
-        //if (output.isEmpty()) return false;
-        for (String line: output){
-            if (line.contains("fatal")) return false;
-        }
-        return true;
+    protected void cloneRepo(){
+        String url = "https://" + this.token + "@github.com/" + this.owner + "/" + this.name + ".git";
+        Extractor.runCommand("git clone " + url, FileManager.getSource() + this.path);
+        lastUpdated = new Date();
     }
 }
