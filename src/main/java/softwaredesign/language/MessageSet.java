@@ -1,32 +1,27 @@
 package softwaredesign.language;
 
 import softwaredesign.UserConsole;
-import softwaredesign.language.CommandSet;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public final class MessageSet {
+    private static final String UTIL_CLASS = "Utility Class";
     private MessageSet() {
-        throw new IllegalStateException("Utility class");
+        throw new IllegalStateException(UTIL_CLASS);
     }
     public static final class Misc {
-        private Misc() {
-            throw new IllegalStateException("Utility class");
-        }
+        private Misc() {throw new IllegalStateException(UTIL_CLASS);}
         public static final String GOODBYE = "Exiting Application... Good Bye " + Icons.EMOJI_ZEN;
     }
     public static final class General {
-        private General() {throw new IllegalStateException("Utility class");}
+        private General() {throw new IllegalStateException(UTIL_CLASS);}
         public static final String ACTION_PROMPT = "Select Action";
     }
     public static final class Console {
-        private Console() {throw new IllegalStateException("Utility class");}
+        private Console() {throw new IllegalStateException(UTIL_CLASS);}
         public static final String INVALID_OPTION = "Invalid Option.";
         public static final String OPTIONS = "Options are: ";
         public static final String DIVIDER = "---------------";
@@ -38,7 +33,7 @@ public final class MessageSet {
     }
 
     public static final class App {
-        private App() {throw new IllegalStateException("Utility class");}
+        private App() {throw new IllegalStateException(UTIL_CLASS);}
         public static final String ENTER_NAME = "Name";
         public static final String NAME_TAKEN = "This name is already taken";
         public static final String ENTER_PASSWORD = "Password";
@@ -55,7 +50,7 @@ public final class MessageSet {
 
     public static final class Account {
         private Account() {
-            throw new IllegalStateException("Utility class");
+            throw new IllegalStateException(UTIL_CLASS);
         }
         public static final String INVALID_TOKEN = "The entered token is invalid.";
         public static final String INVALID_TOKEN_HINT = " Select " + CommandSet.getKeyword(CommandSet.Command.SET_TOKEN) + " to try again\n";
@@ -74,11 +69,13 @@ public final class MessageSet {
         public static final String NO_REPOS = "There are no repositories yet. Select " + CommandSet.getKeyword(CommandSet.Command.ADD_REPO) + " to add a new repository";
         public static final String SELECT_REPO = "Select Repository";
         public static final String REMOVE_SUCCESS = "Repository removed";
+        public static final String INSUFFICIENT_TOKEN = "The entered token does not have sufficient access rights for your repositories.";
+        public static final String INSUFFICIENT_TOKEN_HINT = " Try again with a token that has at least the access rights of the previous token. The previous token has not been replaced\n";
     }
 
     public static final class Repo {
         private Repo() {
-            throw new IllegalStateException("Utility class");
+            throw new IllegalStateException(UTIL_CLASS);
         }
         public static final String INFO_TITLE = "Repository Info";
         public static final String INFO_NAME = "";
@@ -89,7 +86,7 @@ public final class MessageSet {
 
     public static final class Icons {
         private Icons() {
-            throw new IllegalStateException("Utility class");
+            throw new IllegalStateException(UTIL_CLASS);
         }
         public static final String EMOJI_ZEN = getFileIcon("emoji_zen");
         public static final String ICON_CHECK = getFileIcon("icon_check");

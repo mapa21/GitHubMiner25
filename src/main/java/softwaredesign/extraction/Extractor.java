@@ -1,7 +1,6 @@
 package softwaredesign.extraction;
 
 import lombok.Getter;
-import softwaredesign.App;
 import softwaredesign.UserConsole;
 
 import java.io.*;
@@ -14,19 +13,13 @@ import java.util.*;
 
 public final class Extractor {
     // attributes
+    @Getter
     private static final Extractor instance = new Extractor();
-    public static synchronized Extractor get() {
-        return instance;
-    }
     @Getter
     private final Set<String> metricTypes = new HashSet<>();
-
+    @Getter
     private final String listHash;
     Set<Class<? extends Metric>> classes = new HashSet<>();
-
-    public String getListHash() {
-        return listHash;
-    }
 
     public static List<String> runCommand(String command, String path) {
         Process process = null;

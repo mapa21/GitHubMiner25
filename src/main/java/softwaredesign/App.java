@@ -4,6 +4,7 @@ import softwaredesign.extraction.Extractor;
 import softwaredesign.language.CommandSet.Command;
 import softwaredesign.language.MessageSet;
 import softwaredesign.utilities.FileManager;
+import softwaredesign.utilities.InputCancelledException;
 import softwaredesign.utilities.TextElement;
 import softwaredesign.utilities.TextElement.FormatType;
 
@@ -25,7 +26,7 @@ public class App {
         //TODO: handle return
         FileManager.initRootFolder();
         try {
-            Extractor.get(); //eager evaluation of instance does not seem to work
+            Extractor.getInstance(); //eager evaluation of instance does not seem to work
         } catch (Exception e) { //TODO: add proper error handling
             exit(1);
         }
@@ -51,34 +52,40 @@ public class App {
                     default:
                 }
             }
+        }
+        catch (org.jline.reader.UserInterruptException | InputCancelledException ignored) {
+            //
+        }
 
-            exit(0);
-        }
-        catch (org.jline.reader.UserInterruptException e) {
-            exit(0);
-        }
+        exit(0);
     }
 
     private static void createAccount() {
-        UserConsole.println(new TextElement(MessageSet.App.START_CREATION, FormatType.HEADING));
         String name = null;
-        do {
-            if (name != null) {
-                UserConsole.println(new TextElement(MessageSet.App.NAME_TAKEN, FormatType.ERROR));
-            }
-            name = UserConsole.getInput(MessageSet.App.ENTER_NAME, false, false);
-        } while (accounts.containsKey(name));
-
-        UserConsole.printInputResult(MessageSet.App.ENTER_NAME, name);
-
         String password = null;
-        do {
-            if (password != null) {
-                UserConsole.println(new TextElement(MessageSet.App.PASSWORDS_NO_MATCH, FormatType.ERROR));
-            }
-            password = UserConsole.getPassword(MessageSet.App.ENTER_PASSWORD);
-        } while (!password.equals(UserConsole.getPassword(MessageSet.App.ENTER_PASSWORD_REPEAT)));
+        try {
+            UserConsole.println(new TextElement(MessageSet.App.START_CREATION, FormatType.HEADING));
 
+            do {
+                if (name != null) {
+                    UserConsole.println(new TextElement(MessageSet.App.NAME_TAKEN, FormatType.ERROR));
+                }
+                name = UserConsole.getInput(MessageSet.App.ENTER_NAME, false, false);
+            } while (accounts.containsKey(name));
+
+            UserConsole.printInputResult(MessageSet.App.ENTER_NAME, name);
+
+            do {
+                if (password != null) {
+                    UserConsole.println(new TextElement(MessageSet.App.PASSWORDS_NO_MATCH, FormatType.ERROR));
+                }
+                password = UserConsole.getPassword(MessageSet.App.ENTER_PASSWORD);
+            } while (!password.equals(UserConsole.getPassword(MessageSet.App.ENTER_PASSWORD_REPEAT)));
+
+        }
+        catch (InputCancelledException ignored){
+            return;
+        }
 
         accounts.put(name, new Account(name, password));
         UserConsole.println(new TextElement(MessageSet.App.CREATED, FormatType.SUCCESS));
@@ -88,18 +95,32 @@ public class App {
     }
 
     private static void deleteAccount() {
-        if (listAccounts()) {
-            accounts.remove(getAccountChoice());
-            UserConsole.println(new TextElement(MessageSet.App.DELETE_SUCCESS, FormatType.SUCCESS));
+        try {
+            if (listAccounts()) {
+                accounts.remove(getAccountChoice());
+                UserConsole.println(new TextElement(MessageSet.App.DELETE_SUCCESS, FormatType.SUCCESS));
+            }
         }
+        catch (InputCancelledException ignored) {
+            //cancel
+        }
+
     }
 
     private static void enterAccount() {
-        if (listAccounts() && Boolean.FALSE.equals(accounts.get(getAccountChoice()).login(UserConsole.getPassword(MessageSet.App.ENTER_PASSWORD))))
-            UserConsole.println(new TextElement(MessageSet.App.INVALID_PASSWORD, FormatType.ERROR));
+        try {
+            if (listAccounts()
+                    && Boolean.FALSE.equals(accounts.get(getAccountChoice()).login(UserConsole.getPassword(MessageSet.App.ENTER_PASSWORD)))) {
+                UserConsole.println(new TextElement(MessageSet.App.INVALID_PASSWORD, FormatType.ERROR));
+            }
+        }
+        catch (InputCancelledException ignored) {
+            //cancel
+        }
+
     }
 
-    private static String getAccountChoice() {
+    private static String getAccountChoice() throws InputCancelledException {
         return UserConsole.getInput(MessageSet.App.SELECT_ACCOUNT, new TreeSet<>(accounts.keySet()));
     }
 

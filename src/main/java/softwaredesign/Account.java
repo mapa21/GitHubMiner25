@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import softwaredesign.language.CommandSet;
 import softwaredesign.language.CommandSet.Command;
 import softwaredesign.language.MessageSet;
+import softwaredesign.utilities.InputCancelledException;
 import softwaredesign.utilities.TextElement;
 import softwaredesign.utilities.TextElement.FormatType;
 
@@ -42,35 +43,40 @@ public class Account implements Comparable<Account>{
         }
 
         CommandSet.Command command;
-
-        while ((command = UserConsole.getCommandInput(name, COMMANDS)) != Command.LOG_OUT) {
-            switch (command) {
-                case SET_TOKEN:
-                    setToken();
-                    break;
-                case ADD_REPO:
-                    if (tokenIsValid()) addRepo();
-                    break;
-                case REMOVE_REPO:
-                    removeRepo();
-                    break;
-                case ENTER_REPO:
-                    enterRepo();
-                    break;
-                case LIST_REPOS:
-                    listRepos();
-                    break;
-                case QUIT:
-                    App.exit(0);
-                    break;
-                default:
+        try {
+            while ((command = UserConsole.getCommandInput(name, COMMANDS)) != Command.LOG_OUT) {
+                switch (command) {
+                    case SET_TOKEN:
+                        setToken();
+                        break;
+                    case ADD_REPO:
+                        if (tokenIsAdded()) addRepo();
+                        break;
+                    case REMOVE_REPO:
+                        removeRepo();
+                        break;
+                    case ENTER_REPO:
+                        enterRepo();
+                        break;
+                    case LIST_REPOS:
+                        listRepos();
+                        break;
+                    case QUIT:
+                        App.exit(0);
+                        break;
+                    default:
+                }
             }
         }
+        catch (InputCancelledException ignored){
+            //
+        }
+
         //print logging out
         return true;
     }
 
-    private boolean tokenIsValid() {
+    private boolean tokenIsAdded() {
         if (token.equals("")) {
             UserConsole.print(List.of(
                     new TextElement(MessageSet.Account.NO_TOKEN, FormatType.ERROR),
@@ -84,21 +90,29 @@ public class Account implements Comparable<Account>{
     }
 
     private void removeRepo() {
-        if (listRepos()) {
-            String id = getRepoChoice();
-            repositories.get(id).delete();  //getRepoChoice only returns existing repos, so default is not needed
-            repositories.remove(id);
-            UserConsole.println(new TextElement(MessageSet.Account.REMOVE_SUCCESS, FormatType.SUCCESS));
+        try {
+            if (listRepos()) {
+                String id = getRepoChoice();
+                repositories.get(id).delete();  //getRepoChoice only returns existing repos, so default is not needed
+                repositories.remove(id);
+                UserConsole.println(new TextElement(MessageSet.Account.REMOVE_SUCCESS, FormatType.SUCCESS));
+            }
+        }
+        catch (InputCancelledException ignored) {
+            //
         }
     }
 
-    private String getRepoChoice() {
+    private String getRepoChoice() throws InputCancelledException {
         return UserConsole.getInput(MessageSet.Account.SELECT_REPO, new TreeSet<>(repositories.keySet()));
     }
 
     private void enterRepo() {
-        if(listRepos()) {
-            repositories.get(getRepoChoice()).enter();
+        try {
+            if(listRepos()) repositories.get(getRepoChoice()).enter();
+        }
+        catch (InputCancelledException ignored) {
+            //
         }
     }
 
@@ -115,43 +129,68 @@ public class Account implements Comparable<Account>{
     }
 
     private void addRepo() {
-        UserConsole.println(new TextElement(MessageSet.Account.START_ADDING, FormatType.HEADING));
+        try {
+            UserConsole.println(new TextElement(MessageSet.Account.START_ADDING, FormatType.HEADING));
 
-        String repoName = UserConsole.getInput(MessageSet.Account.ENTER_REPO_NAME, false, false);
-        UserConsole.printInputResult(MessageSet.Account.ENTER_REPO_NAME, repoName);
-        String repoOwner = UserConsole.getInput(MessageSet.Account.ENTER_REPO_OWNER, false, false);
-        UserConsole.printInputResult(MessageSet.Account.ENTER_REPO_OWNER, repoOwner);
+            String repoName = UserConsole.getInput(MessageSet.Account.ENTER_REPO_NAME, false, false);
+            UserConsole.printInputResult(MessageSet.Account.ENTER_REPO_NAME, repoName);
+            String repoOwner = UserConsole.getInput(MessageSet.Account.ENTER_REPO_OWNER, false, false);
+            UserConsole.printInputResult(MessageSet.Account.ENTER_REPO_OWNER, repoOwner);
 
-        String id = repoOwner + "/" + repoName;
-        if (!repositories.containsKey(id)) {
-            try {
+            String id = repoOwner + "/" + repoName;
+            if (!repositories.containsKey(id)) {
                 Repository repo = new Repository(repoName, repoOwner, token, this.name);
                 repositories.put(id, repo);
                 UserConsole.println(new TextElement(MessageSet.Account.REPO_ADDED, FormatType.SUCCESS));
             }
-            catch (InvalidParameterException e) {
-                UserConsole.print(List.of(
-                        new TextElement(MessageSet.Account.INVALID_REPO, FormatType.ERROR),
-                        new TextElement(MessageSet.Account.INVALID_REPO_HINT, FormatType.HINT)
-                ));
-            }
         }
+        catch (InvalidParameterException e) {
+            UserConsole.print(List.of(
+                    new TextElement(MessageSet.Account.INVALID_REPO, FormatType.ERROR),
+                    new TextElement(MessageSet.Account.INVALID_REPO_HINT, FormatType.HINT)
+            ));
+        }
+        catch (InputCancelledException ignored){
+            //cancel
+        }
+
     }
 
     private void setToken() {
-        UserConsole.println(new TextElement(MessageSet.Account.TOKEN_HEADING, FormatType.HEADING));
-        String newToken = UserConsole.getInput(MessageSet.Account.TOKEN_PROMPT,false, false);
-        UserConsole.println(new TextElement(MessageSet.Account.VALIDATE_TOKEN, FormatType.WAIT));
-        if (!newToken.equals("1234") && !isTokenValid(newToken)) {
-            UserConsole.print(List.of(
-                    new TextElement(MessageSet.Account.INVALID_TOKEN, FormatType.ERROR),
-                    new TextElement(MessageSet.Account.INVALID_TOKEN_HINT, FormatType.HINT)
-            ));
+        try {
+            UserConsole.println(new TextElement(MessageSet.Account.TOKEN_HEADING, FormatType.HEADING));
+            String newToken = UserConsole.getInput(MessageSet.Account.TOKEN_PROMPT,false, false);
+            UserConsole.println(new TextElement(MessageSet.Account.VALIDATE_TOKEN, FormatType.WAIT));
+
+
+            if (!newToken.equals("1234") && !isTokenValid(newToken)) {
+                UserConsole.print(List.of(
+                        new TextElement(MessageSet.Account.INVALID_TOKEN, FormatType.ERROR),
+                        new TextElement(MessageSet.Account.INVALID_TOKEN_HINT, FormatType.HINT)
+                ));
+            }
+            else if (!tokenValidForAddedRepos(newToken)) {
+                UserConsole.print(List.of(
+                        new TextElement(MessageSet.Account.INSUFFICIENT_TOKEN, FormatType.ERROR),
+                        new TextElement(MessageSet.Account.INSUFFICIENT_TOKEN_HINT, FormatType.HINT)
+                ));
+            }
+            else {
+                UserConsole.println(new TextElement(MessageSet.Account.TOKEN_SUCCESS, FormatType.SUCCESS));
+                token = newToken;
+                repositories.values().forEach(repo -> repo.setToken(newToken));
+            }
         }
-        else {
-            UserConsole.println(new TextElement(MessageSet.Account.TOKEN_SUCCESS, FormatType.SUCCESS));
-            token = newToken;
+        catch (InputCancelledException ignored) {
+            //
         }
+    }
+
+    private boolean tokenValidForAddedRepos(String token) {
+        for (Repository repo : repositories.values()) {
+            if (!repo.validateRepo(token))  return false;
+        }
+        return true;
     }
 
     protected boolean isTokenValid(String newToken) {

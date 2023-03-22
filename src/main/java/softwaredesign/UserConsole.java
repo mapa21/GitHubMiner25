@@ -2,6 +2,7 @@ package softwaredesign;
 
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.UserInterruptException;
 import org.jline.reader.impl.completer.ArgumentCompleter;
 import org.jline.reader.impl.completer.NullCompleter;
 import org.jline.reader.impl.completer.StringsCompleter;
@@ -13,6 +14,7 @@ import org.jline.utils.AttributedStyle;
 import org.jline.utils.InfoCmp;
 import softwaredesign.language.CommandSet;
 import softwaredesign.language.MessageSet;
+import softwaredesign.utilities.InputCancelledException;
 import softwaredesign.utilities.TextElement;
 import softwaredesign.utilities.TextElement.FormatType;
 
@@ -39,8 +41,8 @@ public class UserConsole {
 
     private static final int NO_COLOR = -1;
 
-    private final static TextStyle DEFAULT_STYLE = new TextStyle(NO_COLOR, NO_COLOR, false ,false, false);
-    private final static TextStyle GREYED_STYLE = new TextStyle(NO_COLOR, NO_COLOR, false ,false, false);
+    private static final TextStyle DEFAULT_STYLE = new TextStyle(false ,false, false);
+    private static final TextStyle GREYED_STYLE = new TextStyle(AttributedStyle.BRIGHT, NO_COLOR, false ,false, false);
 
     private static Map<FormatType, TextStyle> typeToStyle = Map.ofEntries(
             entry(FormatType.TITLE, new TextStyle(true, false, true)),
@@ -54,68 +56,81 @@ public class UserConsole {
             entry(FormatType.WAIT, new TextStyle(AttributedStyle.YELLOW, false, true, false))
     );
 
-    private static String getStyledPrompt(String prompt, String Seperator) {
-        return getStyledText(prompt + Seperator, typeToStyle.getOrDefault(FormatType.PROMPT, DEFAULT_STYLE)).toAnsi();
+    private static String getStyledPrompt(String prompt, String separator) {
+        return getStyledText(prompt + separator, typeToStyle.getOrDefault(FormatType.PROMPT, DEFAULT_STYLE)).toAnsi();
     }
 
     private static String getStyledPrompt(String prompt) {
         return getStyledPrompt(prompt, MessageSet.Console.PROMPT_SEPARATOR);
     }
 
-    public static CommandSet.Command getCommandInput(String prompt, Set<CommandSet.Command> options) {
+    public static CommandSet.Command getCommandInput(String prompt, Set<CommandSet.Command> options) throws InputCancelledException {
         return CommandSet.getCommand(getInput(prompt, CommandSet.getKeywords(options)));
     }
 
     public static void log(String message) {
         terminal.writer().println(MessageSet.Icons.ICON_INFO + " " + message);
         terminal.writer().flush();
+
     }
 
-    public static String getInput(String prompt, Set<String> options) {
-        List<TextElement> errorInvalid = List.of(
-                new TextElement(MessageSet.Console.INVALID_OPTION, FormatType.ERROR),
-                new TextElement(" "),
-                new TextElement(MessageSet.Console.OPTIONS + options + "\n")
-        );
+    public static String getInput(String prompt, Set<String> options) throws InputCancelledException {
+        try {
+            List<TextElement> errorInvalid = List.of(
+                    new TextElement(MessageSet.Console.INVALID_OPTION, FormatType.ERROR),
+                    new TextElement(" "),
+                    new TextElement(MessageSet.Console.OPTIONS + options + "\n")
+            );
 
-        LineReaderBuilder builder = LineReaderBuilder.builder();
-        builder.terminal(terminal);
-        builder.completer(new ArgumentCompleter(new StringsCompleter(options), new NullCompleter()));
-        LineReader reader = builder.build();
-        reader.option(LineReader.Option.ERASE_LINE_ON_FINISH, true);
+            LineReader reader = LineReaderBuilder.builder()
+                    .terminal(terminal)
+                    .completer(new ArgumentCompleter(new StringsCompleter(options), new NullCompleter()))
+                    .build().option(LineReader.Option.ERASE_LINE_ON_FINISH, true);
+
             String command;
-        while (!options.contains(command = reader.readLine(getStyledPrompt(prompt)).trim())
-                && options.size() > 0) {
-            print(errorInvalid);
-            terminal.flush();
+            while (!options.contains(command = reader.readLine(getStyledPrompt(prompt)).trim())
+                    && !options.isEmpty()) {
+                print(errorInvalid);
+                terminal.flush();
+            }
+            return command;
         }
-        return command;
+        catch (UserInterruptException e) {
+            throw (new InputCancelledException());
+        }
+
     }
 
     public static void printInputResult(String prompt, String result) {
         println(new TextElement(prompt + MessageSet.Console.INPUT_SET + result));
     }
 
-    public static String getInput(String prompt, boolean allowSpaces, boolean allowEmpty) {
-        LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();
-        reader.option(LineReader.Option.ERASE_LINE_ON_FINISH, true);
-        reader.setAutosuggestion(LineReader.SuggestionType.COMPLETER);
-        String input;
-        while (true) {
-            input = reader.readLine(getStyledPrompt(prompt, MessageSet.Console.INPUT_SEPARATOR)).trim();
-            if (!allowSpaces && input.contains(" ")) {
-                println(new TextElement(prompt + MessageSet.Console.CONTAINS_SPACES_ERROR, FormatType.ERROR));
+    public static String getInput(String prompt, boolean allowSpaces, boolean allowEmpty) throws InputCancelledException {
+        try {
+            LineReader reader = LineReaderBuilder.builder()
+                    .terminal(terminal)
+                    .build()
+                    .option(LineReader.Option.ERASE_LINE_ON_FINISH, true);
+            String input;
+            while (true) {
+                input = reader.readLine(getStyledPrompt(prompt, MessageSet.Console.INPUT_SEPARATOR)).trim();
+                if (!allowSpaces && input.contains(" ")) {
+                    println(new TextElement(prompt + MessageSet.Console.CONTAINS_SPACES_ERROR, FormatType.ERROR));
+                }
+                else if (!allowEmpty && input.length() == 0) {
+                    println(new TextElement(prompt + MessageSet.Console.IS_EMPTY_ERROR, FormatType.ERROR));
+                }
+                else break;
             }
-            else if (!allowEmpty && input.length() == 0) {
-                println(new TextElement(prompt + MessageSet.Console.IS_EMPTY_ERROR, FormatType.ERROR));
-            }
-            else break;
-        }
 
-        return input;
+            return input;
+        }
+        catch (UserInterruptException e) {
+            throw new InputCancelledException();
+        }
     }
 
-    public static String getPassword(String prompt) {
+    public static String getPassword(String prompt)  {
         terminal.writer().print(getStyledPrompt(prompt, MessageSet.Console.INPUT_SEPARATOR));
         terminal.flush();
 
@@ -142,7 +157,7 @@ public class UserConsole {
         terminal.setAttributes(prevAttr);
         terminal.writer().print('\r');
         if (readString.length() < 2) return readString.toString();
-        else return readString.substring(0, readString.length() - 2).toString();
+        else return readString.substring(0, readString.length() - 2);
 
     }
 
@@ -160,9 +175,9 @@ public class UserConsole {
 
     public static void println(List<TextElement> data) {
         List<TextElement> newData = new ArrayList<>();
-        data.forEach(line -> {
-            newData.add(new TextElement(line.content + "\n", line.type, false));
-        });
+        data.forEach(line -> newData.add(
+                new TextElement(line.content + "\n", line.type, false))
+        );
         print(newData);
     }
 
@@ -207,47 +222,37 @@ public class UserConsole {
     public static void printTitle(String location, int rowsPre, int rowsMain, int rowsSub, String fallback) {
         terminal.puts(InfoCmp.Capability.clear_screen);
 
-        try {
-            InputStream input = ClassLoader.getSystemResourceAsStream(location);
+        try (InputStream input = ClassLoader.getSystemResourceAsStream(location);){
             if (input == null) throw (new FileNotFoundException("Title file (" + location + ") not Found"));
-            Scanner titleScanner = new Scanner(input, StandardCharsets.UTF_8);
+            List<String> lines = new ArrayList<>();
             int maxLength = 0;
-            while (titleScanner.hasNext()) {
-                String line = titleScanner.nextLine();
-                if (line.length() > maxLength) {
-                    maxLength = line.length();
-                }
+            Scanner inputScanner = new Scanner(input, StandardCharsets.UTF_8);
+
+            while (inputScanner.hasNext()) {
+                String line = inputScanner.nextLine();
+                if (line.length() > maxLength) maxLength = line.length();
+                lines.add(line);
             }
 
             if (maxLength > terminal.getWidth()) {
                 throw new SizeLimitExceededException();
             }
-            //TODO: Lennart make nicer
-            input = ClassLoader.getSystemResourceAsStream(location);
-            if (input == null) throw (new FileNotFoundException("Title file (" + location + ") not Found"));
-            titleScanner = new Scanner(input, "UTF-8");
 
-            for (int i = 0; i < rowsPre; i++) {
-                String line = titleScanner.nextLine();
+            for (String line : lines.subList(0, rowsPre)) {
                 terminal.writer().println(getStyledText(line, GREYED_STYLE).toAnsi());
             }
-            for (int i = 0; i < rowsMain; i++) {
-                String line = titleScanner.nextLine();
+            lines = lines.subList(rowsPre, lines.size());
+            for (String line : lines.subList(0, rowsMain)) {
                 terminal.writer().println(getStyledText(line, DEFAULT_STYLE).toAnsi());
             }
-            for (int i = 0; i < rowsSub; i++) {
-                String line = titleScanner.nextLine();
+            lines = lines.subList(rowsMain, lines.size());
+            for (String line : lines.subList(0, rowsSub)) {
                 terminal.writer().println(getStyledText(line, GREYED_STYLE).toAnsi());
             }
-            titleScanner.close();
         }
-        catch (FileNotFoundException | SizeLimitExceededException e) {
+        catch (IOException | SizeLimitExceededException e) {
             terminal.writer().println(getStyledText("\n" + fallback + "\n", typeToStyle.getOrDefault(FormatType.TITLE, DEFAULT_STYLE)).toAnsi());
         }
-        catch (NoSuchElementException e) {
-            //TODO catch properly
-        }
-
         terminal.flush();
     }
 
