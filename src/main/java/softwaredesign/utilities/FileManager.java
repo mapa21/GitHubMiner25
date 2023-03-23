@@ -25,7 +25,6 @@ public final class FileManager {
     private static final String SOURCE = buildPath();
     private static final String JSON_FILE = "data.json";
 
-    public static String getAppName(){ return APP_NAME;}
     public static String getSource(){ return SOURCE;}
 
     private FileManager(){ throw new IllegalStateException("Utility class"); }

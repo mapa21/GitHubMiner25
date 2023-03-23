@@ -22,29 +22,35 @@ public final class Extractor {
     Set<Class<? extends Metric>> classes = new HashSet<>();
 
     public static List<String> runCommand(String command, String path) {
-        Process process = null;
+        Process process;
         try {
             process = Runtime.getRuntime().exec(command, null, new File(path));
-            process.waitFor();
-        } catch (IOException | InterruptedException e) {
+            System.out.println("running: " + command + " " + path);     //TODO: Delete
+            assert process != null;
+
+            List<String> output = getOutput(process);
+            /*for (String line : output){
+                System.out.println(line);
+            }*/
+
+            return output;
+        } catch (IOException e) {
             UserConsole.log(e.getMessage());
             Thread.currentThread().interrupt();
+            return List.of();
         }
-        assert process != null;
-        return getOutput(process);
     }
 
     public static List<String> getOutput(Process process) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         List<String> lines = new ArrayList<>();
         String line;
-        while (true) {
-            try {
-                if ((line = reader.readLine()) == null) break;
+        try {
+            while ((line = reader.readLine()) != null) {
                 lines.add(line);
-            } catch (IOException e) {
-                UserConsole.log(e.getMessage());
             }
+        } catch (IOException e) {
+            UserConsole.log(e.getMessage());
         }
         return lines;
     }

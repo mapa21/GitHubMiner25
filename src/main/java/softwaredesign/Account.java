@@ -195,11 +195,10 @@ public class Account implements Comparable<Account>{
 
     protected boolean isTokenValid(String newToken) {
         try {
-            GitHub.connectUsingOAuth(newToken).isCredentialValid();
+            return GitHub.connectUsingOAuth(newToken).isCredentialValid();
         } catch (IOException e) {
             return false;
         }
-        return true;
     }
 
     @Override
