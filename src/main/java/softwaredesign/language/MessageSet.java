@@ -42,6 +42,7 @@ public final class MessageSet {
         public static final String NO_ACCOUNTS = "There are no accounts yet. Select " + CommandSet.getKeyword(CommandSet.Command.CREATE_ACCOUNT) + " to create a new account";
         public static final String ACCOUNTS_LIST = "Accounts:";
         public static final String CREATED = "Account Created";
+        public static final String NOT_CREATED = "Account NOT Created";
         public static final String DELETE_SUCCESS = "Account deleted";
         public static final String INVALID_PASSWORD = "Invalid password";
         public static final String SELECT_ACCOUNT = "Select Account";
@@ -81,6 +82,10 @@ public final class MessageSet {
         public static final String INFO_NAME = "";
         public static final String INFO_OWNER = "by: ";
         public static final String INFO_LAST_UPDATED = "Last local update: ";
+        public static final String UPDATING = "Updating Repo";
+        public static final String UPDATED = "Updated";
+        public static final String GETTING_METRICS = "Getting new metrics";
+        public static final String REMOVE_UNSUCCESSFUL = "Unsuccessful folder delete";
 
     }
 

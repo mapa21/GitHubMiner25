@@ -2,7 +2,6 @@ package softwaredesign.utilities;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.kohsuke.github.GHCompare;
 import softwaredesign.Account;
 import softwaredesign.UserConsole;
 import softwaredesign.extraction.Metric;
@@ -12,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -42,8 +40,6 @@ public final class FileManager {
     }
 
     private static String getSystemSeparator(){
-        UserConsole.log(OS);
-        UserConsole.log(String.valueOf(OS.contains(MAC)));
         String separator = "";
         if (OS.contains(WIN)) separator = "\\";
         else if (OS.contains(MAC)) separator = "/";
@@ -54,22 +50,16 @@ public final class FileManager {
         return createFolder("");
     }
 
-    //TODO: return values for existing folder?
     public static Boolean createFolder(String path){
-
-        UserConsole.log("Separator = " + SEPARATOR);
         File folder = new File(SOURCE + path);
-        UserConsole.log(SOURCE + path);
-        UserConsole.log(folder.toString());
         try{
             if (folder.mkdir()) {
-                System.out.println("Folder created: " + folder.getName() + " in " + folder.getAbsolutePath());
+                UserConsole.log("Folder created: " + folder.getName() + " in " + folder.getAbsolutePath());
             } else {
-                System.out.println("Folder already exists.");
+                UserConsole.log("Folder already exists.");
             }
             return true;
         } catch (SecurityException e) {
-            System.out.println("An error occurred.");
             return false;
         }
     }

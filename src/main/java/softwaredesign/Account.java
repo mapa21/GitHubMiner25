@@ -93,9 +93,12 @@ public class Account implements Comparable<Account>{
         try {
             if (listRepos()) {
                 String id = getRepoChoice();
-                repositories.get(id).delete();  //getRepoChoice only returns existing repos, so default is not needed
-                repositories.remove(id);
-                UserConsole.println(new TextElement(MessageSet.Account.REMOVE_SUCCESS, FormatType.SUCCESS));
+                if (repositories.get(id).delete()){ //getRepoChoice only returns existing repos, so default is not needed
+                    repositories.remove(id);
+                    UserConsole.println(new TextElement(MessageSet.Account.REMOVE_SUCCESS, FormatType.SUCCESS));
+                } else{
+                    UserConsole.println(new TextElement(MessageSet.Repo.REMOVE_UNSUCCESSFUL, TextElement.FormatType.ERROR));
+                }
             }
         }
         catch (InputCancelledException ignored) {
@@ -188,7 +191,7 @@ public class Account implements Comparable<Account>{
 
     private boolean tokenValidForAddedRepos(String token) {
         for (Repository repo : repositories.values()) {
-            if (!repo.validateRepo(token))  return false;
+            if (!repo.isValidRepo(token))  return false;
         }
         return true;
     }

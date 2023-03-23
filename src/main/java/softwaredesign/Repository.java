@@ -41,14 +41,13 @@ public class Repository {
         this.name = name;
         this.owner = owner;
         this.token = token;
-        this.repoDirName = this.owner + ":" + this.name;
+        this.repoDirName = this.owner + "@" + this.name;
         this.parentPath = FileManager.getSource() + accountName + FileManager.SEPARATOR;
         this.repoPath = this.parentPath + this.repoDirName + FileManager.SEPARATOR;
 
-        if (!validateRepo()) {
+        if (!isValidRepo()) {
             throw(new InvalidParameterException("Invalid repository details or insufficient access rights with the given token."));
         }
-
         cloneRepo();
         getMetricsList();
     }
@@ -86,7 +85,6 @@ public class Repository {
     private void printInfo() {
         UserConsole.println(List.of (
                 new TextElement(MessageSet.Repo.INFO_TITLE, TextElement.FormatType.TITLE),
-                //TODO: add collaborators?
                 new TextElement(MessageSet.Repo.INFO_NAME + name),
                 new TextElement(MessageSet.Repo.INFO_OWNER + owner),
                 new TextElement(MessageSet.Repo.INFO_LAST_UPDATED + lastUpdated)
@@ -104,8 +102,9 @@ public class Repository {
     }
 
     private void update() {
-        //TODO-Lennart: Print to user
+        UserConsole.println(new TextElement(MessageSet.Repo.UPDATING, TextElement.FormatType.WAIT));
         if (changesToPull()) {
+            UserConsole.println(new TextElement(MessageSet.Repo.GETTING_METRICS, TextElement.FormatType.BODY));
             getMetricsList();
         }
     }
@@ -121,23 +120,22 @@ public class Repository {
         lastUpdated = new Date();
         List<String> output = Extractor.runCommand("git pull", this.repoPath);
         String noUpdate = "Already up to date.";
+        UserConsole.println(new TextElement(MessageSet.Repo.UPDATED, TextElement.FormatType.SUCCESS));
         return output.size() != 1 || !output.contains(noUpdate);
     }
 
-    public void delete() {
-        System.out.println("file to delete:" + this.repoPath);
+    public boolean delete() {
         try {
             FileUtils.deleteDirectory(new File(this.repoPath));
         } catch (IOException | IllegalArgumentException e) {
-            //TODO: unsuccessful delete message
-            UserConsole.log(e.getMessage());
+            return false;
         }
+        return true;
     }
-    private boolean validateRepo() {
-        return validateRepo(this.token);
+    private boolean isValidRepo() {
+        return isValidRepo(this.token);
     }
-    //TODO: naming?
-    public boolean validateRepo(String token){
+    public boolean isValidRepo(String token){
         try {
             GitHub.connectUsingOAuth(token).getRepository(this.owner + "/" + this.name);
         } catch (IOException e) {
