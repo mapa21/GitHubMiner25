@@ -1,7 +1,13 @@
-THIS_FILE := $(lastword $(MAKEFILE_LIST))
+GRADLE_TARGET = jar
+
+ifdef OS
+	command = gradlew
+else
+	command = ./gradlew
+endif
 
 make:
-	./gradlew jar
+	$(command) $(GRADLE_TARGET)
 	make run
 
 run:
