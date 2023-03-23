@@ -7,6 +7,7 @@ import softwaredesign.utilities.FileManager;
 import softwaredesign.utilities.InputCancelledException;
 import softwaredesign.utilities.TextElement;
 import softwaredesign.utilities.TextElement.FormatType;
+import sun.misc.Signal;
 
 import java.util.*;
 
@@ -32,6 +33,7 @@ public class App {
         }
 
         try {
+            Signal.handle(new Signal("INT"), signal -> exit(0));
             UserConsole.printTitle("title.txt", 5, 6, 3, "Welcome to GitHubMiner (by Pirates)");
             Command command;
 
