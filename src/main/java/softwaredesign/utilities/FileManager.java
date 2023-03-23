@@ -23,13 +23,14 @@ public final class FileManager {
     private static final String APP_NAME = "GitHubMiner";
     private static final String OS = System.getProperty("os.name");
     public static final String SEPARATOR = getSystemSeparator();
-    private static final String SOURCE = buildPath();
+    private static final String SOURCE = buildPath(); // /Library/Application Support/GitHubMiner/
     private static final String JSON_FILE = "data.json";
 
     public static String getSource(){ return SOURCE;}
 
     private FileManager(){ throw new IllegalStateException("Utility class"); }
 
+    // TODO: add Linux support?
     private static String buildPath(){
         String appPath = HOME_DIR;
         if (OS.contains(WIN)){
@@ -45,9 +46,7 @@ public final class FileManager {
         UserConsole.log(String.valueOf(OS.contains(MAC)));
         String separator = "";
         if (OS.contains(WIN)) separator = "\\";
-        else if (OS.contains(MAC)) {
-            separator = "/";
-        }
+        else if (OS.contains(MAC)) separator = "/";
         return separator;
     }
 

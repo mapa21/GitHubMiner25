@@ -23,7 +23,9 @@ public class Repository {
     @Setter
     private String token;
     private Date lastUpdated;
-    private final String path;
+    private final String parentPath;
+    private final String repoPath;
+    private final String repoDirName;
     private String metricsListHash;
     private Map<String, Metric> metrics = new TreeMap<>();
 
@@ -39,17 +41,15 @@ public class Repository {
         this.name = name;
         this.owner = owner;
         this.token = token;
-        this.path = accountName + FileManager.SEPARATOR + owner + FileManager.SEPARATOR;
+        this.repoDirName = this.owner + ":" + this.name;
+        this.parentPath = FileManager.getSource() + accountName + FileManager.SEPARATOR;
+        this.repoPath = this.parentPath + this.repoDirName + FileManager.SEPARATOR;
 
         if (!validateRepo()) {
-            throw(new InvalidParameterException("Invalid repository details or insufficient access rights with the given token"));
+            throw(new InvalidParameterException("Invalid repository details or insufficient access rights with the given token."));
         }
 
-        FileManager.createFolder(this.path);
         cloneRepo();
-//        if (!cloneRepo()) {
-//            throw(new InvalidParameterException("Invalid repository details or insufficient access rights with the given token"));
-//        }
         getMetricsList();
     }
 
@@ -111,25 +111,23 @@ public class Repository {
     }
 
     private void getMetricsList() {
-        assert this.path != null;
-        ExtractionResult result = Extractor.getInstance().extractMetrics(FileManager.getSource() + this.path + this.name);
+        assert this.parentPath != null;
+        ExtractionResult result = Extractor.getInstance().extractMetrics(this.repoPath);
         metrics = result.metrics;
         metricsListHash = result.listHash;
     }
 
     private boolean changesToPull() {
         lastUpdated = new Date();
-        List<String> output = Extractor.runCommand("git pull", FileManager.getSource() + this.path + this.name);
+        List<String> output = Extractor.runCommand("git pull", this.repoPath);
         String noUpdate = "Already up to date.";
         return output.size() != 1 || !output.contains(noUpdate);
     }
 
     public void delete() {
-        System.out.println("file to delete:" + FileManager.getSource() + this.path + this.name);
-        //runCommand("sudo rm -rf", FileManager.getSource() + this.path + this.name);
+        System.out.println("file to delete:" + this.repoPath);
         try {
-            Extractor.runCommand("sudo rm -rf",FileManager.getSource() + this.path + this.name + FileManager.SEPARATOR + ".git");
-            FileUtils.deleteDirectory(new File(FileManager.getSource() + this.path + this.name));
+            FileUtils.deleteDirectory(new File(this.repoPath));
         } catch (IOException | IllegalArgumentException e) {
             //TODO: unsuccessful delete message
             UserConsole.log(e.getMessage());
@@ -150,7 +148,7 @@ public class Repository {
 
     protected void cloneRepo(){
         String url = "https://" + this.token + "@github.com/" + this.owner + "/" + this.name + ".git";
-        Extractor.runCommand("git clone " + url, FileManager.getSource() + this.path);
+        Extractor.runCommand("git clone " + url + " " + this.repoDirName, this.parentPath);
         lastUpdated = new Date();
     }
 }
