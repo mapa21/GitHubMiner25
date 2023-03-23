@@ -1,6 +1,7 @@
 package softwaredesign;
 
 import java.io.IOException;
+import java.io.File;
 import java.security.InvalidParameterException;
 import java.util.*;
 
@@ -14,6 +15,7 @@ import softwaredesign.language.MessageSet;
 import softwaredesign.utilities.FileManager;
 import softwaredesign.utilities.InputCancelledException;
 import softwaredesign.utilities.TextElement;
+import org.apache.commons.io.FileUtils;
 
 public class Repository {
     public final String name;
@@ -102,8 +104,8 @@ public class Repository {
     }
 
     private void update() {
-        //TODO: Print to user
-        if (pullChanges()) {
+        //TODO-Lennart: Print to user
+        if (changesToPull()) {
             getMetricsList();
         }
     }
@@ -115,14 +117,23 @@ public class Repository {
         metricsListHash = result.listHash;
     }
 
-    private boolean pullChanges() {
+    private boolean changesToPull() {
         lastUpdated = new Date();
-        //runCommand("git pull", this.path);
-        return true;
+        List<String> output = Extractor.runCommand("git pull", FileManager.getSource() + this.path + this.name);
+        String noUpdate = "Already up to date.";
+        return output.size() != 1 || !output.contains(noUpdate);
     }
 
     public void delete() {
-        //TODO: delete files
+        System.out.println("file to delete:" + FileManager.getSource() + this.path + this.name);
+        //runCommand("sudo rm -rf", FileManager.getSource() + this.path + this.name);
+        try {
+            Extractor.runCommand("sudo rm -rf",FileManager.getSource() + this.path + this.name + FileManager.SEPARATOR + ".git");
+            FileUtils.deleteDirectory(new File(FileManager.getSource() + this.path + this.name));
+        } catch (IOException | IllegalArgumentException e) {
+            //TODO: unsuccessful delete message
+            UserConsole.log(e.getMessage());
+        }
     }
     private boolean validateRepo() {
         return validateRepo(this.token);
