@@ -2,6 +2,7 @@ package softwaredesign.utilities;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.kohsuke.github.GHCompare;
 import softwaredesign.Account;
 import softwaredesign.UserConsole;
 import softwaredesign.extraction.Metric;
@@ -100,6 +101,10 @@ public final class FileManager {
     public static String getJsonStringFromFile() {
         String filePath = SOURCE + JSON_FILE;
 
+        if (!(new File(filePath).exists())) {
+            return "";
+        }
+
         try (BufferedReader in = new BufferedReader(new FileReader(filePath))){
             StringBuilder jsonString = new StringBuilder();
             String tmp;
@@ -110,7 +115,6 @@ public final class FileManager {
 
             return jsonString.toString();
         } catch (Exception e) {
-            e.printStackTrace();
             UserConsole.log("File read has failed. Data is lost.");
             return "";
         }
