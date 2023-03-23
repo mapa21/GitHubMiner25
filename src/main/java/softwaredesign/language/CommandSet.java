@@ -23,6 +23,7 @@ public class CommandSet {
         PRINT_METRIC,
         UPDATE,
         QUIT,
+        PRINT_ALL_METRICS,
         INVALID
 
     }
@@ -44,6 +45,7 @@ public class CommandSet {
         commandKeywordMap.put(Command.EXIT_REPO, "exit");
         commandKeywordMap.put(Command.PRINT_INFO, "printInfo");
         commandKeywordMap.put(Command.PRINT_METRIC, "printMetric");
+        commandKeywordMap.put(Command.PRINT_ALL_METRICS, "printAllMetrics");
         commandKeywordMap.put(Command.UPDATE, "update");
     }
 

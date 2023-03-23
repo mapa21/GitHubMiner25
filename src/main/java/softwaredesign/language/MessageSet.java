@@ -5,7 +5,10 @@ import softwaredesign.UserConsole;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Scanner;
+import softwaredesign.utilities.TextElement;
+import static softwaredesign.utilities.TextElement.FormatType.*;
 
 public final class MessageSet {
     private static final String UTIL_CLASS = "Utility Class";
@@ -14,7 +17,7 @@ public final class MessageSet {
     }
     public static final class Misc {
         private Misc() {throw new IllegalStateException(UTIL_CLASS);}
-        public static final String GOODBYE = "Exiting Application... Good Bye " + Icons.EMOJI_ZEN;
+        public static final TextElement GOODBYE = new TextElement("Exiting Application... Good Bye " + Icons.EMOJI_ZEN + "\n");
     }
     public static final class General {
         private General() {throw new IllegalStateException(UTIL_CLASS);}
@@ -34,43 +37,80 @@ public final class MessageSet {
 
     public static final class App {
         private App() {throw new IllegalStateException(UTIL_CLASS);}
-        public static final String ENTER_NAME = "Name";
-        public static final String NAME_TAKEN = "This name is already taken";
-        public static final String ENTER_PASSWORD = "Password";
-        public static final String ENTER_PASSWORD_REPEAT = "Repeat Password";
-        public static final String START_CREATION = "Create a new Account";
-        public static final String NO_ACCOUNTS = "There are no accounts yet. Select " + CommandSet.getKeyword(CommandSet.Command.CREATE_ACCOUNT) + " to create a new account";
-        public static final String ACCOUNTS_LIST = "Accounts:";
-        public static final String CREATED = "Account Created";
-        public static final String DELETE_SUCCESS = "Account deleted";
-        public static final String INVALID_PASSWORD = "Invalid password";
-        public static final String SELECT_ACCOUNT = "Select Account";
-        public static final String PASSWORDS_NO_MATCH = "Passwords don't match";
+        public static final String NAME_PROMPT = "Name";
+        public static final String PASSWORD_PROMPT = "Password";
+        public static final String PASSWORD_REPEAT_PROMPT = "Repeat Password";
+        public static final String ACCOUNT_PROMPT = "Select Account";
+
+        public static final TextElement NAME_TAKEN = new TextElement(
+                "This name is already taken\n", TextElement.FormatType.ERROR);
+        public static final TextElement START_CREATION = new TextElement(
+                "Create a new Account\n", HEADING);
+        public static final List<TextElement> NO_ACCOUNTS = List.of(
+                new TextElement("There are no accounts yet. Select "),
+                new TextElement(CommandSet.getKeyword(CommandSet.Command.CREATE_ACCOUNT), COMMAND),
+                new TextElement(" to create a new account\n")
+        );
+        public static final List<TextElement> ACCOUNTS_LIST = List.of(
+                new TextElement("Accounts:", HEADING),
+                new TextElement(" ")
+        );
+        public static final TextElement CREATED = new TextElement("Account Created\n");
+        public static final TextElement DELETE_SUCCESS = new TextElement("Account deleted", SUCCESS);
+        public static final TextElement INVALID_PASSWORD = new TextElement("Invalid password\n", ERROR);
+        public static final TextElement PASSWORDS_NO_MATCH = new TextElement("Passwords don't match\n", ERROR);
     }
 
     public static final class Account {
         private Account() {
             throw new IllegalStateException(UTIL_CLASS);
         }
-        public static final String INVALID_TOKEN = "The entered token is invalid.";
-        public static final String INVALID_TOKEN_HINT = " Select " + CommandSet.getKeyword(CommandSet.Command.SET_TOKEN) + " to try again\n";
-        public static final String TOKEN_HEADING = "Add a GH access token";
+
+        private static final String SELECT = "Select ";
+        private static final String TRY_AGAIN = " to try again\n";
+
+        public static final String REPO_NAME_PROMPT = "Repo Name";
+        public static final String REPO_OWNER_PROMPT = "Repo Owner";
+        public static final String SELECT_REPO_PROMPT = "Select Repository";
         public static final String TOKEN_PROMPT = "Token";
-        public static final String VALIDATE_TOKEN = "Validating Token...";
-        public static final String NO_TOKEN = "You have not added a valid token yet.";
-        public static final String TOKEN_SUCCESS = "Token successfully added";
-        public static final String START_ADDING = "Add a new repository to be tracked";
-        public static final String ENTER_REPO_NAME = "Repo Name";
-        public static final String ENTER_REPO_OWNER = "Repo Owner";
-        public static final String REPO_ADDED = "The repository was successfully added";
-        public static final String INVALID_REPO = "The repository could not be added.";
-        public static final String INVALID_REPO_HINT = " Check whether the given details are correct and the repository is accessible with the current token. If the issue persists check your network connection\n";
-        public static final String REPOS_LIST = "Repositories:";
-        public static final String NO_REPOS = "There are no repositories yet. Select " + CommandSet.getKeyword(CommandSet.Command.ADD_REPO) + " to add a new repository";
-        public static final String SELECT_REPO = "Select Repository";
-        public static final String REMOVE_SUCCESS = "Repository removed";
-        public static final String INSUFFICIENT_TOKEN = "The entered token does not have sufficient access rights for your repositories.";
-        public static final String INSUFFICIENT_TOKEN_HINT = " Try again with a token that has at least the access rights of the previous token. The previous token has not been replaced\n";
+
+        public static final List<TextElement> INVALID_TOKEN = List.of(
+                new TextElement("The entered token is invalid.\n", ERROR),
+                new TextElement(SELECT, HINT),
+                new TextElement(CommandSet.getKeyword(CommandSet.Command.SET_TOKEN), COMMAND),
+                new TextElement(TRY_AGAIN, HINT)
+        );
+        public static final TextElement VALIDATE_TOKEN = new TextElement("Validating Token...\n", WAIT);
+        public static final TextElement TOKEN_HEADING = new TextElement("Add a GH access token\n", HEADING);
+        public static final List<TextElement> NO_TOKEN = List.of(
+                new TextElement("You have not added a valid token yet.\n", ERROR),
+                new TextElement(SELECT, HINT),
+                new TextElement(CommandSet.getKeyword(CommandSet.Command.SET_TOKEN), COMMAND),
+                new TextElement(TRY_AGAIN, HINT)
+        );
+        public static final TextElement TOKEN_SUCCESS = new TextElement("Token successfully added\n", SUCCESS);
+        public static final TextElement START_ADDING = new TextElement("Add a new repository to be tracked\n", HEADING);
+        public static final TextElement REPO_ADDED = new TextElement("The repository was successfully added\n", SUCCESS);
+        public static final List<TextElement> INVALID_REPO = List.of(
+                new TextElement("The repository could not be added\n", ERROR),
+                new TextElement("Check whether the given details are correct and the repository is accessible with the current token. " +
+                        "If the issue persists check your network connection\n", HINT)
+        );
+        public static final List<TextElement> REPOS_LIST = List.of(
+                new TextElement("Repositories:", HEADING),
+                new TextElement(" ")
+        );
+        public static final List<TextElement> NO_REPOS = List.of(
+                new TextElement("There are no repositories yet\n"),
+                new TextElement(SELECT, HINT),
+                new TextElement(CommandSet.getKeyword(CommandSet.Command.ADD_REPO), COMMAND),
+                new TextElement(" to add a new repository\n", HINT)
+        );
+        public static final TextElement REMOVE_SUCCESS = new TextElement("Repository removed\n", SUCCESS);
+        public static final List<TextElement> INSUFFICIENT_TOKEN = List.of(
+                new TextElement("The entered token does not have sufficient access rights for your repositories\n", ERROR),
+                new TextElement("Try again with a token that has at least the access rights of the previous token. The previous token has not been replaced\n", HINT)
+        );
     }
 
     public static final class Repo {

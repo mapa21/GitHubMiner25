@@ -78,10 +78,7 @@ public class Account implements Comparable<Account>{
 
     private boolean tokenIsAdded() {
         if (token.equals("")) {
-            UserConsole.print(List.of(
-                    new TextElement(MessageSet.Account.NO_TOKEN, FormatType.ERROR),
-                    new TextElement(MessageSet.Account.INVALID_TOKEN_HINT, FormatType.HINT)
-            ));
+            UserConsole.print(MessageSet.Account.NO_TOKEN);
             return false;
         }
         else {
@@ -95,7 +92,7 @@ public class Account implements Comparable<Account>{
                 String id = getRepoChoice();
                 repositories.get(id).delete();  //getRepoChoice only returns existing repos, so default is not needed
                 repositories.remove(id);
-                UserConsole.println(new TextElement(MessageSet.Account.REMOVE_SUCCESS, FormatType.SUCCESS));
+                UserConsole.println(MessageSet.Account.REMOVE_SUCCESS);
             }
         }
         catch (InputCancelledException ignored) {
@@ -104,7 +101,7 @@ public class Account implements Comparable<Account>{
     }
 
     private String getRepoChoice() throws InputCancelledException {
-        return UserConsole.getInput(MessageSet.Account.SELECT_REPO, new TreeSet<>(repositories.keySet()));
+        return UserConsole.getInput(MessageSet.Account.SELECT_REPO_PROMPT, new TreeSet<>(repositories.keySet()));
     }
 
     private void enterRepo() {
@@ -117,38 +114,35 @@ public class Account implements Comparable<Account>{
     }
 
     private boolean listRepos() {
-        UserConsole.print(new TextElement(MessageSet.Account.REPOS_LIST, FormatType.HEADING));
+        UserConsole.print(MessageSet.Account.REPOS_LIST);
 
         if (repositories.isEmpty()) {
-            UserConsole.println(new TextElement(" " + MessageSet.Account.NO_REPOS, FormatType.HINT));
+            UserConsole.print(MessageSet.Account.NO_REPOS);
             return false;
         } else {
-            UserConsole.println(new TextElement(" " + repositories.keySet(), FormatType.BODY));
+            UserConsole.println(new TextElement(repositories.keySet().toString()));
             return true;
         }
     }
 
     private void addRepo() {
         try {
-            UserConsole.println(new TextElement(MessageSet.Account.START_ADDING, FormatType.HEADING));
+            UserConsole.print(MessageSet.Account.START_ADDING);
 
-            String repoName = UserConsole.getInput(MessageSet.Account.ENTER_REPO_NAME, false, false);
-            UserConsole.printInputResult(MessageSet.Account.ENTER_REPO_NAME, repoName);
-            String repoOwner = UserConsole.getInput(MessageSet.Account.ENTER_REPO_OWNER, false, false);
-            UserConsole.printInputResult(MessageSet.Account.ENTER_REPO_OWNER, repoOwner);
+            String repoName = UserConsole.getInput(MessageSet.Account.REPO_NAME_PROMPT, false, false);
+            UserConsole.printInputResult(MessageSet.Account.REPO_NAME_PROMPT, repoName);
+            String repoOwner = UserConsole.getInput(MessageSet.Account.REPO_OWNER_PROMPT, false, false);
+            UserConsole.printInputResult(MessageSet.Account.REPO_OWNER_PROMPT, repoOwner);
 
             String id = repoOwner + "/" + repoName;
             if (!repositories.containsKey(id)) {
                 Repository repo = new Repository(repoName, repoOwner, token, this.name);
                 repositories.put(id, repo);
-                UserConsole.println(new TextElement(MessageSet.Account.REPO_ADDED, FormatType.SUCCESS));
+                UserConsole.print(MessageSet.Account.REPO_ADDED);
             }
         }
         catch (InvalidParameterException e) {
-            UserConsole.print(List.of(
-                    new TextElement(MessageSet.Account.INVALID_REPO, FormatType.ERROR),
-                    new TextElement(MessageSet.Account.INVALID_REPO_HINT, FormatType.HINT)
-            ));
+            UserConsole.print(MessageSet.Account.INVALID_REPO);
         }
         catch (InputCancelledException ignored){
             //cancel
@@ -158,25 +152,19 @@ public class Account implements Comparable<Account>{
 
     private void setToken() {
         try {
-            UserConsole.println(new TextElement(MessageSet.Account.TOKEN_HEADING, FormatType.HEADING));
+            UserConsole.print(MessageSet.Account.TOKEN_HEADING);
             String newToken = UserConsole.getInput(MessageSet.Account.TOKEN_PROMPT,false, false);
-            UserConsole.println(new TextElement(MessageSet.Account.VALIDATE_TOKEN, FormatType.WAIT));
+            UserConsole.print(MessageSet.Account.VALIDATE_TOKEN);
 
 
             if (!newToken.equals("1234") && !isTokenValid(newToken)) {
-                UserConsole.print(List.of(
-                        new TextElement(MessageSet.Account.INVALID_TOKEN, FormatType.ERROR),
-                        new TextElement(MessageSet.Account.INVALID_TOKEN_HINT, FormatType.HINT)
-                ));
+                UserConsole.print(MessageSet.Account.INVALID_TOKEN);
             }
             else if (!tokenValidForAddedRepos(newToken)) {
-                UserConsole.print(List.of(
-                        new TextElement(MessageSet.Account.INSUFFICIENT_TOKEN, FormatType.ERROR),
-                        new TextElement(MessageSet.Account.INSUFFICIENT_TOKEN_HINT, FormatType.HINT)
-                ));
+                UserConsole.print(MessageSet.Account.INSUFFICIENT_TOKEN);
             }
             else {
-                UserConsole.println(new TextElement(MessageSet.Account.TOKEN_SUCCESS, FormatType.SUCCESS));
+                UserConsole.print(MessageSet.Account.TOKEN_SUCCESS);
                 token = newToken;
                 repositories.values().forEach(repo -> repo.setToken(newToken));
             }

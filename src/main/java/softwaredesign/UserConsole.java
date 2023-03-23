@@ -46,7 +46,9 @@ public class UserConsole {
 
     private static Map<FormatType, TextStyle> typeToStyle = Map.ofEntries(
             entry(FormatType.TITLE, new TextStyle(true, false, true)),
-            entry(FormatType.HEADING, new TextStyle(AttributedStyle.BLUE, true, false, true)),
+            entry(FormatType.HEADING, new TextStyle(AttributedStyle.MAGENTA, true, false, true)),
+            entry(FormatType.HINT, new TextStyle(false,true, false)),
+            entry(FormatType.COMMAND, new TextStyle(AttributedStyle.CYAN, false, false, true)),
             entry(FormatType.BODY, DEFAULT_STYLE),
             entry(FormatType.STATISTIC, DEFAULT_STYLE),
             entry(FormatType.DIVIDER, new TextStyle(AttributedStyle.BRIGHT, false, false, false)),
@@ -69,9 +71,10 @@ public class UserConsole {
     }
 
     public static void log(String message) {
-        terminal.writer().println(MessageSet.Icons.ICON_INFO + " " + message);
-        terminal.writer().flush();
-
+        if (App.debug) {
+            terminal.writer().println(MessageSet.Icons.ICON_INFO + " " + message);
+            terminal.writer().flush();
+        }
     }
 
     public static String getInput(String prompt, Set<String> options) throws InputCancelledException {
@@ -155,10 +158,18 @@ public class UserConsole {
         }
 
         terminal.setAttributes(prevAttr);
-        terminal.writer().print('\r');
+        clearLine();
         if (readString.length() < 2) return readString.toString();
         else return readString.substring(0, readString.length() - 2);
+    }
 
+    private static void clearLine() {
+        terminal.writer().print('\r');
+        for (int i = 0; i < terminal.getWidth(); i++) {
+            terminal.writer().print(' ');
+        }
+        terminal.writer().print('\r');
+        terminal.writer().flush();
     }
 
     public static void print(String data) {

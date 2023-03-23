@@ -12,7 +12,7 @@ import sun.misc.Signal;
 import java.util.*;
 
 public class App {
-
+    public static boolean debug = false;
     private static final Map<String, Account> accounts = FileManager.initAccounts();
 
     private static final Set<Command> COMMANDS = Set.of(
@@ -24,6 +24,12 @@ public class App {
     );
 
     public static void main (String[] args) {
+        for (String arg : args) {
+            if (arg.equals("-d")) {
+                debug = true;
+                break;
+            }
+        }
         //TODO: handle return
         FileManager.initRootFolder();
         try {
@@ -66,23 +72,23 @@ public class App {
         String name = null;
         String password = null;
         try {
-            UserConsole.println(new TextElement(MessageSet.App.START_CREATION, FormatType.HEADING));
+            UserConsole.print(MessageSet.App.START_CREATION);
 
             do {
                 if (name != null) {
-                    UserConsole.println(new TextElement(MessageSet.App.NAME_TAKEN, FormatType.ERROR));
+                    UserConsole.print(MessageSet.App.NAME_TAKEN);
                 }
-                name = UserConsole.getInput(MessageSet.App.ENTER_NAME, false, false);
+                name = UserConsole.getInput(MessageSet.App.NAME_PROMPT, false, false);
             } while (accounts.containsKey(name));
 
-            UserConsole.printInputResult(MessageSet.App.ENTER_NAME, name);
+            UserConsole.printInputResult(MessageSet.App.NAME_PROMPT, name);
 
             do {
                 if (password != null) {
-                    UserConsole.println(new TextElement(MessageSet.App.PASSWORDS_NO_MATCH, FormatType.ERROR));
+                    UserConsole.print(MessageSet.App.PASSWORDS_NO_MATCH);
                 }
-                password = UserConsole.getPassword(MessageSet.App.ENTER_PASSWORD);
-            } while (!password.equals(UserConsole.getPassword(MessageSet.App.ENTER_PASSWORD_REPEAT)));
+                password = UserConsole.getPassword(MessageSet.App.PASSWORD_PROMPT);
+            } while (!password.equals(UserConsole.getPassword(MessageSet.App.PASSWORD_REPEAT_PROMPT)));
 
         }
         catch (InputCancelledException ignored){
@@ -90,7 +96,7 @@ public class App {
         }
 
         accounts.put(name, new Account(name, password));
-        UserConsole.println(new TextElement(MessageSet.App.CREATED, FormatType.SUCCESS));
+        UserConsole.print(MessageSet.App.CREATED);
 
         //TODO: handle return
         FileManager.createFolder(name);
@@ -100,7 +106,7 @@ public class App {
         try {
             if (listAccounts()) {
                 accounts.remove(getAccountChoice());
-                UserConsole.println(new TextElement(MessageSet.App.DELETE_SUCCESS, FormatType.SUCCESS));
+                UserConsole.println(MessageSet.App.DELETE_SUCCESS);
             }
         }
         catch (InputCancelledException ignored) {
@@ -112,8 +118,8 @@ public class App {
     private static void enterAccount() {
         try {
             if (listAccounts()
-                    && Boolean.FALSE.equals(accounts.get(getAccountChoice()).login(UserConsole.getPassword(MessageSet.App.ENTER_PASSWORD)))) {
-                UserConsole.println(new TextElement(MessageSet.App.INVALID_PASSWORD, FormatType.ERROR));
+                    && Boolean.FALSE.equals(accounts.get(getAccountChoice()).login(UserConsole.getPassword(MessageSet.App.PASSWORD_PROMPT)))) {
+                UserConsole.println(MessageSet.App.INVALID_PASSWORD);
             }
         }
         catch (InputCancelledException ignored) {
@@ -123,23 +129,23 @@ public class App {
     }
 
     private static String getAccountChoice() throws InputCancelledException {
-        return UserConsole.getInput(MessageSet.App.SELECT_ACCOUNT, new TreeSet<>(accounts.keySet()));
+        return UserConsole.getInput(MessageSet.App.ACCOUNT_PROMPT, new TreeSet<>(accounts.keySet()));
     }
 
     private static boolean listAccounts() {
-        UserConsole.print(new TextElement(MessageSet.App.ACCOUNTS_LIST, FormatType.HEADING));
+        UserConsole.print(MessageSet.App.ACCOUNTS_LIST);
 
         if (accounts.isEmpty()) {
-            UserConsole.println(new TextElement(" " + MessageSet.App.NO_ACCOUNTS, FormatType.HINT));
+            UserConsole.print(MessageSet.App.NO_ACCOUNTS);
             return false;
         } else {
-            UserConsole.println(new TextElement(" " + accounts.keySet(), FormatType.BODY));
+            UserConsole.println(new TextElement(accounts.keySet().toString(), FormatType.BODY));
             return true;
         }
     }
 
     public static void exit(int status) {
-        UserConsole.println(new TextElement(MessageSet.Misc.GOODBYE, FormatType.BODY));
+        UserConsole.print(MessageSet.Misc.GOODBYE);
         FileManager.saveAccounts(accounts);
         System.exit(status);
     }

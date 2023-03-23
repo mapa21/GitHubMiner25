@@ -34,6 +34,7 @@ public class Repository {
             Command.PRINT_INFO,
             Command.PRINT_METRIC,
             Command.UPDATE,
+            Command.PRINT_ALL_METRICS,
             Command.EXIT_REPO
     );
 
@@ -68,6 +69,9 @@ public class Repository {
                     case PRINT_METRIC:
                         printMetric();
                         break;
+                    case PRINT_ALL_METRICS:
+                        printAllMetrics();
+                        break;
                     case UPDATE:
                         update();
                         break;
@@ -91,6 +95,10 @@ public class Repository {
                 new TextElement(MessageSet.Repo.INFO_OWNER + owner),
                 new TextElement(MessageSet.Repo.INFO_LAST_UPDATED + lastUpdated)
         ));
+    }
+
+    private void printAllMetrics() {
+        metrics.values().forEach(metric -> UserConsole.println(metric.getMetric()));
     }
 
     private void printMetric() {
