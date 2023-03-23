@@ -30,8 +30,8 @@ public class App {
                 break;
             }
         }
-        //TODO: handle return
-        FileManager.initRootFolder();
+
+        if (Boolean.FALSE.equals(FileManager.initRootFolder())) exit(-1);
         try {
             Extractor.getInstance(); //eager evaluation of instance does not seem to work
         } catch (Exception e) { //TODO: add proper error handling
@@ -96,10 +96,11 @@ public class App {
         }
 
         accounts.put(name, new Account(name, password));
-        UserConsole.print(MessageSet.App.CREATED);
-
-        //TODO: handle return
-        FileManager.createFolder(name);
+        if (Boolean.TRUE.equals(FileManager.createFolder(name))){
+            UserConsole.print(MessageSet.App.CREATED);
+        } else{
+            UserConsole.println(new TextElement(MessageSet.App.NOT_CREATED, FormatType.ERROR));
+        }
     }
 
     private static void deleteAccount() {

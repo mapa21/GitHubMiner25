@@ -25,15 +25,8 @@ public final class Extractor {
         Process process;
         try {
             process = Runtime.getRuntime().exec(command, null, new File(path));
-            System.out.println("running: " + command + " " + path);     //TODO: Delete
             assert process != null;
-
-            List<String> output = getOutput(process);
-            /*for (String line : output){
-                System.out.println(line);
-            }*/
-
-            return output;
+            return getOutput(process);
         } catch (IOException e) {
             UserConsole.log(e.getMessage());
             Thread.currentThread().interrupt();
@@ -58,16 +51,10 @@ public final class Extractor {
     public ExtractionResult extractMetrics(String path) {
         List<String> output = runCommand("git log --numstat", path);
         List<Commit> commits = parseLog(output);
-        UserConsole.log("COMMITS:");
-        for (Commit c : commits) {
-            UserConsole.log(c.authorName + " " + c.hash);
-        }
-        //List<Commit> commits = List.of(new Commit("Tester", "tester@vu.nl", ZonedDateTime.parse("2011-12-03T10:15:30+01:00"), "Created project", 3, "129ac84eb6a", 15, 2, Boolean.FALSE)); //placeholder, replaces by extraction of commits
         Map<String, Metric> metrics = new HashMap<>();
-
         for (Class<? extends Metric> metric : classes) {
             try {
-                Metric metricInstance = metric.getConstructor(List.class).newInstance((Object) commits);
+                Metric metricInstance = metric.getConstructor(List.class).newInstance(commits);
                 metrics.put(metricInstance.getCommand(), metricInstance);
 //                UserConsole.log(metricInstance.getCommand() + " extracted");
             }
@@ -130,7 +117,7 @@ public final class Extractor {
             //Check if merge
             currLine = output.get(counter);
             Boolean isMerge = currLine.contains("Merge");
-            if (isMerge) {
+            if (Boolean.TRUE.equals(isMerge)) {
                 counter++;
                 currLine = output.get(counter);
             }
@@ -166,7 +153,7 @@ public final class Extractor {
             int deletions = 0;
             int nrOfFilesChanged = 0;
 
-            if (!isMerge){
+            if (Boolean.FALSE.equals(isMerge)){
                 currLine = output.get(counter);
                 while (!currLine.isEmpty()) {
                     String[] elements = currLine.split("\\s+");

@@ -41,7 +41,7 @@ public final class MessageSet {
         public static final String PASSWORD_PROMPT = "Password";
         public static final String PASSWORD_REPEAT_PROMPT = "Repeat Password";
         public static final String ACCOUNT_PROMPT = "Select Account";
-
+        public static final String NOT_CREATED = "Account NOT Created";
         public static final TextElement NAME_TAKEN = new TextElement(
                 "This name is already taken\n", TextElement.FormatType.ERROR);
         public static final TextElement START_CREATION = new TextElement(
@@ -121,6 +121,10 @@ public final class MessageSet {
         public static final String INFO_NAME = "";
         public static final String INFO_OWNER = "by: ";
         public static final String INFO_LAST_UPDATED = "Last local update: ";
+        public static final String UPDATING = "Updating Repo";
+        public static final String UPDATED = "Updated";
+        public static final String GETTING_METRICS = "Getting new metrics";
+        public static final String REMOVE_UNSUCCESSFUL = "Unsuccessful folder delete";
 
     }
 
