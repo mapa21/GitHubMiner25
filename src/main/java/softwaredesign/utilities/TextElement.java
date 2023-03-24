@@ -9,10 +9,12 @@ public class TextElement {
         BODY,
         STATISTIC,
         DIVIDER,
+        COMMAND,
         HINT,
         ERROR,
         SUCCESS,
         PROMPT,
+        PAGE_TITLE,
         WAIT,
         TITLE
     }

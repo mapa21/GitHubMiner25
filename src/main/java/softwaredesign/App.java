@@ -1,23 +1,24 @@
 package softwaredesign;
 
 import softwaredesign.extraction.Extractor;
-import softwaredesign.extraction.Metric;
 import softwaredesign.language.CommandSet.Command;
 import softwaredesign.language.MessageSet;
-import softwaredesign.utilities.AbstractMetricsAdapter;
 import softwaredesign.utilities.FileManager;
+import softwaredesign.utilities.InputCancelledException;
 import softwaredesign.utilities.TextElement;
 import softwaredesign.utilities.TextElement.FormatType;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
-import java.io.File;
-import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public class App {
 
-    private static final Map<String, Account> accounts = new TreeMap<>();
+    private static final String TITLE_FILE_LOCATION = "title.txt";
+
+    public enum EXIT_CODES {
+        SUCCESS,
+        UNKNOWN_ERROR
+    }
 
     private static final Set<Command> COMMANDS = Set.of(
             Command.QUIT,
@@ -27,20 +28,30 @@ public class App {
             Command.LIST_ACCOUNTS
     );
 
+    private static final Map<String, Account> accounts = FileManager.initAccounts();
+
+    /**
+     * Application entry point
+     * @param args Command line arguments
+     */
     public static void main (String[] args) {
-        //TODO: handle return
-        FileManager.initRootFolder();
-        try {
-            Extractor.get(); //eager evaluation of instance does not seem to work
-        } catch (Exception e) { //TODO: add proper error handling
-            exit(1);
+        for (String arg : args) {
+            if (arg.equals("-d")) {
+                UserConsole.setDebug(true);
+                break;
+            }
         }
 
-        // extract accounts from JSON
-        initAccounts();
+        if (Boolean.FALSE.equals(FileManager.initRootFolder())) exit(EXIT_CODES.UNKNOWN_ERROR);
+        try {
+            Extractor.getInstance();
+        } catch (IOException e) {
+            exit(EXIT_CODES.UNKNOWN_ERROR, e.toString());
+        }
 
         try {
-            UserConsole.printTitle("title.txt", 5, 6, 3, "Welcome to GitHubMiner (by Pirates)");
+            UserConsole.printTitle(TITLE_FILE_LOCATION, "Welcome to GitHubMiner (by Pirates)");
+            UserConsole.print(MessageSet.App.HELP_PAGE);
             Command command;
 
             while ((command = UserConsole.getCommandInput("", COMMANDS)) != Command.QUIT) {
@@ -60,136 +71,104 @@ public class App {
                     default:
                 }
             }
+        }
+        catch (org.jline.reader.UserInterruptException | InputCancelledException ignored) {
+            //
+        }
 
-            exit(0);
-        }
-        catch (org.jline.reader.UserInterruptException e) {
-            exit(0);
-        }
+        exit(EXIT_CODES.SUCCESS);
     }
 
-    // load accounts to JSON file
-    private static void saveAccounts() {
-        String filePath = "data/data.json";
-
-        try {
-            GsonBuilder builder = new GsonBuilder();
-            builder.setPrettyPrinting();
-            builder.registerTypeAdapter(Metric.class, new AbstractMetricsAdapter());
-            Gson gson = builder.create();
-            String jsonString = gson.toJson(accounts.values().toArray(new Account[0]));
-            System.out.println("JSON String:\n" + jsonString);
-
-            FileWriter fileWriter = new FileWriter(filePath);
-            fileWriter.write(jsonString);
-            fileWriter.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public static void exit(EXIT_CODES status, String message) {
+        if (status != EXIT_CODES.SUCCESS) UserConsole.print(new TextElement(message, FormatType.ERROR));
+        exit(status);
     }
 
-    // initialize accounts from JSON file
-    private static void initAccounts() {
-        String filePath = "data/data.json";
 
-        try {
-            File myFile = new File(filePath);
-            myFile.getParentFile().mkdirs(); // create parentdirs if they do not exist
-
-            if (myFile.createNewFile()) {
-                System.out.println("New file created");
-                return;
-            }
-
-            System.out.println("File already exists... Let's extract all info");
-
-            Scanner fileReader = new Scanner(myFile);
-            String jsonString = "";
-
-            while (fileReader.hasNextLine()) {
-                jsonString += fileReader.nextLine();
-            }
-            fileReader.close();
-
-            // loadFromString()
-            GsonBuilder builder = new GsonBuilder();
-            builder.setPrettyPrinting();
-            builder.registerTypeAdapter(Metric.class, new AbstractMetricsAdapter());
-            Gson gson = builder.create();
-
-            Account[] fileAccounts = gson.fromJson(jsonString, Account[].class);
-            if (fileAccounts == null) return;
-
-            for (Account account : fileAccounts) {
-                accounts.put(account.name, account);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public static void exit(EXIT_CODES status) {
+        UserConsole.print(MessageSet.Misc.GOODBYE);
+        FileManager.saveAccounts(accounts);
+        System.exit(status.ordinal());
     }
 
     private static void createAccount() {
-        UserConsole.println(new TextElement(MessageSet.App.START_CREATION, FormatType.HEADING));
         String name = null;
-        do {
-            if (name != null) {
-                UserConsole.println(new TextElement(MessageSet.App.NAME_TAKEN, FormatType.ERROR));
-            }
-            name = UserConsole.getInput(MessageSet.App.ENTER_NAME, false, false);
-        } while (accounts.containsKey(name));
-
-        UserConsole.printInputResult(MessageSet.App.ENTER_NAME, name);
-
         String password = null;
-        do {
-            if (password != null) {
-                UserConsole.println(new TextElement(MessageSet.App.PASSWORDS_NO_MATCH, FormatType.ERROR));
-            }
-            password = UserConsole.getPassword(MessageSet.App.ENTER_PASSWORD);
-        } while (!password.equals(UserConsole.getPassword(MessageSet.App.ENTER_PASSWORD_REPEAT)));
+        try {
+            UserConsole.print(MessageSet.App.START_CREATION);
 
+            do {
+                if (name != null) {
+                    UserConsole.print(MessageSet.App.NAME_TAKEN);
+                }
+                name = UserConsole.getInput(MessageSet.App.NAME_PROMPT, false, false);
+            } while (accounts.containsKey(name));
 
-        accounts.put(name, new Account(name, password));
-        UserConsole.println(new TextElement(MessageSet.App.CREATED, FormatType.SUCCESS));
+            UserConsole.printInputResult(MessageSet.App.NAME_PROMPT, name);
 
-        //TODO: handle return
-        FileManager.createFolder(name);
-    }
+            do {
+                if (password != null) {
+                    UserConsole.print(MessageSet.App.PASSWORDS_NO_MATCH);
+                }
+                password = UserConsole.getPassword(MessageSet.App.PASSWORD_PROMPT);
+            } while (!password.equals(UserConsole.getPassword(MessageSet.App.PASSWORD_REPEAT_PROMPT)));
 
-    private static void deleteAccount() {
-        if (listAccounts()) {
-            accounts.remove(getAccountChoice());
-            UserConsole.println(new TextElement(MessageSet.App.DELETE_SUCCESS, FormatType.SUCCESS));
+        }
+        catch (InputCancelledException ignored){
+            return;
+        }
+
+        if (Boolean.TRUE.equals(FileManager.createFolder(name))){
+            accounts.put(name, new Account(name, password));
+            UserConsole.print(MessageSet.App.CREATED);
+        } else{
+            UserConsole.print(MessageSet.App.NOT_CREATED);
         }
     }
 
-    private static void enterAccount() {
-        if (listAccounts() && Boolean.FALSE.equals(accounts.get(getAccountChoice()).login(UserConsole.getPassword(MessageSet.App.ENTER_PASSWORD))))
-            UserConsole.println(new TextElement(MessageSet.App.INVALID_PASSWORD, FormatType.ERROR));
+    private static void deleteAccount() {
+        try {
+            if (listAccounts()) {
+                accounts.remove(getAccountChoice());
+                UserConsole.println(MessageSet.App.DELETE_SUCCESS);
+            }
+        }
+        catch (InputCancelledException ignored) {
+            //cancel
+        }
+
     }
 
-    private static String getAccountChoice() {
-        return UserConsole.getInput(MessageSet.App.SELECT_ACCOUNT, new TreeSet<>(accounts.keySet()));
+    private static void enterAccount() {
+        try {
+            if (listAccounts()
+                    && Boolean.FALSE.equals(accounts.get(getAccountChoice()).login(UserConsole.getPassword(MessageSet.App.PASSWORD_PROMPT)))) {
+                UserConsole.print(MessageSet.App.INVALID_PASSWORD);
+            }
+            else {
+                UserConsole.print(MessageSet.App.HELP_PAGE);
+            }
+        }
+        catch (InputCancelledException ignored) {
+            //cancel
+        }
+
+    }
+
+    private static String getAccountChoice() throws InputCancelledException {
+        return UserConsole.getInput(MessageSet.App.ACCOUNT_PROMPT, new TreeSet<>(accounts.keySet()));
     }
 
     private static boolean listAccounts() {
-        UserConsole.print(new TextElement(MessageSet.App.ACCOUNTS_LIST, FormatType.HEADING));
+        UserConsole.print(MessageSet.App.ACCOUNTS_LIST);
 
         if (accounts.isEmpty()) {
-            UserConsole.println(new TextElement(" " + MessageSet.App.NO_ACCOUNTS, FormatType.HINT));
+            UserConsole.print(MessageSet.App.NO_ACCOUNTS);
             return false;
         } else {
-            UserConsole.println(new TextElement(" " + accounts.keySet(), FormatType.BODY));
+            UserConsole.println(new TextElement(accounts.keySet().toString(), FormatType.BODY));
             return true;
         }
     }
 
-    public static void exit(int status) {
-        UserConsole.println(new TextElement(MessageSet.Misc.GOODBYE, FormatType.BODY));
-        //save data
-        saveAccounts();
-        System.exit(0);
-    }
 }

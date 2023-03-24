@@ -1,5 +1,6 @@
 package softwaredesign.extraction;
 
+import softwaredesign.language.MessageSet;
 import softwaredesign.utilities.TextElement;
 
 import java.util.List;
@@ -7,10 +8,6 @@ import java.util.List;
 public abstract class Metric {
     private final String description;
     private final String name;
-
-    String getName() { //TODO: needed?
-        return this.name;
-    }
 
     public String getCommand() {
         boolean nextUppercase = false;
@@ -39,7 +36,7 @@ public abstract class Metric {
         return List.of(
                 new TextElement(this.name, TextElement.FormatType.TITLE),
                 new TextElement(this.description, TextElement.FormatType.HINT),
-                new TextElement("", TextElement.FormatType.DIVIDER),
-                new TextElement("\n" + this.contentToString()));
+                MessageSet.Console.DIVIDER,
+                new TextElement(this.contentToString()));
     }
 }

@@ -17,8 +17,8 @@ dependencies {
     implementation group: 'org.jline', name: 'jline', version: '3.23.0'
     implementation group: 'org.jline', name: 'jline-terminal-jansi', version: '3.23.0'
     implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.26'
+    annotationProcessor 'org.projectlombok:lombok:1.18.26'
     implementation 'org.jetbrains:annotations:23.0.0'
-//    implementation group: 'info.picocli', name: 'picocli', version: '4.7.1'
     testImplementation group: 'junit', name: 'junit', version: '4.13.1'
 
     // Github API

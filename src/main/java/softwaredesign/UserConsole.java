@@ -1,7 +1,9 @@
 package softwaredesign;
 
+import lombok.Setter;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.UserInterruptException;
 import org.jline.reader.impl.completer.ArgumentCompleter;
 import org.jline.reader.impl.completer.NullCompleter;
 import org.jline.reader.impl.completer.StringsCompleter;
@@ -13,6 +15,7 @@ import org.jline.utils.AttributedStyle;
 import org.jline.utils.InfoCmp;
 import softwaredesign.language.CommandSet;
 import softwaredesign.language.MessageSet;
+import softwaredesign.utilities.InputCancelledException;
 import softwaredesign.utilities.TextElement;
 import softwaredesign.utilities.TextElement.FormatType;
 
@@ -24,9 +27,11 @@ import java.util.*;
 import static java.util.Map.entry;
 
 public class UserConsole {
+    private UserConsole() {throw new IllegalStateException("Static Class");}
 
-    private UserConsole() {}
     private static Terminal terminal;
+    @Setter
+    private static boolean debug = false;
 
     static {
         try {
@@ -39,82 +44,193 @@ public class UserConsole {
 
     private static final int NO_COLOR = -1;
 
-    private final static TextStyle DEFAULT_STYLE = new TextStyle(NO_COLOR, NO_COLOR, false ,false, false);
-    private final static TextStyle GREYED_STYLE = new TextStyle(NO_COLOR, NO_COLOR, false ,false, false);
+    private static final TextStyle DEFAULT_STYLE = new TextStyle(false, false, false);
+    private static final TextStyle GREYED_STYLE = new TextStyle(AttributedStyle.BRIGHT, NO_COLOR, false, false, false);
 
     private static Map<FormatType, TextStyle> typeToStyle = Map.ofEntries(
+            entry(FormatType.PAGE_TITLE, new TextStyle(true, false, true)),
             entry(FormatType.TITLE, new TextStyle(true, false, true)),
-            entry(FormatType.HEADING, new TextStyle(AttributedStyle.BLUE, true, false, true)),
-            entry(FormatType.BODY, DEFAULT_STYLE),
-            entry(FormatType.STATISTIC, DEFAULT_STYLE),
+            entry(FormatType.HEADING, new TextStyle(AttributedStyle.MAGENTA, true, false, true)),
+            entry(FormatType.HINT, new TextStyle(false, true, false)),
+            entry(FormatType.COMMAND, new TextStyle(AttributedStyle.CYAN, false, false, true)),
             entry(FormatType.DIVIDER, new TextStyle(AttributedStyle.BRIGHT, false, false, false)),
             entry(FormatType.ERROR, new TextStyle(AttributedStyle.RED, true, false, false)),
-            entry(FormatType.SUCCESS, new TextStyle(AttributedStyle.GREEN, true, false ,false)),
+            entry(FormatType.SUCCESS, new TextStyle(AttributedStyle.GREEN, true, false, false)),
             entry(FormatType.PROMPT, new TextStyle(AttributedStyle.BRIGHT, false, false, false)),
             entry(FormatType.WAIT, new TextStyle(AttributedStyle.YELLOW, false, true, false))
     );
 
-    private static String getStyledPrompt(String prompt, String Seperator) {
-        return getStyledText(prompt + Seperator, typeToStyle.getOrDefault(FormatType.PROMPT, DEFAULT_STYLE)).toAnsi();
+    /**
+     * Prints the given string if debug is active.
+     *
+     * @param message String to print
+     */
+    public static void log(String message) {
+        if (debug) {
+            terminal.writer().println(MessageSet.Icons.ICON_INFO + " " + message);
+            terminal.writer().flush();
+        }
     }
 
-    private static String getStyledPrompt(String prompt) {
-        return getStyledPrompt(prompt, MessageSet.Console.PROMPT_SEPARATOR);
-    }
-
-    public static CommandSet.Command getCommandInput(String prompt, Set<CommandSet.Command> options) {
+    /**
+     * Similar to the getInput method, but takes a set of commands, and returns the chosen command
+     *
+     * @param prompt  Prompt to print
+     * @param options Set of options
+     * @return Entered option
+     * @throws InputCancelledException
+     */
+    public static CommandSet.Command getCommandInput(String prompt, Set<CommandSet.Command> options) throws InputCancelledException {
+        //TODO: check for empty set and throw exception/return invalid
         return CommandSet.getCommand(getInput(prompt, CommandSet.getKeywords(options)));
     }
 
-    public static void log(String message) {
-        terminal.writer().println(MessageSet.Icons.ICON_INFO + " " + message);
-        terminal.writer().flush();
-    }
+    /**
+     * Prints the prompt, waits for input, and returns the given input.
+     * If a non-empty set of options is given, only a choice of those options will be accepted and returned.
+     *
+     * @param prompt  Prompt to print
+     * @param options Set of options (can be empty)
+     * @return Entered String
+     * @throws InputCancelledException
+     */
+    public static String getInput(String prompt, Set<String> options) throws InputCancelledException {
+        try {
+            LineReader reader = LineReaderBuilder.builder()
+                    .terminal(terminal)
+                    .completer(new ArgumentCompleter(new StringsCompleter(options), new NullCompleter()))
+                    .build().option(LineReader.Option.ERASE_LINE_ON_FINISH, true);
 
-    public static String getInput(String prompt, Set<String> options) {
-        List<TextElement> errorInvalid = List.of(
-                new TextElement(MessageSet.Console.INVALID_OPTION, FormatType.ERROR),
-                new TextElement(" "),
-                new TextElement(MessageSet.Console.OPTIONS + options + "\n")
-        );
-
-        LineReaderBuilder builder = LineReaderBuilder.builder();
-        builder.terminal(terminal);
-        builder.completer(new ArgumentCompleter(new StringsCompleter(options), new NullCompleter()));
-        LineReader reader = builder.build();
-        reader.option(LineReader.Option.ERASE_LINE_ON_FINISH, true);
             String command;
-        while (!options.contains(command = reader.readLine(getStyledPrompt(prompt)).trim())
-                && options.size() > 0) {
-            print(errorInvalid);
-            terminal.flush();
+            while (!options.contains(command = reader.readLine(getStyledPrompt(prompt)).trim())
+                    && !options.isEmpty()) {
+                print(MessageSet.Console.getInvalidOptionText(options));
+                terminal.flush();
+            }
+            return command;
+        } catch (UserInterruptException e) {
+            throw (new InputCancelledException());
         }
-        return command;
+
     }
 
+    /**
+     * Simple utility method to print the result of previously attained input with the INPUT_SET separator.
+     *
+     * @param prompt Prompt to print
+     * @param result Result to print
+     */
     public static void printInputResult(String prompt, String result) {
         println(new TextElement(prompt + MessageSet.Console.INPUT_SET + result));
     }
 
-    public static String getInput(String prompt, boolean allowSpaces, boolean allowEmpty) {
-        LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();
-        reader.option(LineReader.Option.ERASE_LINE_ON_FINISH, true);
-        reader.setAutosuggestion(LineReader.SuggestionType.COMPLETER);
-        String input;
-        while (true) {
-            input = reader.readLine(getStyledPrompt(prompt, MessageSet.Console.INPUT_SEPARATOR)).trim();
-            if (!allowSpaces && input.contains(" ")) {
-                println(new TextElement(prompt + MessageSet.Console.CONTAINS_SPACES_ERROR, FormatType.ERROR));
+    /**
+     * Prints the prompt, waits for input, and returns the given input after a newline
+     * or carriage return character has been received. Leading and trailing whitespace is trimmed.
+     * If allowSpaces or allowEmpty are false, input containing spaces or empty input will not be accepted respectively.
+     *
+     * @param prompt      Prompt to print
+     * @param allowSpaces Specifier for whether spaces are allowed in the input
+     * @param allowEmpty  Specifier for whether empty input is allows
+     * @return Entered input trimmed of leading and trailing whitespace
+     * @throws InputCancelledException
+     */
+    public static String getInput(String prompt, boolean allowSpaces, boolean allowEmpty) throws InputCancelledException {
+        try {
+            LineReader reader = LineReaderBuilder.builder()
+                    .terminal(terminal)
+                    .build()
+                    .option(LineReader.Option.ERASE_LINE_ON_FINISH, true);
+            String input;
+            while (true) {
+                input = reader.readLine(getStyledPrompt(prompt, MessageSet.Console.INPUT_SEPARATOR)).trim();
+                if (!allowSpaces && input.contains(" ")) {
+                    print(MessageSet.Console.getNoSpacesError(prompt));
+                } else if (!allowEmpty && input.length() == 0) {
+                    print(MessageSet.Console.getNonEmptyError(prompt));
+                } else break;
             }
-            else if (!allowEmpty && input.length() == 0) {
-                println(new TextElement(prompt + MessageSet.Console.IS_EMPTY_ERROR, FormatType.ERROR));
-            }
-            else break;
-        }
 
-        return input;
+            return input;
+        } catch (UserInterruptException e) {
+            throw new InputCancelledException();
+        }
     }
 
+    public static void clearScreen() {
+        clearScreen(0);
+    }
+
+    public static void clearScreen(int topSpacing) {
+        terminal.puts(InfoCmp.Capability.clear_screen);
+        for (int i = 0; i < topSpacing; i++) {
+            terminal.writer().print("\n");
+        }
+        terminal.writer().flush();
+    }
+
+    /**
+     * Prints the given string. No newline is added.
+     *
+     * @param data String to print
+     */
+    public static void print(String data) {
+        print(new TextElement(data));
+    }
+
+    /**
+     * Prints the given TextElement. No newline is added.
+     *
+     * @param data TextElement to print
+     */
+    public static void print(TextElement data) {
+        print(List.of(data));
+    }
+
+    /**
+     * Prints the given TextElement and terminates with a newline.
+     *
+     * @param data TextElement to print
+     */
+    public static void println(TextElement data) {
+        print(List.of(new TextElement(data.content + "\n", data.type, false)));
+    }
+
+    /**
+     * Prints the given list of TextElements with a newline after each element.
+     *
+     * @param data List of TextElements to print
+     */
+    public static void println(List<TextElement> data) {
+        List<TextElement> newData = new ArrayList<>();
+        data.forEach(line -> newData.add(
+                new TextElement(line.content + "\n", line.type, false))
+        );
+        print(newData);
+    }
+
+    /**
+     * Prints the given list of TextElements, no newlines are added
+     *
+     * @param data List of TextElements to print
+     */
+    public static void print(List<TextElement> data) {
+        AttributedStringBuilder string = new AttributedStringBuilder();
+        data.forEach(e -> {
+            string.append(getStyledText(e.content, getStyle(e.type)));
+        });
+        terminal.writer().print(string.toAnsi());
+        terminal.flush();
+    }
+
+    /**
+     * Prints the prompt, waits for input, and returns the given input after a newline
+     * or carriage return character has been received.
+     * The entered keys are not shown, making this method mainly useful for passwords.
+     *
+     * @param prompt Prompt to print
+     * @return String of entered characters
+     */
     public static String getPassword(String prompt) {
         terminal.writer().print(getStyledPrompt(prompt, MessageSet.Console.INPUT_SEPARATOR));
         terminal.flush();
@@ -134,51 +250,87 @@ public class UserConsole {
 
             } while (inChar != '\n' && inChar != '\r');
 
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             readString.append('\n');
         }
 
         terminal.setAttributes(prevAttr);
-        terminal.writer().print('\r');
+        clearLine();
         if (readString.length() < 2) return readString.toString();
-        else return readString.substring(0, readString.length() - 2).toString();
-
+        else return readString.substring(0, readString.length() - 2);
     }
 
-    public static void print(String data) {
-        print(new TextElement(data, FormatType.BODY));
-    }
+    /**
+     * Prints the title located at the given location with different styling for the pre, main, and sub part of the title.
+     * The length of the parts needs to be specified in the first 3 lines of the file.
+     * If the title can't be found or is too wide for the terminal window, the fallback string will be printed.
+     *
+     * @param location Path of the title file (relative to the resources folder)
+     * @param fallback Fallback string to print
+     */
+    public static void printTitle(String location, String fallback) {
+        terminal.puts(InfoCmp.Capability.clear_screen);
 
-    public static void print(TextElement data) {
-        print(List.of(data));
-    }
+        try (InputStream input = ClassLoader.getSystemResourceAsStream(location);) {
+            if (input == null) throw (new FileNotFoundException("Title file (" + location + ") not Found"));
+            List<String> lines = new ArrayList<>();
+            int maxLength = 0;
+            Scanner inputScanner = new Scanner(input, StandardCharsets.UTF_8);
 
-    public static void println(TextElement data) {
-        print(List.of(new TextElement(data.content + "\n", data.type, false)));
-    }
-
-    public static void println(List<TextElement> data) {
-        List<TextElement> newData = new ArrayList<>();
-        data.forEach(line -> {
-            newData.add(new TextElement(line.content + "\n", line.type, false));
-        });
-        print(newData);
-    }
-
-    public static void print(List<TextElement> data) {
-        AttributedStringBuilder string = new AttributedStringBuilder();
-
-        for (TextElement element : data) {
-            String content = element.content;
-            if (element.type == TextElement.FormatType.DIVIDER) {
-                content = MessageSet.Console.DIVIDER;
+            while (inputScanner.hasNext()) {
+                String line = inputScanner.nextLine();
+                if (line.length() > maxLength) maxLength = line.length();
+                lines.add(line);
             }
-            string.append(getStyledText(content, typeToStyle.getOrDefault(element.type, DEFAULT_STYLE)));
-        }
 
-        terminal.writer().print(string.toAnsi());
+            if (maxLength > terminal.getWidth()) {
+                throw new SizeLimitExceededException();
+            }
+
+            int rowsPre = Integer.parseInt(lines.get(0));
+            int rowsMain = Integer.parseInt(lines.get(1));
+            int rowsSub = Integer.parseInt(lines.get(2));
+
+            lines = lines.subList(3, lines.size());
+
+            for (String line : lines.subList(0, rowsPre)) {
+                terminal.writer().println(getStyledText(line, GREYED_STYLE).toAnsi());
+            }
+            lines = lines.subList(rowsPre, lines.size());
+            for (String line : lines.subList(0, rowsMain)) {
+                terminal.writer().println(getStyledText(line, DEFAULT_STYLE).toAnsi());
+            }
+            lines = lines.subList(rowsMain, lines.size());
+            for (String line : lines.subList(0, rowsSub)) {
+                terminal.writer().println(getStyledText(line, GREYED_STYLE).toAnsi());
+            }
+        } catch (IOException | SizeLimitExceededException | NumberFormatException e) {
+            terminal.writer().println(getStyledText("\n" + fallback + "\n", getStyle(FormatType.TITLE)).toAnsi());
+        }
         terminal.flush();
+    }
+
+    // INTERNAL HELPER METHODS:
+
+    private static TextStyle getStyle(FormatType type) {
+        return typeToStyle.getOrDefault(type, DEFAULT_STYLE);
+    }
+
+    private static void clearLine() {
+        terminal.writer().print('\r');
+        for (int i = 0; i < terminal.getWidth(); i++) {
+            terminal.writer().print(' ');
+        }
+        terminal.writer().print('\r');
+        terminal.writer().flush();
+    }
+
+    private static String getStyledPrompt(String prompt, String separator) {
+        return getStyledText(prompt + separator, getStyle(FormatType.PROMPT)).toAnsi();
+    }
+
+    private static String getStyledPrompt(String prompt) {
+        return getStyledPrompt(prompt, MessageSet.Console.PROMPT_SEPARATOR);
     }
 
     private static AttributedStringBuilder getStyledText(String text, TextStyle style) {
@@ -202,53 +354,6 @@ public class UserConsole {
         string.append(text);
         string.style(AttributedStyle.DEFAULT);
         return string;
-    }
-
-    public static void printTitle(String location, int rowsPre, int rowsMain, int rowsSub, String fallback) {
-        terminal.puts(InfoCmp.Capability.clear_screen);
-
-        try {
-            InputStream input = ClassLoader.getSystemResourceAsStream(location);
-            if (input == null) throw (new FileNotFoundException("Title file (" + location + ") not Found"));
-            Scanner titleScanner = new Scanner(input, StandardCharsets.UTF_8);
-            int maxLength = 0;
-            while (titleScanner.hasNext()) {
-                String line = titleScanner.nextLine();
-                if (line.length() > maxLength) {
-                    maxLength = line.length();
-                }
-            }
-
-            if (maxLength > terminal.getWidth()) {
-                throw new SizeLimitExceededException();
-            }
-            //TODO: Lennart make nicer
-            input = ClassLoader.getSystemResourceAsStream(location);
-            if (input == null) throw (new FileNotFoundException("Title file (" + location + ") not Found"));
-            titleScanner = new Scanner(input, "UTF-8");
-
-            for (int i = 0; i < rowsPre; i++) {
-                String line = titleScanner.nextLine();
-                terminal.writer().println(getStyledText(line, GREYED_STYLE).toAnsi());
-            }
-            for (int i = 0; i < rowsMain; i++) {
-                String line = titleScanner.nextLine();
-                terminal.writer().println(getStyledText(line, DEFAULT_STYLE).toAnsi());
-            }
-            for (int i = 0; i < rowsSub; i++) {
-                String line = titleScanner.nextLine();
-                terminal.writer().println(getStyledText(line, GREYED_STYLE).toAnsi());
-            }
-            titleScanner.close();
-        }
-        catch (FileNotFoundException | SizeLimitExceededException e) {
-            terminal.writer().println(getStyledText("\n" + fallback + "\n", typeToStyle.getOrDefault(FormatType.TITLE, DEFAULT_STYLE)).toAnsi());
-        }
-        catch (NoSuchElementException e) {
-            //TODO catch properly
-        }
-
-        terminal.flush();
     }
 
     private static final class TextStyle {

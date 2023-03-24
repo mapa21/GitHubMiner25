@@ -1,7 +1,6 @@
 package softwaredesign.extraction;
 
 import lombok.Getter;
-import softwaredesign.App;
 import softwaredesign.UserConsole;
 
 import java.io.*;
@@ -10,94 +9,96 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-//TODO: Idea! Use multithreading for extraction?
-
 public final class Extractor {
-    // attributes
-    private static final Extractor instance = new Extractor();
-    public static synchronized Extractor get() {
-        return instance;
-    }
+    private static final String LIST_FILE_LOCATION = "metric_types.txt";
+    private static Extractor instance = null;
     @Getter
     private final Set<String> metricTypes = new HashSet<>();
-
+    @Getter
     private final String listHash;
-    Set<Class<? extends Metric>> classes = new HashSet<>();
+    private final Set<Class<? extends Metric>> classes = new HashSet<>();
 
-    public String getListHash() {
-        return listHash;
+    public static Extractor getInstance() throws IOException {
+        if (instance == null) instance = new Extractor();
+        return instance;
     }
 
-    //TODO: handle exceptions
-    private List<String> gitLog(String path){
+    //TODO: Refactor into different location
+    public static List<String> runCommand(String command, String path) {
         Process process;
         try {
-            process = Runtime.getRuntime().exec("git log --numstat", null, new File(path));
+            process = Runtime.getRuntime().exec(command, null, new File(path));
+            assert process != null;
+            return getOutput(process);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            UserConsole.log(e.getMessage());
+            Thread.currentThread().interrupt();
+            return List.of();
         }
-        List<String> output;
-        try {
-            output = getOutput(process);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return output;
     }
 
-    public static List<String> getOutput(Process process) throws IOException {
+    //TODO: Refactor into different location
+    private static List<String> getOutput(Process process) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         List<String> lines = new ArrayList<>();
         String line;
-        while ((line = reader.readLine()) != null) {
-            lines.add(line);
+        try {
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            UserConsole.log(e.getMessage());
         }
         return lines;
     }
 
+    /**
+     * Takes the path to a (git) folder and returns a map (name -> metric)
+     * of extracted metrics together with the hash of the metrics list that was used.
+     * @param path Path to a git repository folder
+     * @return Map (name -> metric) of metrics and list hash.
+     */
     public ExtractionResult extractMetrics(String path) {
-        List<String> output = gitLog(path);
+        List<String> output = runCommand("git log --numstat", path);
         List<Commit> commits = parseLog(output);
-        UserConsole.log("COMMITS:");
-        for (Commit c : commits) {
-            UserConsole.log(c.authorName + " " + c.hash);
-        }
-        //List<Commit> commits = List.of(new Commit("Tester", "tester@vu.nl", ZonedDateTime.parse("2011-12-03T10:15:30+01:00"), "Created project", 3, "129ac84eb6a", 15, 2, Boolean.FALSE)); //placeholder, replaces by extraction of commits
         Map<String, Metric> metrics = new HashMap<>();
-
         for (Class<? extends Metric> metric : classes) {
             try {
-                Metric metricInstance = metric.getConstructor(List.class).newInstance((Object) commits);
+                Metric metricInstance = metric.getConstructor(List.class).newInstance(commits);
                 metrics.put(metricInstance.getCommand(), metricInstance);
-//                UserConsole.log(metricInstance.getCommand() + " extracted");
             }
             catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 UserConsole.log(e.toString());
-                //TODO: handle exception? => Should never occur
+                //Should never occur
             }
         }
-
         return new ExtractionResult(metrics, listHash);
     }
 
-    private Extractor() {
-        try (InputStream input = ClassLoader.getSystemResourceAsStream("metric_types.txt")){
+    /**
+     * Loads the list of metrics and tries to initialize the classes set with the given metrics.
+     * If the list
+     * @throws IOException If the list file can't be found, or no classes from the list could be loaded
+     */
+    private Extractor() throws IOException {
+        try (InputStream input = ClassLoader.getSystemResourceAsStream(LIST_FILE_LOCATION)) {
             if (input == null) throw (new FileNotFoundException("Metric list file not found in resources"));
             Scanner inputReader = new Scanner(input);
-            Set<String> metricNames = new HashSet<>();
+            Set<String> metricNames = new TreeSet<>();
             while (inputReader.hasNext()) {
                 String name = inputReader.next();
                 if (name.length() > 0) metricNames.add(name);
             }
             initClassSet(metricNames);
+            if (classes.isEmpty()) throw (new IOException("No compatible metrics could be loaded"));
+            listHash = Integer.toString(metricNames.toString().hashCode());
         }
-        catch (IOException e) {
-            UserConsole.log(e.getMessage());
-            System.exit(1);
-        }
-        listHash = Integer.toString(Objects.hash(classes));
     }
 
+    /**
+     * Takes a set of metric names and tries load the associated classes located in the metrics package into the classes set.
+     * @param metricNames Set of metric names
+     */
     private void initClassSet(Set<String> metricNames) {
         String packageName = this.getClass().getPackageName() + ".metrics.";
         for (String name : metricNames) {
@@ -114,7 +115,8 @@ public final class Extractor {
         }
     }
 
-    public static List<Commit> parseLog(List<String> output){
+    //TODO Maria: Abstract functionality into functions
+    private static List<Commit> parseLog(List<String> output){
         final int commitInd = 7;
         List<Commit> commits = new ArrayList<>();
 
@@ -130,7 +132,7 @@ public final class Extractor {
             //Check if merge
             currLine = output.get(counter);
             Boolean isMerge = currLine.contains("Merge");
-            if (isMerge) {
+            if (Boolean.TRUE.equals(isMerge)) {
                 counter++;
                 currLine = output.get(counter);
             }
@@ -166,7 +168,7 @@ public final class Extractor {
             int deletions = 0;
             int nrOfFilesChanged = 0;
 
-            if (!isMerge){
+            if (Boolean.FALSE.equals(isMerge)){
                 currLine = output.get(counter);
                 while (!currLine.isEmpty()) {
                     String[] elements = currLine.split("\\s+");
@@ -189,7 +191,6 @@ public final class Extractor {
             Commit currCommit = new Commit(authorName, authorEmail, dateTime, description, nrOfFilesChanged, hash, insertions, deletions, isMerge);
             commits.add(currCommit);
         }
-        assert !commits.isEmpty();      //TODO: DELETE
         return commits;
     }
 }
