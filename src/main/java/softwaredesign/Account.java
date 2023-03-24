@@ -41,7 +41,7 @@ public class Account implements Comparable<Account>{
         if (token.length() == 0) {
             setToken();
         }
-
+        printHelp();
         CommandSet.Command command;
         try {
             while ((command = UserConsole.getCommandInput(name, COMMANDS)) != Command.LOG_OUT) {
@@ -62,7 +62,7 @@ public class Account implements Comparable<Account>{
                         listRepos();
                         break;
                     case QUIT:
-                        App.exit(0);
+                        App.exit(App.EXIT_CODES.SUCCESS);
                         break;
                     default:
                 }
@@ -71,9 +71,14 @@ public class Account implements Comparable<Account>{
         catch (InputCancelledException ignored){
             //
         }
-
+        UserConsole.clearScreen();
         //print logging out
         return true;
+    }
+
+    private void printHelp() {
+        UserConsole.clearScreen();
+        UserConsole.print(MessageSet.Account.getHelpPage(name));
     }
 
     private boolean tokenIsAdded() {
@@ -92,9 +97,9 @@ public class Account implements Comparable<Account>{
                 String id = getRepoChoice();
                 if (repositories.get(id).delete()){ //getRepoChoice only returns existing repos, so default is not needed
                     repositories.remove(id);
-                    UserConsole.println(MessageSet.Account.REMOVE_SUCCESS);
+                    UserConsole.print(MessageSet.Account.REMOVE_SUCCESS);
                 } else{
-                    UserConsole.println(new TextElement(MessageSet.Repo.REMOVE_UNSUCCESSFUL, TextElement.FormatType.ERROR));
+                    UserConsole.print(MessageSet.Repo.REMOVE_UNSUCCESSFUL);
                 }
             }
         }
@@ -109,11 +114,15 @@ public class Account implements Comparable<Account>{
 
     private void enterRepo() {
         try {
-            if(listRepos()) repositories.get(getRepoChoice()).enter();
+            if(listRepos()) {
+                repositories.get(getRepoChoice()).enter();
+                printHelp();
+            }
         }
         catch (InputCancelledException ignored) {
             //
         }
+
     }
 
     private boolean listRepos() {
@@ -139,6 +148,7 @@ public class Account implements Comparable<Account>{
 
             String id = repoOwner + "/" + repoName;
             if (!repositories.containsKey(id)) {
+                UserConsole.print(MessageSet.Account.ADDING_REPO);
                 Repository repo = new Repository(repoName, repoOwner, token, this.name);
                 repositories.put(id, repo);
                 UserConsole.print(MessageSet.Account.REPO_ADDED);
@@ -156,6 +166,7 @@ public class Account implements Comparable<Account>{
     private void setToken() {
         try {
             UserConsole.print(MessageSet.Account.TOKEN_HEADING);
+            UserConsole.print(MessageSet.Account.TOKEN_HELP);
             String newToken = UserConsole.getInput(MessageSet.Account.TOKEN_PROMPT,false, false);
             UserConsole.print(MessageSet.Account.VALIDATE_TOKEN);
 
@@ -169,7 +180,7 @@ public class Account implements Comparable<Account>{
             else {
                 UserConsole.print(MessageSet.Account.TOKEN_SUCCESS);
                 token = newToken;
-                repositories.values().forEach(repo -> repo.setToken(newToken));
+                repositories.values().forEach(r -> r.setToken(newToken));
             }
         }
         catch (InputCancelledException ignored) {

@@ -14,7 +14,6 @@ import softwaredesign.language.CommandSet.Command;
 import softwaredesign.language.MessageSet;
 import softwaredesign.utilities.FileManager;
 import softwaredesign.utilities.InputCancelledException;
-import softwaredesign.utilities.TextElement;
 import org.apache.commons.io.FileUtils;
 
 public class Repository {
@@ -50,14 +49,22 @@ public class Repository {
             throw(new InvalidParameterException("Invalid repository details or insufficient access rights with the given token."));
         }
         cloneRepo();
-        getMetricsList();
+        getMetrics();
     }
 
     public void enter(){
-        if (!metricsListHash.equals(Extractor.getInstance().getListHash())) {
-            UserConsole.log("Metrics Hash has changed since last time.");
-            getMetricsList();
+        try {
+            if (!metricsListHash.equals(Extractor.getInstance().getListHash())) {
+                UserConsole.log("Metrics Hash has changed since last time.");
+                getMetrics();
+            }
         }
+        catch (IOException e) {
+            UserConsole.log(e.getMessage());
+            App.exit(App.EXIT_CODES.UNKNOWN_ERROR);
+        }
+        UserConsole.clearScreen();
+        UserConsole.print(MessageSet.Repo.getHelpPage(name, owner, lastUpdated.toString()));
         Command command;
         try {
             while ((command = UserConsole.getCommandInput(owner + '/' + name, COMMANDS)) != Command.EXIT_REPO) {
@@ -75,7 +82,7 @@ public class Repository {
                         update();
                         break;
                     case QUIT:
-                        App.exit(0);
+                        App.exit(App.EXIT_CODES.SUCCESS);
                         break;
                     default:
                 }
@@ -87,12 +94,7 @@ public class Repository {
     }
 
     private void printInfo() {
-        UserConsole.println(List.of (
-                new TextElement(MessageSet.Repo.INFO_TITLE, TextElement.FormatType.TITLE),
-                new TextElement(MessageSet.Repo.INFO_NAME + name),
-                new TextElement(MessageSet.Repo.INFO_OWNER + owner),
-                new TextElement(MessageSet.Repo.INFO_LAST_UPDATED + lastUpdated)
-        ));
+        UserConsole.print(MessageSet.Repo.getRepoInfoText(name, owner, lastUpdated.toString()));
     }
 
     private void printAllMetrics() {
@@ -110,25 +112,31 @@ public class Repository {
     }
 
     private void update() {
-        UserConsole.println(new TextElement(MessageSet.Repo.UPDATING, TextElement.FormatType.WAIT));
+        UserConsole.print(MessageSet.Repo.UPDATING);
         if (changesToPull()) {
-            UserConsole.println(new TextElement(MessageSet.Repo.GETTING_METRICS, TextElement.FormatType.BODY));
-            getMetricsList();
+            UserConsole.print(MessageSet.Repo.GETTING_METRICS);
+            getMetrics();
         }
     }
 
-    private void getMetricsList() {
+    private void getMetrics() {
         assert this.parentPath != null;
-        ExtractionResult result = Extractor.getInstance().extractMetrics(this.repoPath);
-        metrics = result.metrics;
-        metricsListHash = result.listHash;
+        try {
+            ExtractionResult result = Extractor.getInstance().extractMetrics(this.repoPath);
+            metrics = result.metrics;
+            metricsListHash = result.listHash;
+        }
+        catch (IOException e) {
+            UserConsole.log(e.getMessage());
+            App.exit(App.EXIT_CODES.UNKNOWN_ERROR);
+        }
     }
 
     private boolean changesToPull() {
         lastUpdated = new Date();
         List<String> output = Extractor.runCommand("git pull", this.repoPath);
         String noUpdate = "Already up to date.";
-        UserConsole.println(new TextElement(MessageSet.Repo.UPDATED, TextElement.FormatType.SUCCESS));
+        UserConsole.print(MessageSet.Repo.UPDATED);
         return output.size() != 1 || !output.contains(noUpdate);
     }
 

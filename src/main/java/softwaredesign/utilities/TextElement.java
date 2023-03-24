@@ -14,6 +14,7 @@ public class TextElement {
         ERROR,
         SUCCESS,
         PROMPT,
+        PAGE_TITLE,
         WAIT,
         TITLE
     }

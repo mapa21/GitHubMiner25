@@ -7,13 +7,18 @@ import softwaredesign.utilities.FileManager;
 import softwaredesign.utilities.InputCancelledException;
 import softwaredesign.utilities.TextElement;
 import softwaredesign.utilities.TextElement.FormatType;
-import sun.misc.Signal;
 
+import java.io.IOException;
 import java.util.*;
 
 public class App {
-    public static boolean debug = false;
-    private static final Map<String, Account> accounts = FileManager.initAccounts();
+
+    private static final String TITLE_FILE_LOCATION = "title.txt";
+
+    public enum EXIT_CODES {
+        SUCCESS,
+        UNKNOWN_ERROR
+    }
 
     private static final Set<Command> COMMANDS = Set.of(
             Command.QUIT,
@@ -23,24 +28,30 @@ public class App {
             Command.LIST_ACCOUNTS
     );
 
+    private static final Map<String, Account> accounts = FileManager.initAccounts();
+
+    /**
+     * Application entry point
+     * @param args Command line arguments
+     */
     public static void main (String[] args) {
         for (String arg : args) {
             if (arg.equals("-d")) {
-                debug = true;
+                UserConsole.setDebug(true);
                 break;
             }
         }
 
-        if (Boolean.FALSE.equals(FileManager.initRootFolder())) exit(-1);
+        if (Boolean.FALSE.equals(FileManager.initRootFolder())) exit(EXIT_CODES.UNKNOWN_ERROR);
         try {
-            Extractor.getInstance(); //eager evaluation of instance does not seem to work
-        } catch (Exception e) { //TODO: add proper error handling
-            exit(1);
+            Extractor.getInstance();
+        } catch (IOException e) {
+            exit(EXIT_CODES.UNKNOWN_ERROR, e.toString());
         }
 
         try {
-            Signal.handle(new Signal("INT"), signal -> exit(0));
-            UserConsole.printTitle("title.txt", 5, 6, 3, "Welcome to GitHubMiner (by Pirates)");
+            UserConsole.printTitle(TITLE_FILE_LOCATION, "Welcome to GitHubMiner (by Pirates)");
+            UserConsole.print(MessageSet.App.HELP_PAGE);
             Command command;
 
             while ((command = UserConsole.getCommandInput("", COMMANDS)) != Command.QUIT) {
@@ -65,7 +76,19 @@ public class App {
             //
         }
 
-        exit(0);
+        exit(EXIT_CODES.SUCCESS);
+    }
+
+    public static void exit(EXIT_CODES status, String message) {
+        if (status != EXIT_CODES.SUCCESS) UserConsole.print(new TextElement(message, FormatType.ERROR));
+        exit(status);
+    }
+
+
+    public static void exit(EXIT_CODES status) {
+        UserConsole.print(MessageSet.Misc.GOODBYE);
+        FileManager.saveAccounts(accounts);
+        System.exit(status.ordinal());
     }
 
     private static void createAccount() {
@@ -95,11 +118,11 @@ public class App {
             return;
         }
 
-        accounts.put(name, new Account(name, password));
         if (Boolean.TRUE.equals(FileManager.createFolder(name))){
+            accounts.put(name, new Account(name, password));
             UserConsole.print(MessageSet.App.CREATED);
         } else{
-            UserConsole.println(new TextElement(MessageSet.App.NOT_CREATED, FormatType.ERROR));
+            UserConsole.print(MessageSet.App.NOT_CREATED);
         }
     }
 
@@ -120,7 +143,10 @@ public class App {
         try {
             if (listAccounts()
                     && Boolean.FALSE.equals(accounts.get(getAccountChoice()).login(UserConsole.getPassword(MessageSet.App.PASSWORD_PROMPT)))) {
-                UserConsole.println(MessageSet.App.INVALID_PASSWORD);
+                UserConsole.print(MessageSet.App.INVALID_PASSWORD);
+            }
+            else {
+                UserConsole.print(MessageSet.App.HELP_PAGE);
             }
         }
         catch (InputCancelledException ignored) {
@@ -145,9 +171,4 @@ public class App {
         }
     }
 
-    public static void exit(int status) {
-        UserConsole.print(MessageSet.Misc.GOODBYE);
-        FileManager.saveAccounts(accounts);
-        System.exit(status);
-    }
 }
