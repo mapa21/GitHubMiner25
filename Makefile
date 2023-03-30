@@ -10,12 +10,12 @@ make:
 	$(command) $(GRADLE_TARGET)
 	make run
 
-make-debug:
+debug:
 	$(command) $(GRADLE_TARGET)
 	make run-debug
 
 run:
 	java -jar build/libs/githubminer-by-pirates-1.0-SNAPSHOT.jar
 
-debug:
+run-debug:
 	java -jar build/libs/githubminer-by-pirates-1.0-SNAPSHOT.jar -d
