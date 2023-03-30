@@ -232,7 +232,7 @@ public class UserConsole {
             while((inChar = terminal.reader().read()) != '\n' && inChar != '\r') {
                 readString.append((char) inChar);
             }
-        } catch (IOException e) {
+        } catch (IOException ignored) {
             //
         }
 
