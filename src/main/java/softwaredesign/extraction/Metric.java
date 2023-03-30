@@ -34,9 +34,9 @@ public abstract class Metric {
     protected abstract String contentToString();
     public final List<TextElement> getMetric() {
         return List.of(
-                new TextElement(this.name, TextElement.FormatType.TITLE),
-                new TextElement(this.description, TextElement.FormatType.HINT),
+                new TextElement(name, TextElement.FormatType.TITLE),
+                new TextElement(description, TextElement.FormatType.HINT),
                 MessageSet.Console.DIVIDER,
-                new TextElement(this.contentToString()));
+                new TextElement(contentToString()));
     }
 }

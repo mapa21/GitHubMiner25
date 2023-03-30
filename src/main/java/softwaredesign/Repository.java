@@ -148,7 +148,14 @@ public class Repository {
     }
 
     public boolean delete() {
-        return FileManager.deleteFolder(this.repoPath);
+        try {
+            FileManager.deleteFolder(this.repoPath);
+        }
+        catch (IOException e) {
+            UserConsole.log(e.getMessage());
+            return false;
+        }
+        return true;
     }
 
     private boolean isValidRepo() {

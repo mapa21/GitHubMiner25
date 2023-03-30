@@ -30,7 +30,7 @@ public class Session {
         try {
             Extractor.getInstance();
             FileManager.initRootFolder();
-            accounts = FileManager.initAccounts();
+            accounts = FileManager.loadAccounts();
         } catch (IOException e) {
             throw new InstantiationException(e.getMessage());
         }
@@ -97,11 +97,14 @@ public class Session {
             return;
         }
 
-        if (Boolean.TRUE.equals(FileManager.createFolder(name))){
+        try {
+            FileManager.createFolder(name);
             accounts.put(name, new Account(name, password));
             UserConsole.print(MessageSet.App.CREATED);
-        } else{
+        }
+        catch (IOException e) {
             UserConsole.print(MessageSet.App.NOT_CREATED);
+            UserConsole.log(e.getMessage());
         }
     }
 
@@ -109,9 +112,13 @@ public class Session {
         try {
             if (listAccounts()) {
                 String account = getAccountChoice();
-                accounts.get(account).delete();
-                accounts.remove(account);
-                UserConsole.println(MessageSet.App.DELETE_SUCCESS);
+                if (accounts.get(account).delete()) {
+                    accounts.remove(account);
+                    UserConsole.print(MessageSet.App.DELETE_SUCCESS);
+                }
+                else {
+                    UserConsole.print(MessageSet.App.DELETE_ERROR);
+                }
             }
         }
         catch (InputCancelledException ignored) {
@@ -122,7 +129,7 @@ public class Session {
     private void enterAccount() {
         try {
             if (listAccounts()
-                    && Boolean.FALSE.equals(accounts.get(getAccountChoice()).login(UserConsole.getHiddenInput(MessageSet.App.PASSWORD_PROMPT)))) {
+                    && !accounts.get(getAccountChoice()).login(UserConsole.getHiddenInput(MessageSet.App.PASSWORD_PROMPT))) {
                 UserConsole.print(MessageSet.App.INVALID_PASSWORD);
             }
             else {

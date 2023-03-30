@@ -79,10 +79,10 @@ public final class MessageSet {
                 new TextElement(" ")
         );
         public static final TextElement CREATED = new TextElement("Account Created\n", SUCCESS);
-        public static final TextElement DELETE_SUCCESS = new TextElement("Account deleted", SUCCESS);
+        public static final TextElement DELETE_SUCCESS = new TextElement("Account deleted\n", SUCCESS);
+        public static final TextElement DELETE_ERROR = new TextElement("Account not deleted\n", ERROR);
         public static final TextElement INVALID_PASSWORD = new TextElement("Invalid password\n", ERROR);
         public static final TextElement PASSWORDS_NO_MATCH = new TextElement("Passwords don't match\n", ERROR);
-
     }
 
     public static final class Account {

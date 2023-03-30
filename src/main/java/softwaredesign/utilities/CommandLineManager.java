@@ -26,7 +26,7 @@ public class CommandLineManager {
             return getOutput(process);
         }
         catch (IOException e) {
-            UserConsole.log("Running command failed due to IOException: " + e.getMessage());
+            UserConsole.log("Running command failed: " + e.getMessage());
             Thread.currentThread().interrupt();
             return List.of();
         }

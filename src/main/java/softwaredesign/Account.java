@@ -131,9 +131,16 @@ public class Account implements Comparable<Account> {
         }
     }
 
-    public void delete() {
+    public boolean delete() {
         repositories.values().forEach(r -> r.delete()); // not strictly needed
-        FileManager.deleteFolder(name);
+        try {
+            FileManager.deleteFolder(name);
+        }
+        catch (IOException e) {
+            UserConsole.log(e.getMessage());
+            return false;
+        }
+        return true;
     }
 
     private void removeRepo() {

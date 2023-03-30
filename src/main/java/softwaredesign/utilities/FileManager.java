@@ -25,7 +25,7 @@ public final class FileManager {
     public static final String SOURCE = buildPath(); // /Library/Application Support/GitHubMiner/
     private static final String JSON_FILE = "data.json";
 
-    private FileManager(){ throw new IllegalStateException("Utility class"); }
+    private FileManager(){ throw new IllegalStateException("Static class"); }
 
     private static String buildPath(){
         String appPath = HOME_DIR;
@@ -45,10 +45,10 @@ public final class FileManager {
     }
 
     public static void initRootFolder() throws IOException {
-        if (!(createFolder(""))) throw new IOException("Can't init root folder");
+        createFolder("");
     }
 
-    public static boolean createFolder(String path){
+    public static void createFolder(String path) throws IOException {
         File folder = new File(SOURCE + path);
         try{
             if (folder.mkdir()) {
@@ -56,9 +56,8 @@ public final class FileManager {
             } else {
                 UserConsole.log("Folder already exists.");
             }
-            return true;
         } catch (SecurityException e) {
-            return false;
+            throw new IOException("Can't create folder \"" + SOURCE + path + "\" - " + e.getMessage());
         }
     }
 
@@ -70,7 +69,7 @@ public final class FileManager {
         saveJsonStringToFile(gson.toJson(accounts.values().toArray(new Account[0])));
     }
 
-    public static Map<String, Account> initAccounts() {
+    public static Map<String, Account> loadAccounts() {
         String jsonString = FileManager.getJsonStringFromFile();
 
         GsonBuilder builder = new GsonBuilder();
@@ -85,18 +84,16 @@ public final class FileManager {
         return Arrays.stream(accountsArr).collect(Collectors.toMap(account -> account.name, account -> account, (a, b) -> b, TreeMap::new));
     }
 
-    public static boolean deleteFolder(String path) {
+    public static void deleteFolder(String path) throws IOException {
         try {
             FileUtils.deleteDirectory(new File(SOURCE + path));
         }
         catch (IOException e) {
-            UserConsole.log("Could not delete folder \"" + path + "\" - " + e.getMessage());
-            return false;
+            throw new IOException("Could not delete folder \"" + path + "\" - " + e.getMessage());
         }
-        return true;
     }
 
-    public static String getJsonStringFromFile() {
+    private static String getJsonStringFromFile() {
         String filePath = SOURCE + JSON_FILE;
 
         if (!(new File(filePath).exists())) {
@@ -118,12 +115,12 @@ public final class FileManager {
         }
     }
 
-    public static void saveJsonStringToFile(String jsonString) {
+    private static void saveJsonStringToFile(String jsonString) {
         String filePath = SOURCE + JSON_FILE;
         try {
             Files.write(Paths.get(filePath), jsonString.getBytes());
         } catch (IOException e) {
-            e.printStackTrace();
+            UserConsole.log("Error while writing to json: " + e.getMessage());
         }
     }
 }
