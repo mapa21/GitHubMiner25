@@ -9,6 +9,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import softwaredesign.utilities.CommandLineManager;
+import softwaredesign.utilities.FileManager;
 
 public final class Extractor {
     private static final String LIST_FILE_LOCATION = "metric_types.txt";
@@ -32,7 +33,8 @@ public final class Extractor {
      * @return Map (name -> metric) of metrics and list hash.
      */
     public ExtractionResult extractMetrics(String path) {
-        List<String> output = CommandLineManager.runCommand("git log --numstat", path);
+        List<String> output = CommandLineManager.runCommand("git log --numstat", FileManager.SOURCE + path);
+        UserConsole.log(output.toString());
         List<Commit> commits = parseLog(output);
         Map<String, Metric> metrics = new HashMap<>();
         for (Class<? extends Metric> metric : classes) {

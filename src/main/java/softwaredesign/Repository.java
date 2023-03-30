@@ -1,7 +1,6 @@
 package softwaredesign;
 
 import java.io.IOException;
-import java.io.File;
 import java.security.InvalidParameterException;
 import java.util.*;
 
@@ -14,7 +13,6 @@ import softwaredesign.language.MessageSet;
 import softwaredesign.utilities.CommandLineManager;
 import softwaredesign.utilities.FileManager;
 import softwaredesign.utilities.InputCancelledException;
-import org.apache.commons.io.FileUtils;
 
 public class Repository {
     public final String name;
@@ -42,7 +40,7 @@ public class Repository {
         this.owner = owner;
         this.token = token;
         this.repoDirName = this.owner + "@" + this.name;
-        this.parentPath = FileManager.getSource() + accountName + FileManager.SEPARATOR;
+        this.parentPath = accountName + FileManager.SEPARATOR;
         this.repoPath = this.parentPath + this.repoDirName + FileManager.SEPARATOR;
 
         if (!isValidRepo()) {
@@ -143,23 +141,20 @@ public class Repository {
 
     private boolean changesToPull() {
         lastUpdated = new Date();
-        List<String> output = CommandLineManager.runCommand("git pull", this.repoPath);
+        List<String> output = CommandLineManager.runCommand("git pull", FileManager.SOURCE + repoPath);
         String noUpdate = "Already up to date.";
         UserConsole.print(MessageSet.Repo.UPDATED);
         return output.size() != 1 || !output.contains(noUpdate);
     }
 
     public boolean delete() {
-        try {
-            FileUtils.deleteDirectory(new File(this.repoPath));
-        } catch (IOException | IllegalArgumentException e) {
-            return false;
-        }
-        return true;
+        return FileManager.deleteFolder(this.repoPath);
     }
+
     private boolean isValidRepo() {
         return isValidRepo(this.token);
     }
+
     public boolean isValidRepo(String token){
         try {
             GitHub.connectUsingOAuth(token).getRepository(this.owner + "/" + this.name);
@@ -169,10 +164,10 @@ public class Repository {
         return true;
     }
 
-    protected void cloneRepo(){
+    private void cloneRepo(){
         String url = "https://" + this.token + "@github.com/" + this.owner + "/" + this.name + ".git";
         UserConsole.log("Cloning repo from " + url);
-        CommandLineManager.runCommand("git clone " + url + " " + this.repoDirName, this.parentPath);
+        CommandLineManager.runCommand("git clone " + url + " " + this.repoDirName, FileManager.SOURCE + this.parentPath);
         lastUpdated = new Date();
     }
 

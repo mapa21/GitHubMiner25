@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import softwaredesign.language.CommandSet;
 import softwaredesign.language.CommandSet.Command;
 import softwaredesign.language.MessageSet;
+import softwaredesign.utilities.FileManager;
 import softwaredesign.utilities.InputCancelledException;
 import softwaredesign.utilities.TextElement;
 
@@ -128,6 +129,11 @@ public class Account implements Comparable<Account> {
         catch (InputCancelledException ignored){
             //cancel
         }
+    }
+
+    public void delete() {
+        repositories.values().forEach(r -> r.delete()); // not strictly needed
+        FileManager.deleteFolder(name);
     }
 
     private void removeRepo() {

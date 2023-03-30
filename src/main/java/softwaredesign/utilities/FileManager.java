@@ -2,6 +2,7 @@ package softwaredesign.utilities;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.commons.io.FileUtils;
 import softwaredesign.Account;
 import softwaredesign.UserConsole;
 import softwaredesign.extraction.Metric;
@@ -21,10 +22,8 @@ public final class FileManager {
     private static final String APP_NAME = "GitHubMiner";
     private static final String OS = System.getProperty("os.name");
     public static final String SEPARATOR = getSystemSeparator();
-    private static final String SOURCE = buildPath(); // /Library/Application Support/GitHubMiner/
+    public static final String SOURCE = buildPath(); // /Library/Application Support/GitHubMiner/
     private static final String JSON_FILE = "data.json";
-
-    public static String getSource(){ return SOURCE;}
 
     private FileManager(){ throw new IllegalStateException("Utility class"); }
 
@@ -46,10 +45,10 @@ public final class FileManager {
     }
 
     public static void initRootFolder() throws IOException {
-        if (Boolean.FALSE.equals(createFolder(""))) throw new IOException("Can't init root folder");
+        if (!(createFolder(""))) throw new IOException("Can't init root folder");
     }
 
-    public static Boolean createFolder(String path){
+    public static boolean createFolder(String path){
         File folder = new File(SOURCE + path);
         try{
             if (folder.mkdir()) {
@@ -84,6 +83,17 @@ public final class FileManager {
         if (accountsArr == null) return new TreeMap<>(); // empty map is returned
 
         return Arrays.stream(accountsArr).collect(Collectors.toMap(account -> account.name, account -> account, (a, b) -> b, TreeMap::new));
+    }
+
+    public static boolean deleteFolder(String path) {
+        try {
+            FileUtils.deleteDirectory(new File(SOURCE + path));
+        }
+        catch (IOException e) {
+            UserConsole.log("Could not delete folder \"" + path + "\" - " + e.getMessage());
+            return false;
+        }
+        return true;
     }
 
     public static String getJsonStringFromFile() {

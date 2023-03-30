@@ -108,7 +108,9 @@ public class Session {
     private void deleteAccount() {
         try {
             if (listAccounts()) {
-                accounts.remove(getAccountChoice());
+                String account = getAccountChoice();
+                accounts.get(account).delete();
+                accounts.remove(account);
                 UserConsole.println(MessageSet.App.DELETE_SUCCESS);
             }
         }

@@ -18,6 +18,7 @@ public class CommandLineManager {
      * @return List of output lines produced by the command
      */
     public static List<String> runCommand(String command, String path) {
+        UserConsole.log("Running command \"" + command + "\" at \"" + path + "\"" );
         Process process;
         try {
             process = Runtime.getRuntime().exec(command, null, new File(path));
@@ -25,7 +26,7 @@ public class CommandLineManager {
             return getOutput(process);
         }
         catch (IOException e) {
-            UserConsole.log(e.getMessage());
+            UserConsole.log("Running command failed due to IOException: " + e.getMessage());
             Thread.currentThread().interrupt();
             return List.of();
         }
