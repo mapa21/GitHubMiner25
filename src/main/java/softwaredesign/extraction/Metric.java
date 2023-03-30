@@ -32,7 +32,7 @@ public abstract class Metric {
         this.description = description;
     }
     protected abstract String contentToString();
-    public List<TextElement> getMetric() {
+    public final List<TextElement> getMetric() {
         return List.of(
                 new TextElement(this.name, TextElement.FormatType.TITLE),
                 new TextElement(this.description, TextElement.FormatType.HINT),

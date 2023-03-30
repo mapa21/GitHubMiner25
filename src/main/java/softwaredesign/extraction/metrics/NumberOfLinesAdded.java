@@ -18,7 +18,7 @@ public class NumberOfLinesAdded extends SingleData {
     private static Integer extract(List<Commit> commits) {
         int value = 0;
         for (Commit commit : commits) {
-            value += commit.insertions;
+            value += commit.fileStats.getInsertions();
         }
         return value;
     }

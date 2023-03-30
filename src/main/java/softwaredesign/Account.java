@@ -8,13 +8,12 @@ import softwaredesign.language.CommandSet.Command;
 import softwaredesign.language.MessageSet;
 import softwaredesign.utilities.InputCancelledException;
 import softwaredesign.utilities.TextElement;
-import softwaredesign.utilities.TextElement.FormatType;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.*;
 
-public class Account implements Comparable<Account>{
+public class Account implements Comparable<Account> {
     public final String name;
     private final String password;
     private String token = "";
@@ -35,13 +34,18 @@ public class Account implements Comparable<Account>{
         this.password = password;
     }
 
+    /**
+     * Entry point of account interaction.
+     * @param password account password
+     * @return True if password was valid, False otherwise
+     */
     public boolean login(String password) {
         if (!this.password.equals(password)) return false;
 
         if (token.length() == 0) {
             setToken();
         }
-        printHelp();
+
         CommandSet.Command command;
         try {
             while ((command = UserConsole.getCommandInput(name, COMMANDS)) != Command.LOG_OUT) {
@@ -62,7 +66,7 @@ public class Account implements Comparable<Account>{
                         listRepos();
                         break;
                     case QUIT:
-                        App.exit(App.EXIT_CODES.SUCCESS);
+                        App.exit(App.EXIT_CODE.SUCCESS);
                         break;
                     default:
                 }
@@ -76,55 +80,6 @@ public class Account implements Comparable<Account>{
         return true;
     }
 
-    private void printHelp() {
-        UserConsole.clearScreen();
-        UserConsole.print(MessageSet.Account.getHelpPage(name));
-    }
-
-    private boolean tokenIsAdded() {
-        if (token.equals("")) {
-            UserConsole.print(MessageSet.Account.NO_TOKEN);
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
-
-    private void removeRepo() {
-        try {
-            if (listRepos()) {
-                String id = getRepoChoice();
-                if (repositories.get(id).delete()){ //getRepoChoice only returns existing repos, so default is not needed
-                    repositories.remove(id);
-                    UserConsole.print(MessageSet.Account.REMOVE_SUCCESS);
-                } else{
-                    UserConsole.print(MessageSet.Repo.REMOVE_UNSUCCESSFUL);
-                }
-            }
-        }
-        catch (InputCancelledException ignored) {
-            //
-        }
-    }
-
-    private String getRepoChoice() throws InputCancelledException {
-        return UserConsole.getInput(MessageSet.Account.SELECT_REPO_PROMPT, new TreeSet<>(repositories.keySet()));
-    }
-
-    private void enterRepo() {
-        try {
-            if(listRepos()) {
-                repositories.get(getRepoChoice()).enter();
-                printHelp();
-            }
-        }
-        catch (InputCancelledException ignored) {
-            //
-        }
-
-    }
-
     private boolean listRepos() {
         UserConsole.print(MessageSet.Account.REPOS_LIST);
 
@@ -135,6 +90,19 @@ public class Account implements Comparable<Account>{
             UserConsole.println(new TextElement(repositories.keySet().toString()));
             return true;
         }
+    }
+
+    private void enterRepo() {
+        try {
+            if(listRepos()) {
+                repositories.get(getRepoChoice()).enter();
+                showHelp();
+            }
+        }
+        catch (InputCancelledException ignored) {
+            //
+        }
+
     }
 
     private void addRepo() {
@@ -160,7 +128,27 @@ public class Account implements Comparable<Account>{
         catch (InputCancelledException ignored){
             //cancel
         }
+    }
 
+    private void removeRepo() {
+        try {
+            if (listRepos()) {
+                String id = getRepoChoice();
+                if (repositories.get(id).delete()){ //getRepoChoice only returns existing repos, so default is not needed
+                    repositories.remove(id);
+                    UserConsole.print(MessageSet.Account.REMOVE_SUCCESS);
+                } else{
+                    UserConsole.print(MessageSet.Repo.REMOVE_UNSUCCESSFUL);
+                }
+            }
+        }
+        catch (InputCancelledException ignored) {
+            //
+        }
+    }
+
+    private String getRepoChoice() throws InputCancelledException {
+        return UserConsole.getInput(MessageSet.Account.SELECT_REPO_PROMPT, new TreeSet<>(repositories.keySet()));
     }
 
     private void setToken() {
@@ -170,11 +158,10 @@ public class Account implements Comparable<Account>{
             String newToken = UserConsole.getInput(MessageSet.Account.TOKEN_PROMPT,false, false);
             UserConsole.print(MessageSet.Account.VALIDATE_TOKEN);
 
-
-            if (!newToken.equals("1234") && !isTokenValid(newToken)) {
+            if (!newToken.equals("1234") && !validToken(newToken)) {
                 UserConsole.print(MessageSet.Account.INVALID_TOKEN);
             }
-            else if (!tokenValidForAddedRepos(newToken)) {
+            else if (!validTokenForAddedRepos(newToken)) {
                 UserConsole.print(MessageSet.Account.INSUFFICIENT_TOKEN);
             }
             else {
@@ -188,19 +175,39 @@ public class Account implements Comparable<Account>{
         }
     }
 
-    private boolean tokenValidForAddedRepos(String token) {
-        for (Repository repo : repositories.values()) {
-            if (!repo.isValidRepo(token))  return false;
-        }
-        return true;
-    }
-
-    protected boolean isTokenValid(String newToken) {
+    private boolean validToken(String newToken) {
         try {
             return GitHub.connectUsingOAuth(newToken).isCredentialValid();
         } catch (IOException e) {
             return false;
         }
+    }
+
+    private boolean tokenIsAdded() {
+        if (token.equals("")) {
+            UserConsole.print(MessageSet.Account.NO_TOKEN);
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+    /**
+     * Checks whether a given token is valid for all repositories of the account.
+     * @param token token to test
+     * @return True if token is valid, False if token is invalid for at least one repository
+     */
+    private boolean validTokenForAddedRepos(String token) {
+        for (Repository repo : repositories.values()) {
+            if (!repo.isValidRepo(token)) return false;
+        }
+        return true;
+    }
+
+    private void showHelp() {
+        UserConsole.clearScreen();
+        UserConsole.print(MessageSet.Account.getHelpPage(name));
     }
 
     @Override

@@ -73,45 +73,49 @@ public class UserConsole {
     }
 
     /**
-     * Similar to the getInput method, but takes a set of commands, and returns the chosen command
+     * Prints the given TextElement. No newline is added.
      *
-     * @param prompt  Prompt to print
-     * @param options Set of options
-     * @return Entered option
-     * @throws InputCancelledException
+     * @param data TextElement to print
      */
-    public static CommandSet.Command getCommandInput(String prompt, Set<CommandSet.Command> options) throws InputCancelledException {
-        //TODO: check for empty set and throw exception/return invalid
-        return CommandSet.getCommand(getInput(prompt, CommandSet.getKeywords(options)));
+    public static void print(TextElement data) {
+        print(List.of(data));
     }
 
     /**
-     * Prints the prompt, waits for input, and returns the given input.
-     * If a non-empty set of options is given, only a choice of those options will be accepted and returned.
+     * Prints the given list of TextElements, no newlines are added.
      *
-     * @param prompt  Prompt to print
-     * @param options Set of options (can be empty)
-     * @return Entered String
-     * @throws InputCancelledException
+     * @param data List of TextElements to print
      */
-    public static String getInput(String prompt, Set<String> options) throws InputCancelledException {
-        try {
-            LineReader reader = LineReaderBuilder.builder()
-                    .terminal(terminal)
-                    .completer(new ArgumentCompleter(new StringsCompleter(options), new NullCompleter()))
-                    .build().option(LineReader.Option.ERASE_LINE_ON_FINISH, true);
+    public static void print(List<TextElement> data) {
+        AttributedStringBuilder string = new AttributedStringBuilder();
+        data.forEach(e ->
+            string.append(getStyledText(e.content, getStyle(e.type)))
+        );
+        terminal.writer().print(string.toAnsi());
+        terminal.flush();
+    }
 
-            String command;
-            while (!options.contains(command = reader.readLine(getStyledPrompt(prompt)).trim())
-                    && !options.isEmpty()) {
-                print(MessageSet.Console.getInvalidOptionText(options));
-                terminal.flush();
-            }
-            return command;
-        } catch (UserInterruptException e) {
-            throw (new InputCancelledException());
-        }
 
+    /**
+     * Prints the given TextElement and terminates with a newline.
+     *
+     * @param data TextElement to print
+     */
+    public static void println(TextElement data) {
+        print(List.of(new TextElement(data.content + "\n", data.type, false)));
+    }
+
+    /**
+     * Prints the given list of TextElements with a newline after each element.
+     *
+     * @param data List of TextElements to print
+     */
+    public static void println(List<TextElement> data) {
+        List<TextElement> newData = new ArrayList<>();
+        data.forEach(line -> newData.add(
+                new TextElement(line.content + "\n", line.type, false))
+        );
+        print(newData);
     }
 
     /**
@@ -122,6 +126,11 @@ public class UserConsole {
      */
     public static void printInputResult(String prompt, String result) {
         println(new TextElement(prompt + MessageSet.Console.INPUT_SET + result));
+    }
+
+    public static void clearScreen() {
+        terminal.puts(InfoCmp.Capability.clear_screen);
+        terminal.writer().flush();
     }
 
     /**
@@ -157,70 +166,46 @@ public class UserConsole {
         }
     }
 
-    public static void clearScreen() {
-        clearScreen(0);
-    }
+    /**
+     * Prints the prompt, waits for input, and returns the given input.
+     * If a non-empty set of options is given, only a choice of those options will be accepted and returned.
+     *
+     * @param prompt  Prompt to print
+     * @param options Set of options (can be empty)
+     * @return Entered String
+     * @throws InputCancelledException
+     */
+    public static String getInput(String prompt, Set<String> options) throws InputCancelledException {
+        try {
+            LineReader reader = LineReaderBuilder.builder()
+                    .terminal(terminal)
+                    .completer(new ArgumentCompleter(new StringsCompleter(options), new NullCompleter()))
+                    .build().option(LineReader.Option.ERASE_LINE_ON_FINISH, true);
 
-    public static void clearScreen(int topSpacing) {
-        terminal.puts(InfoCmp.Capability.clear_screen);
-        for (int i = 0; i < topSpacing; i++) {
-            terminal.writer().print("\n");
+            String command;
+            while (!options.contains(command = reader.readLine(getStyledPrompt(prompt)).trim())
+                    && !options.isEmpty()) {
+                print(MessageSet.Console.getInvalidOptionText(options));
+                terminal.flush();
+            }
+            return command;
+        } catch (UserInterruptException e) {
+            throw (new InputCancelledException());
         }
-        terminal.writer().flush();
+
     }
 
     /**
-     * Prints the given string. No newline is added.
+     * Similar to the getInput method, but takes a set of commands, and returns the chosen command
      *
-     * @param data String to print
+     * @param prompt  Prompt to print
+     * @param options Set of options
+     * @return Entered option
+     * @throws InputCancelledException
      */
-    public static void print(String data) {
-        print(new TextElement(data));
-    }
-
-    /**
-     * Prints the given TextElement. No newline is added.
-     *
-     * @param data TextElement to print
-     */
-    public static void print(TextElement data) {
-        print(List.of(data));
-    }
-
-    /**
-     * Prints the given TextElement and terminates with a newline.
-     *
-     * @param data TextElement to print
-     */
-    public static void println(TextElement data) {
-        print(List.of(new TextElement(data.content + "\n", data.type, false)));
-    }
-
-    /**
-     * Prints the given list of TextElements with a newline after each element.
-     *
-     * @param data List of TextElements to print
-     */
-    public static void println(List<TextElement> data) {
-        List<TextElement> newData = new ArrayList<>();
-        data.forEach(line -> newData.add(
-                new TextElement(line.content + "\n", line.type, false))
-        );
-        print(newData);
-    }
-
-    /**
-     * Prints the given list of TextElements, no newlines are added
-     *
-     * @param data List of TextElements to print
-     */
-    public static void print(List<TextElement> data) {
-        AttributedStringBuilder string = new AttributedStringBuilder();
-        data.forEach(e -> {
-            string.append(getStyledText(e.content, getStyle(e.type)));
-        });
-        terminal.writer().print(string.toAnsi());
-        terminal.flush();
+    public static CommandSet.Command getCommandInput(String prompt, Set<CommandSet.Command> options) throws InputCancelledException {
+        if (options == null || options.isEmpty()) return CommandSet.Command.INVALID;
+        return CommandSet.getCommand(getInput(prompt, CommandSet.getKeywords(options)));
     }
 
     /**
@@ -231,7 +216,7 @@ public class UserConsole {
      * @param prompt Prompt to print
      * @return String of entered characters
      */
-    public static String getPassword(String prompt) {
+    public static String getHiddenInput(String prompt) {
         terminal.writer().print(getStyledPrompt(prompt, MessageSet.Console.INPUT_SEPARATOR));
         terminal.flush();
 

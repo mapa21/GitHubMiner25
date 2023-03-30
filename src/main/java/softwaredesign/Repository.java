@@ -5,13 +5,13 @@ import java.io.File;
 import java.security.InvalidParameterException;
 import java.util.*;
 
-import lombok.Setter;
 import org.kohsuke.github.GitHub;
 import softwaredesign.extraction.ExtractionResult;
 import softwaredesign.extraction.Metric;
 import softwaredesign.extraction.Extractor;
 import softwaredesign.language.CommandSet.Command;
 import softwaredesign.language.MessageSet;
+import softwaredesign.utilities.CommandLineManager;
 import softwaredesign.utilities.FileManager;
 import softwaredesign.utilities.InputCancelledException;
 import org.apache.commons.io.FileUtils;
@@ -19,8 +19,8 @@ import org.apache.commons.io.FileUtils;
 public class Repository {
     public final String name;
     public final String owner;
-    @Setter
     private String token;
+    boolean tokenChanged = false;
     private Date lastUpdated;
     private final String parentPath;
     private final String repoPath;
@@ -52,6 +52,12 @@ public class Repository {
         getMetrics();
     }
 
+    public void setToken(String token) {
+        UserConsole.log("Token changed");
+        tokenChanged = true;
+        this.token = token;
+    }
+
     public void enter(){
         try {
             if (!metricsListHash.equals(Extractor.getInstance().getListHash())) {
@@ -60,11 +66,9 @@ public class Repository {
             }
         }
         catch (IOException e) {
-            UserConsole.log(e.getMessage());
-            App.exit(App.EXIT_CODES.UNKNOWN_ERROR);
+            App.exit(App.EXIT_CODE.SETUP_ERROR, e.getMessage());
         }
-        UserConsole.clearScreen();
-        UserConsole.print(MessageSet.Repo.getHelpPage(name, owner, lastUpdated.toString()));
+        showHelp();
         Command command;
         try {
             while ((command = UserConsole.getCommandInput(owner + '/' + name, COMMANDS)) != Command.EXIT_REPO) {
@@ -82,7 +86,7 @@ public class Repository {
                         update();
                         break;
                     case QUIT:
-                        App.exit(App.EXIT_CODES.SUCCESS);
+                        App.exit(App.EXIT_CODE.SUCCESS);
                         break;
                     default:
                 }
@@ -103,7 +107,7 @@ public class Repository {
 
     private void printMetric() {
         try {
-            String choice = UserConsole.getInput("select metric", metrics.keySet());
+            String choice = UserConsole.getInput(MessageSet.Repo.SELECT_METRIC_PROMPT, metrics.keySet());
             UserConsole.println(metrics.get(choice).getMetric());
         }
         catch (InputCancelledException ignored) {
@@ -113,10 +117,15 @@ public class Repository {
 
     private void update() {
         UserConsole.print(MessageSet.Repo.UPDATING);
+        if (tokenChanged) {
+            cloneRepo();
+            tokenChanged = false;
+        }
         if (changesToPull()) {
             UserConsole.print(MessageSet.Repo.GETTING_METRICS);
             getMetrics();
         }
+        lastUpdated = new Date();
     }
 
     private void getMetrics() {
@@ -128,13 +137,13 @@ public class Repository {
         }
         catch (IOException e) {
             UserConsole.log(e.getMessage());
-            App.exit(App.EXIT_CODES.UNKNOWN_ERROR);
+            App.exit(App.EXIT_CODE.UNKNOWN_ERROR);
         }
     }
 
     private boolean changesToPull() {
         lastUpdated = new Date();
-        List<String> output = Extractor.runCommand("git pull", this.repoPath);
+        List<String> output = CommandLineManager.runCommand("git pull", this.repoPath);
         String noUpdate = "Already up to date.";
         UserConsole.print(MessageSet.Repo.UPDATED);
         return output.size() != 1 || !output.contains(noUpdate);
@@ -162,7 +171,13 @@ public class Repository {
 
     protected void cloneRepo(){
         String url = "https://" + this.token + "@github.com/" + this.owner + "/" + this.name + ".git";
-        Extractor.runCommand("git clone " + url + " " + this.repoDirName, this.parentPath);
+        UserConsole.log("Cloning repo from " + url);
+        CommandLineManager.runCommand("git clone " + url + " " + this.repoDirName, this.parentPath);
         lastUpdated = new Date();
+    }
+
+    private void showHelp() {
+        UserConsole.clearScreen();
+        UserConsole.print(MessageSet.Repo.getHelpPage(name, owner, lastUpdated.toString()));
     }
 }

@@ -35,15 +35,14 @@ public class TextElement {
                     break;
                 case WAIT:
                     preText.append(MessageSet.Icons.ICON_CLOCK);
+                    break;
                 default:
-
             }
             if (preText.length() > 0) preText.append(' ');
-            this.content = preText.toString() + content;
+            this.content = preText + content;
         }
         else this.content = content;
         this.type = type;
-
     }
 
     public TextElement(String content, FormatType type) {

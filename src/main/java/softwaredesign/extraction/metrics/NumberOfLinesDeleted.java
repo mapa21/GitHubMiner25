@@ -18,7 +18,7 @@ public class NumberOfLinesDeleted extends SingleData {
     private static Integer extract(List<Commit> commits) {
         int value = 0;
         for (Commit commit : commits) {
-            value += commit.deletions;
+            value += commit.fileStats.getDeletions();
         }
         return value;
     }

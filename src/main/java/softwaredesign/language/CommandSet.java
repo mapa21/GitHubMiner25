@@ -1,6 +1,5 @@
 package softwaredesign.language;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -25,7 +24,6 @@ public class CommandSet {
         QUIT,
         PRINT_ALL_METRICS,
         INVALID
-
     }
 
     private static final HashBiMap<Command, String> commandKeywordMap = HashBiMap.create();
@@ -62,7 +60,7 @@ public class CommandSet {
     public static String getKeyword(Command command) {
         return commandKeywordMap.getOrDefault(command, "invalid");
     }
-    public static Command getCommand(String name) {
-        return commandKeywordMap.inverse().getOrDefault(name, Command.INVALID);
+    public static Command getCommand(String keyword) {
+        return commandKeywordMap.inverse().getOrDefault(keyword, Command.INVALID);
     }
 }

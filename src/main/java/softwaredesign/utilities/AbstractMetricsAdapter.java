@@ -1,13 +1,8 @@
 package softwaredesign.utilities;
 
-import com.fasterxml.jackson.databind.JsonSerializable;
 import com.google.gson.*;
 import softwaredesign.extraction.Metric;
-import softwaredesign.extraction.SingleData;
-import softwaredesign.extraction.metrics.CommitsPerDay;
-
 import java.lang.reflect.Type;
-import java.util.List;
 
 /* This class exists to handle JSON serialization and deserialization of abstract Metrics elements */
 public class AbstractMetricsAdapter implements JsonSerializer<Metric>, JsonDeserializer<Metric> {

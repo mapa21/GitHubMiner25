@@ -1,6 +1,5 @@
 package softwaredesign.extraction;
 
-import java.util.List;
 import java.util.Map;
 
 public class ExtractionResult {

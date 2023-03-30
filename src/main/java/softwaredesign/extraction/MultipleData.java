@@ -15,7 +15,7 @@ public abstract class MultipleData extends Metric{
     }
 
     @Override
-    protected String contentToString() {
+    protected final String contentToString() {
         int maxNameLength = 0;
         for (NameValue<Integer> dataElement : data) {
             maxNameLength = max(maxNameLength, dataElement.name.length());

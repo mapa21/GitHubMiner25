@@ -1,8 +1,6 @@
 package softwaredesign.language;
 
-import org.w3c.dom.Text;
 import softwaredesign.UserConsole;
-
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -156,6 +154,7 @@ public final class MessageSet {
         private Repo() {
             throw new IllegalStateException(UTIL_CLASS);
         }
+        public static final String SELECT_METRIC_PROMPT = "Select Metric";
         public static List<TextElement> getHelpPage(String name, String owner, String lastUpdate) {
             return List.of(
                     new TextElement(Icons.ICON_REPO + " "),
@@ -201,6 +200,7 @@ public final class MessageSet {
             try {
                 InputStream input = ClassLoader.getSystemResourceAsStream(FOLDER_PATH + path + ".txt");
                 if (input == null) throw (new FileNotFoundException(path + " does not exist at " + FOLDER_PATH));
+
                 Scanner scanner = new Scanner(input, StandardCharsets.UTF_8);
                 return scanner.nextLine();
             }

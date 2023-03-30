@@ -28,7 +28,6 @@ public final class FileManager {
 
     private FileManager(){ throw new IllegalStateException("Utility class"); }
 
-    // TODO: add Linux support?
     private static String buildPath(){
         String appPath = HOME_DIR;
         if (OS.contains(WIN)){
@@ -46,8 +45,8 @@ public final class FileManager {
         return separator;
     }
 
-    public static Boolean initRootFolder() {
-        return createFolder("");
+    public static void initRootFolder() throws IOException {
+        if (Boolean.FALSE.equals(createFolder(""))) throw new IOException("Can't init root folder");
     }
 
     public static Boolean createFolder(String path){

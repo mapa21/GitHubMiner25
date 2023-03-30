@@ -3,8 +3,8 @@ package softwaredesign.utilities;
 import java.util.Objects;
 
 public class NameValue<T extends Comparable<T>> implements Comparable<NameValue<T>> {
-    public String name;
-    public T value;
+    public final String name;
+    public final T value;
     public NameValue(String name, T value) {
         this.name = name;
         this.value = value;

@@ -9,7 +9,7 @@ public abstract class SingleData extends Metric {
     }
 
     @Override
-    public String contentToString() {
+    protected final String contentToString() {
         return value.toString() + "\n";
     }
 }

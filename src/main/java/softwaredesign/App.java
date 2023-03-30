@@ -13,11 +13,10 @@ import java.util.*;
 
 public class App {
 
-    private static final String TITLE_FILE_LOCATION = "title.txt";
-
-    public enum EXIT_CODES {
+    public enum EXIT_CODE {
         SUCCESS,
-        UNKNOWN_ERROR
+        UNKNOWN_ERROR,
+        SETUP_ERROR,
     }
 
     private static final Set<Command> COMMANDS = Set.of(
@@ -28,6 +27,8 @@ public class App {
             Command.LIST_ACCOUNTS
     );
 
+    private static final String TITLE_FILE_LOCATION = "title.txt";
+
     private static final Map<String, Account> accounts = FileManager.initAccounts();
 
     /**
@@ -35,6 +36,7 @@ public class App {
      * @param args Command line arguments
      */
     public static void main (String[] args) {
+
         for (String arg : args) {
             if (arg.equals("-d")) {
                 UserConsole.setDebug(true);
@@ -42,16 +44,16 @@ public class App {
             }
         }
 
-        if (Boolean.FALSE.equals(FileManager.initRootFolder())) exit(EXIT_CODES.UNKNOWN_ERROR);
         try {
+            FileManager.initRootFolder();
             Extractor.getInstance();
         } catch (IOException e) {
-            exit(EXIT_CODES.UNKNOWN_ERROR, e.toString());
+            exit(EXIT_CODE.SETUP_ERROR, e.getMessage());
         }
 
         try {
             UserConsole.printTitle(TITLE_FILE_LOCATION, "Welcome to GitHubMiner (by Pirates)");
-            UserConsole.print(MessageSet.App.HELP_PAGE);
+            showHelp();
             Command command;
 
             while ((command = UserConsole.getCommandInput("", COMMANDS)) != Command.QUIT) {
@@ -76,16 +78,16 @@ public class App {
             //
         }
 
-        exit(EXIT_CODES.SUCCESS);
+        exit(EXIT_CODE.SUCCESS);
     }
 
-    public static void exit(EXIT_CODES status, String message) {
-        if (status != EXIT_CODES.SUCCESS) UserConsole.print(new TextElement(message, FormatType.ERROR));
+    public static void exit(EXIT_CODE status, String message) {
+        if (status != EXIT_CODE.SUCCESS) UserConsole.print(new TextElement(message, FormatType.ERROR));
         exit(status);
     }
 
 
-    public static void exit(EXIT_CODES status) {
+    public static void exit(EXIT_CODE status) {
         UserConsole.print(MessageSet.Misc.GOODBYE);
         FileManager.saveAccounts(accounts);
         System.exit(status.ordinal());
@@ -110,8 +112,8 @@ public class App {
                 if (password != null) {
                     UserConsole.print(MessageSet.App.PASSWORDS_NO_MATCH);
                 }
-                password = UserConsole.getPassword(MessageSet.App.PASSWORD_PROMPT);
-            } while (!password.equals(UserConsole.getPassword(MessageSet.App.PASSWORD_REPEAT_PROMPT)));
+                password = UserConsole.getHiddenInput(MessageSet.App.PASSWORD_PROMPT);
+            } while (!password.equals(UserConsole.getHiddenInput(MessageSet.App.PASSWORD_REPEAT_PROMPT)));
 
         }
         catch (InputCancelledException ignored){
@@ -142,11 +144,11 @@ public class App {
     private static void enterAccount() {
         try {
             if (listAccounts()
-                    && Boolean.FALSE.equals(accounts.get(getAccountChoice()).login(UserConsole.getPassword(MessageSet.App.PASSWORD_PROMPT)))) {
+                    && Boolean.FALSE.equals(accounts.get(getAccountChoice()).login(UserConsole.getHiddenInput(MessageSet.App.PASSWORD_PROMPT)))) {
                 UserConsole.print(MessageSet.App.INVALID_PASSWORD);
             }
             else {
-                UserConsole.print(MessageSet.App.HELP_PAGE);
+                showHelp();
             }
         }
         catch (InputCancelledException ignored) {
@@ -169,6 +171,11 @@ public class App {
             UserConsole.println(new TextElement(accounts.keySet().toString(), FormatType.BODY));
             return true;
         }
+    }
+
+    private static void showHelp() {
+        UserConsole.clearScreen();
+        UserConsole.print(MessageSet.App.HELP_PAGE);
     }
 
 }

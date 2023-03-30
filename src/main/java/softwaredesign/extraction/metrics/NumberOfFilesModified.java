@@ -18,7 +18,7 @@ public class NumberOfFilesModified extends SingleData {
     private static Integer extract(List<Commit> commits) {
         int value = 0;
         for (Commit commit : commits) {
-            value += commit.filesModified;
+            value += commit.fileStats.getFilesModified();
         }
         return value;
     }
