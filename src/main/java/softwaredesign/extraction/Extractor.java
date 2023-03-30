@@ -1,6 +1,5 @@
 package softwaredesign.extraction;
 
-import lombok.Getter;
 import softwaredesign.UserConsole;
 
 import java.io.*;
@@ -14,10 +13,7 @@ import softwaredesign.utilities.FileManager;
 public final class Extractor {
     private static final String LIST_FILE_LOCATION = "metric_types.txt";
     private static Extractor instance = null;
-    @Getter
-    private final Set<String> metricTypes = new HashSet<>();
-    @Getter
-    private final String listHash;
+    public final String listHash;
     private final Set<Class<? extends Metric>> classes = new HashSet<>();
 
     public static Extractor getInstance() throws IOException {

@@ -12,8 +12,6 @@ public class App {
         SETUP_ERROR,
     }
 
-    private static Session session = null;
-
     /**
      * Application entry point
      * @param args Command line arguments
@@ -28,17 +26,13 @@ public class App {
         }
 
         try {
-            session = new Session();
+            Session.create();
+            Session.run();
         }
         catch (InstantiationException e) {
             exit(EXIT_CODE.SETUP_ERROR, e.getMessage());
         }
-
-        session.run();
-
-        exit(EXIT_CODE.SUCCESS);
     }
-
 
     public static void exit(EXIT_CODE status, String message) {
         if (status != EXIT_CODE.SUCCESS) UserConsole.print(new TextElement(message, FormatType.ERROR));
@@ -47,8 +41,7 @@ public class App {
 
     public static void exit(EXIT_CODE status) {
         UserConsole.print(MessageSet.Misc.GOODBYE);
-        if(session != null) session.saveAccounts();
+        Session.saveAccounts();
         System.exit(status.ordinal());
     }
-
 }

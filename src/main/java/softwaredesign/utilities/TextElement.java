@@ -5,18 +5,18 @@ import softwaredesign.language.MessageSet;
 public class TextElement {
 
     public enum FormatType {
-        HEADING,
         BODY,
-        STATISTIC,
-        DIVIDER,
-        COMMAND,
-        HINT,
         ERROR,
         SUCCESS,
-        PROMPT,
-        PAGE_TITLE,
         WAIT,
-        TITLE
+        PROMPT,
+        COMMAND,
+        PAGE_TITLE,
+        HINT,
+        DIVIDER,
+        TITLE,
+        HEADING,
+        STATISTIC
     }
 
     public final String content;

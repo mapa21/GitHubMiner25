@@ -58,7 +58,7 @@ public class Repository {
 
     public void enter(){
         try {
-            if (!metricsListHash.equals(Extractor.getInstance().getListHash())) {
+            if (!metricsListHash.equals(Extractor.getInstance().listHash)) {
                 UserConsole.log("Metrics Hash has changed since last time.");
                 getMetrics();
             }

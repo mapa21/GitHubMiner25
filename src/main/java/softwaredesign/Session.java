@@ -25,8 +25,17 @@ public class Session {
     );
 
     private final Map<String, Account> accounts;
+    private static Session instance = null;
 
-    public Session() throws InstantiationException {
+    public static void create() throws InstantiationException {
+        if (instance == null) instance = new Session();
+    }
+
+    public static void saveAccounts() {
+        if (instance != null) FileManager.saveAccounts(instance.accounts);
+    }
+
+    private Session() throws InstantiationException {
         try {
             Extractor.getInstance();
             FileManager.initRootFolder();
@@ -36,11 +45,11 @@ public class Session {
         }
     }
 
-    public void saveAccounts() {
-        FileManager.saveAccounts(accounts);
+    public static void run() {
+        if (instance != null) instance.runInstance();
     }
 
-    public void run() {
+    private void runInstance() {
         try {
             UserConsole.printTitle(TITLE_FILE, TITLE_FALLBACK);
             showHelp();
