@@ -229,20 +229,16 @@ public class UserConsole {
         int inChar = 0;
         StringBuilder readString = new StringBuilder();
         try {
-            do {
-                inChar = terminal.reader().read();
+            while((inChar = terminal.reader().read()) != '\n' && inChar != '\r') {
                 readString.append((char) inChar);
-
-            } while (inChar != '\n' && inChar != '\r');
-
+            }
         } catch (IOException e) {
-            readString.append('\n');
+            //
         }
 
         terminal.setAttributes(prevAttr);
         clearLine();
-        if (readString.length() < 2) return readString.toString();
-        else return readString.substring(0, readString.length() - 2);
+        return readString.toString();
     }
 
     /**
