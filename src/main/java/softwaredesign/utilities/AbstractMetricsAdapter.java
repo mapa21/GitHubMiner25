@@ -1,6 +1,7 @@
 package softwaredesign.utilities;
 
 import com.google.gson.*;
+import softwaredesign.UserConsole;
 import softwaredesign.extraction.Metric;
 import java.lang.reflect.Type;
 
@@ -20,11 +21,11 @@ public class AbstractMetricsAdapter implements JsonSerializer<Metric>, JsonDeser
         JsonObject jsonObject = json.getAsJsonObject();
         String type = jsonObject.get("type").getAsString();
         JsonElement element = jsonObject.get("properties");
-
         try {
             return context.deserialize(element, Class.forName("softwaredesign.extraction.metrics." + type));
-        } catch (ClassNotFoundException cnfe) {
-            throw new JsonParseException("Unknown element type: " + type, cnfe);
+        } catch (ClassNotFoundException e) {
+            UserConsole.log("Error while loading existing metrics: Unknown element type: " + type);
         }
+        return null;
     }
 }

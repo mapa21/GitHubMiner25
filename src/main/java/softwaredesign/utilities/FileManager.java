@@ -80,8 +80,12 @@ public final class FileManager {
         Account[] accountsArr = gson.fromJson(jsonString, Account[].class);
 
         if (accountsArr == null) return new TreeMap<>(); // empty map is returned
+        Map<String, Account> accounts = new TreeMap<>();
 
-        return Arrays.stream(accountsArr).collect(Collectors.toMap(account -> account.name, account -> account, (a, b) -> b, TreeMap::new));
+        for (Account account : accountsArr) {
+            if (account != null) accounts.put(account.name, account);
+        }
+        return accounts;
     }
 
     public static void deleteFolder(String path) throws IOException {
