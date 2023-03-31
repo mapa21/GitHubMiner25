@@ -1031,7 +1031,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": -1416,
-									"top": -432,
+									"top": -440,
 									"width": 10,
 									"height": 10
 								},
@@ -1359,7 +1359,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 633,
+									"left": 625,
 									"top": 540,
 									"height": 13,
 									"alpha": 1.5707963267948966,
@@ -1380,7 +1380,7 @@
 									},
 									"visible": null,
 									"font": "Arial;13;0",
-									"left": 618,
+									"left": 610,
 									"top": 540,
 									"height": 13,
 									"alpha": 1.5707963267948966,
@@ -1401,7 +1401,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 662,
+									"left": 654,
 									"top": 541,
 									"height": 13,
 									"alpha": -1.5707963267948966,
@@ -1420,7 +1420,7 @@
 								"$ref": "AAAAAAGGyxOzPgRh+Qw="
 							},
 							"lineStyle": 2,
-							"points": "648:632;648:463",
+							"points": "640:632;640:463",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAGGyxpqcQTxs4c="
@@ -1643,7 +1643,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 662,
+									"left": 654,
 									"top": 344,
 									"height": 13,
 									"alpha": 1.5707963267948966,
@@ -1664,7 +1664,7 @@
 									},
 									"visible": null,
 									"font": "Arial;13;0",
-									"left": 677,
+									"left": 669,
 									"top": 344,
 									"height": 13,
 									"alpha": 1.5707963267948966,
@@ -1685,7 +1685,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 633,
+									"left": 625,
 									"top": 345,
 									"height": 13,
 									"alpha": -1.5707963267948966,
@@ -1704,7 +1704,7 @@
 								"$ref": "AAAAAAGGyxNdHAQ0IGs="
 							},
 							"lineStyle": 2,
-							"points": "648:287;648:416",
+							"points": "640:287;640:416",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAGGyxw+ZAVACPM="
@@ -1736,12 +1736,12 @@
 										"$ref": "AAAAAAGGyxzkagVbA/I="
 									},
 									"font": "Arial;13;0",
-									"left": 448,
-									"top": 318,
+									"left": 416,
+									"top": 248,
 									"width": 153.9052734375,
 									"height": 13,
-									"alpha": -0.6763434407234064,
-									"distance": 97.45255255764212,
+									"alpha": 0.22347655202473007,
+									"distance": 45.12205669071391,
 									"hostEdge": {
 										"$ref": "AAAAAAGGyxzkawVcIxk="
 									},
