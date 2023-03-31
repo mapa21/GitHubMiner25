@@ -15,8 +15,7 @@ public class TextElement {
         HINT,
         DIVIDER,
         TITLE,
-        HEADING,
-        STATISTIC
+        HEADING
     }
 
     public final String content;
