@@ -46,6 +46,7 @@ public class Account implements Comparable<Account> {
         if (token.length() == 0) {
             setToken();
         }
+        showHelp();
 
         CommandSet.Command command;
         try {
