@@ -6,6 +6,14 @@ import lombok.Setter;
 import java.time.ZonedDateTime;
 
 public class Commit {
+    public static final Commit SAMPLE_COMMIT = new Commit(
+            "eeb0f7026ee6219399b00cb89b0fcda6e8235107",
+            ZonedDateTime.now(),
+            "example",
+            "example@student.vu.nl",
+            "Example commit message",
+            new FileStats(),
+            false);
     public final String hash;
     public final ZonedDateTime date;
     public final String authorName;
@@ -33,12 +41,6 @@ public class Commit {
         private int deletions = 0;
         public FileStats() {
             //
-        }
-
-        public FileStats(int filesModified, int insertions, int deletions) {
-            this.filesModified = filesModified;
-            this.insertions = insertions;
-            this.deletions = deletions;
         }
 
         public void incrFilesModified(int i) {
