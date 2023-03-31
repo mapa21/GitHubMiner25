@@ -52,7 +52,7 @@ public class Session {
     private void runInstance() {
         try {
             UserConsole.printTitle(TITLE_FILE, TITLE_FALLBACK);
-            showHelp();
+            showHelp(false);
             CommandSet.Command command;
 
             while ((command = UserConsole.getCommandInput("", COMMANDS)) != CommandSet.Command.QUIT) {
@@ -142,7 +142,7 @@ public class Session {
                 UserConsole.print(MessageSet.App.INVALID_PASSWORD);
             }
             else {
-                showHelp();
+                showHelp(true);
             }
         }
         catch (InputCancelledException ignored) {
@@ -167,8 +167,8 @@ public class Session {
         }
     }
 
-    private void showHelp() {
-        UserConsole.clearScreen();
+    private void showHelp(boolean clearScreen) {
+        if (clearScreen) UserConsole.clearScreen();
         UserConsole.print(MessageSet.App.HELP_PAGE);
     }
 
