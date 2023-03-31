@@ -41,7 +41,7 @@ public class App {
 
     public static void exit(EXIT_CODE status) {
         UserConsole.print(MessageSet.Misc.GOODBYE);
-        Session.saveAccounts();
+        Session.save();
         System.exit(status.ordinal());
     }
 }

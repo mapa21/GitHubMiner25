@@ -31,7 +31,7 @@ public class Session {
         if (instance == null) instance = new Session();
     }
 
-    public static void saveAccounts() {
+    public static void save() {
         if (instance != null) FileManager.saveAccounts(instance.accounts);
     }
 
@@ -162,7 +162,7 @@ public class Session {
             UserConsole.print(MessageSet.App.NO_ACCOUNTS);
             return false;
         } else {
-            UserConsole.println(new TextElement(accounts.keySet().toString(), TextElement.FormatType.BODY));
+            UserConsole.println(new TextElement(accounts.keySet().toString()));
             return true;
         }
     }

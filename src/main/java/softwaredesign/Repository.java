@@ -18,7 +18,7 @@ public class Repository {
     public final String name;
     public final String owner;
     private String token;
-    boolean tokenChanged = false;
+    private boolean tokenChanged = false;
     private Date lastUpdated;
     private final String parentPath;
     private final String repoPath;
