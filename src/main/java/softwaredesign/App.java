@@ -32,6 +32,7 @@ public class App {
         catch (InstantiationException e) {
             exit(EXIT_CODE.SETUP_ERROR, e.getMessage());
         }
+        exit(EXIT_CODE.SUCCESS);
     }
 
     public static void exit(EXIT_CODE status, String message) {
