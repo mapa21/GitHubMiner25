@@ -72,6 +72,7 @@ public final class Extractor {
      *
      * @param metricNames Set of metric names
      */
+    @SuppressWarnings({"unchecked"}) // type casting is checked by the if condition
     private void initClassSet(Set<String> metricNames) {
         String packageName = this.getClass().getPackageName() + ".metrics.";
         for (String name : metricNames) {
@@ -123,6 +124,8 @@ public final class Extractor {
         String description = lines.next().trim();
 
         //skip lines
+
+        //noinspection StatementWithEmptyBody (IntelliJ warning suppression)
         while (lines.next().contains("    "));
 
         //Get insertions, deletions
