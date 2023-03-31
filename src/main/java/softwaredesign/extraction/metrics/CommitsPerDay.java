@@ -9,8 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.lang.Math.min;
-
 public class CommitsPerDay extends MultipleData {
 
     public CommitsPerDay(List<Commit> commits) {

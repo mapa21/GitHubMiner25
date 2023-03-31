@@ -132,7 +132,7 @@ public class Account implements Comparable<Account> {
     }
 
     public boolean delete() {
-        repositories.values().forEach(r -> r.delete()); // not strictly needed
+        repositories.values().forEach(Repository::delete); // not strictly needed
         try {
             FileManager.deleteFolder(name);
         }

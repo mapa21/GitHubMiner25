@@ -47,7 +47,7 @@ public class UserConsole {
     private static final TextStyle DEFAULT_STYLE = new TextStyle(false, false, false);
     private static final TextStyle GREYED_STYLE = new TextStyle(AttributedStyle.BRIGHT, NO_COLOR, false, false, false);
 
-    private static Map<FormatType, TextStyle> typeToStyle = Map.ofEntries(
+    private static final Map<FormatType, TextStyle> typeToStyle = Map.ofEntries(
             entry(FormatType.PAGE_TITLE, new TextStyle(true, false, true)),
             entry(FormatType.TITLE, new TextStyle(true, false, true)),
             entry(FormatType.HEADING, new TextStyle(AttributedStyle.MAGENTA, true, false, true)),
@@ -142,7 +142,7 @@ public class UserConsole {
      * @param allowSpaces Specifier for whether spaces are allowed in the input
      * @param allowEmpty  Specifier for whether empty input is allows
      * @return Entered input trimmed of leading and trailing whitespace
-     * @throws InputCancelledException
+     * @throws InputCancelledException In case of user interrupt
      */
     public static String getInput(String prompt, boolean allowSpaces, boolean allowEmpty) throws InputCancelledException {
         try {
@@ -173,7 +173,7 @@ public class UserConsole {
      * @param prompt  Prompt to print
      * @param options Set of options (can be empty)
      * @return Entered String
-     * @throws InputCancelledException
+     * @throws InputCancelledException In case of user interrupt
      */
     public static String getInput(String prompt, Set<String> options) throws InputCancelledException {
         try {
@@ -201,7 +201,7 @@ public class UserConsole {
      * @param prompt  Prompt to print
      * @param options Set of options
      * @return Entered option
-     * @throws InputCancelledException
+     * @throws InputCancelledException In case of user interrupt
      */
     public static CommandSet.Command getCommandInput(String prompt, Set<CommandSet.Command> options) throws InputCancelledException {
         if (options == null || options.isEmpty()) return CommandSet.Command.INVALID;
@@ -226,7 +226,7 @@ public class UserConsole {
         attr.setLocalFlag(Attributes.LocalFlag.ECHOK, false);
         terminal.setAttributes(attr);
 
-        int inChar = 0;
+        int inChar;
         StringBuilder readString = new StringBuilder();
         try {
             while((inChar = terminal.reader().read()) != '\n' && inChar != '\r') {
@@ -246,13 +246,13 @@ public class UserConsole {
      * The length of the parts needs to be specified in the first 3 lines of the file.
      * If the title can't be found or is too wide for the terminal window, the fallback string will be printed.
      *
-     * @param location Path of the title file (relative to the resources folder)
+     * @param location Path of the title file (relative to the resource folder)
      * @param fallback Fallback string to print
      */
     public static void printTitle(String location, String fallback) {
         terminal.puts(InfoCmp.Capability.clear_screen);
 
-        try (InputStream input = ClassLoader.getSystemResourceAsStream(location);) {
+        try (InputStream input = ClassLoader.getSystemResourceAsStream(location)) {
             if (input == null) throw (new FileNotFoundException("Title file (" + location + ") not Found"));
             List<String> lines = new ArrayList<>();
             int maxLength = 0;
