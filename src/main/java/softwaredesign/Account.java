@@ -78,7 +78,6 @@ public class Account implements Comparable<Account> {
             //
         }
         UserConsole.clearScreen();
-        //print logging out
         return true;
     }
 
