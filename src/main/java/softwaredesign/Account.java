@@ -1,7 +1,6 @@
 package softwaredesign;
 import org.kohsuke.github.*;
 
-
 import org.jetbrains.annotations.NotNull;
 import softwaredesign.language.CommandSet;
 import softwaredesign.language.CommandSet.Command;
