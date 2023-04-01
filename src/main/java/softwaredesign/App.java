@@ -35,11 +35,20 @@ public class App {
         exit(EXIT_CODE.SUCCESS);
     }
 
+    /**
+     * Exits the application in a controlled way with the given status. If the status is not SUCCESS, the given message will be printed. Saves the state of the active session if one exists.
+     * @param status Exit code
+     * @param message Error message
+     */
     public static void exit(EXIT_CODE status, String message) {
         if (status != EXIT_CODE.SUCCESS) UserConsole.print(new TextElement(message, FormatType.ERROR));
         exit(status);
     }
 
+    /**
+     * Exits the application in a controlled way with the given status. Saves the state of the active session if one exists.
+     * @param status Exit code
+     */
     public static void exit(EXIT_CODE status) {
         UserConsole.print(MessageSet.Misc.GOODBYE);
         Session.save();

@@ -27,14 +27,6 @@ public class Session {
     private final Map<String, Account> accounts;
     private static Session instance = null;
 
-    public static void create() throws InstantiationException {
-        if (instance == null) instance = new Session();
-    }
-
-    public static void save() {
-        if (instance != null) FileManager.saveAccounts(instance.accounts);
-    }
-
     private Session() throws InstantiationException {
         try {
             Extractor.getInstance();
@@ -45,6 +37,24 @@ public class Session {
         }
     }
 
+    /**
+     * Creates a new session if there isn't an active one yet.
+     * @throws InstantiationException If an error occurs during the initialization of the various components (Extractor, root folder, accounts)
+     */
+    public static void create() throws InstantiationException {
+        if (instance == null) instance = new Session();
+    }
+
+    /**
+     * Saves the state of the active session to file if one exists. No effect if no session exists.
+     */
+    public static void save() {
+        if (instance != null) FileManager.saveAccounts(instance.accounts);
+    }
+
+    /**
+     * Enters the main loop of the active session if one exist and returns when the user has selected to quit. No effect if no session exists.
+     */
     public static void run() {
         if (instance != null) instance.runInstance();
     }
@@ -77,7 +87,6 @@ public class Session {
             //
         }
     }
-
 
     private void createAccount() {
         String name = null;
