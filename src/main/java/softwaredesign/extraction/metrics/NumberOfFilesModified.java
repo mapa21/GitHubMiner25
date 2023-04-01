@@ -1,11 +1,11 @@
 package softwaredesign.extraction.metrics;
 
 import softwaredesign.extraction.Commit;
-import softwaredesign.extraction.SingleData;
+import softwaredesign.extraction.types.SingleData;
 
 import java.util.List;
 
-public class NumberOfFilesModified extends SingleData {
+public class NumberOfFilesModified extends SingleData<Integer> {
 
     public NumberOfFilesModified(List<Commit> commits) {
         super(

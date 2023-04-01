@@ -1,11 +1,11 @@
 package softwaredesign.extraction.metrics;
 
 import softwaredesign.extraction.Commit;
-import softwaredesign.extraction.SingleData;
+import softwaredesign.extraction.types.SingleData;
 
 import java.util.List;
 
-public class NumberOfMerges extends SingleData {
+public class NumberOfMerges extends SingleData<Integer> {
 
     public NumberOfMerges(List<Commit> commits) {
         super(

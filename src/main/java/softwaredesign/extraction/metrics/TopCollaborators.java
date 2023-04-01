@@ -1,14 +1,14 @@
 package softwaredesign.extraction.metrics;
 
 import softwaredesign.extraction.Commit;
-import softwaredesign.extraction.MultipleData;
+import softwaredesign.extraction.types.MultipleData;
 import softwaredesign.utilities.NameValue;
 
 import java.util.*;
 
 import static java.lang.Math.min;
 
-public class TopCollaborators extends MultipleData {
+public class TopCollaborators extends MultipleData<Integer> {
 
     public TopCollaborators(List<Commit> commits) {
         super(

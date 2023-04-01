@@ -1,15 +1,16 @@
-package softwaredesign.extraction;
+package softwaredesign.extraction.types;
 
+import softwaredesign.extraction.Metric;
 import softwaredesign.utilities.NameValue;
 
 import java.util.List;
 
 import static java.lang.Math.max;
 
-public abstract class MultipleData extends Metric{
-    private final List<NameValue<Integer>> data;
+public abstract class MultipleData<T extends Comparable<T>> extends Metric {
+    private final List<NameValue<T>> data;
 
-    protected MultipleData(String name, String description, List<NameValue<Integer>> data) {
+    protected MultipleData(String name, String description, List<NameValue<T>> data) {
         super(name, description);
         this.data = data;
     }
@@ -17,14 +18,14 @@ public abstract class MultipleData extends Metric{
     @Override
     protected final String contentToString() {
         int maxNameLength = 0;
-        for (NameValue<Integer> dataElement : data) {
+        for (NameValue<?> dataElement : data) {
             maxNameLength = max(maxNameLength, dataElement.name.length());
         }
 
         StringBuilder stringContent = new StringBuilder();
-        for (NameValue<Integer> element : data) {
+        for (NameValue<?> element : data) {
             String stringSeparator = ": " + " ".repeat(maxNameLength - element.name.length());
-            stringContent.append(element.name).append(stringSeparator).append(element.value).append("\n");
+            stringContent.append(element.name).append(stringSeparator).append(element.value.toString()).append("\n");
         }
         return stringContent.toString();
     }
