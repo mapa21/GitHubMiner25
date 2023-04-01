@@ -9,7 +9,7 @@ public abstract class Metric {
     private final String description;
     private final String name;
 
-    public String getCommand() {
+    public String getCommandName() {
         boolean nextUppercase = false;
         StringBuilder command = new StringBuilder();
         for (int i = 0; i < name.length(); i++) {
