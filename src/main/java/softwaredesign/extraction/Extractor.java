@@ -36,7 +36,7 @@ public final class Extractor {
         for (Class<? extends Metric> metric : classes) {
             try {
                 Metric metricInstance = metric.getConstructor(List.class).newInstance(commits);
-                metrics.put(metricInstance.getCommand(), metricInstance);
+                metrics.put(metricInstance.getCommandName(), metricInstance);
             } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 UserConsole.log(e.toString());
                 //Should never occur
@@ -83,7 +83,7 @@ public final class Extractor {
                     Metric metricInstance = metricClassCasted.getConstructor(List.class).newInstance(List.of(Commit.SAMPLE_COMMIT));
                     // compare class name to name attribute to ensure consistency:
                     String className = metricClassCasted.getName().substring(metricClassCasted.getPackageName().length() + 1);
-                    if (!metricInstance.getCommand().equalsIgnoreCase(className)) {
+                    if (!metricInstance.getCommandName().equalsIgnoreCase(className)) {
                         throw new ClassFormatError("Class name of \"" + className + "\" does not equal name attribute");
                     }
                     this.classes.add((Class<? extends Metric>) metricClass);
