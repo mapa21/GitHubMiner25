@@ -37,6 +37,7 @@ public abstract class Metric {
                 new TextElement(name, TextElement.FormatType.TITLE),
                 new TextElement(description, TextElement.FormatType.HINT),
                 MessageSet.Console.DIVIDER,
-                new TextElement(contentToString()));
+                new TextElement(contentToString(), TextElement.FormatType.STATISTIC)
+        );
     }
 }

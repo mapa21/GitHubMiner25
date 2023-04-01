@@ -1,11 +1,11 @@
 package softwaredesign.extraction.metrics;
 
 import softwaredesign.extraction.Commit;
-import softwaredesign.extraction.SingleData;
+import softwaredesign.extraction.types.SingleData;
 
 import java.util.List;
 
-public class NumberOfLinesDeleted extends SingleData {
+public class NumberOfLinesDeleted extends SingleData<Integer> {
 
     public NumberOfLinesDeleted(List<Commit> commits) {
         super(

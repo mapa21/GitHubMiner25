@@ -1,7 +1,7 @@
 package softwaredesign.extraction.metrics;
 
 import softwaredesign.extraction.Commit;
-import softwaredesign.extraction.MultipleData;
+import softwaredesign.extraction.types.MultipleData;
 import softwaredesign.utilities.NameValue;
 
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CommitsPerDay extends MultipleData {
+public class CommitsPerDay extends MultipleData<Integer> {
 
     public CommitsPerDay(List<Commit> commits) {
         super(
