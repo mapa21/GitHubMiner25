@@ -1,8 +1,7 @@
-package softwaredesign.utilities;
+package softwaredesign.extraction;
 
 import com.google.gson.*;
 import softwaredesign.UserConsole;
-import softwaredesign.extraction.Metric;
 import java.lang.reflect.Type;
 
 /* This class exists to handle JSON serialization and deserialization of abstract Metrics elements */

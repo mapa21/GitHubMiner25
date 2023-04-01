@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import org.apache.commons.io.FileUtils;
 import softwaredesign.Account;
 import softwaredesign.UserConsole;
+import softwaredesign.extraction.AbstractMetricsAdapter;
 import softwaredesign.extraction.Metric;
 
 import java.io.*;
