@@ -1936,9 +1936,9 @@
 																	"font": "Arial;13;0",
 																	"left": 60,
 																	"top": 174,
-																	"width": 122,
+																	"width": 240,
 																	"height": 13,
-																	"text": "[command != logOut]"
+																	"text": "[command != logOut && ! inputCancelled]"
 																}
 															],
 															"lineColor": "#f4a261",
@@ -9580,7 +9580,7 @@
 												"$ref": "AAAAAAGGxgW1jlboHb8="
 											},
 											"name": "Operand1",
-											"guard": "command != logOut"
+											"guard": "command != logOut && ! inputCancelled"
 										}
 									]
 								},
@@ -9901,9 +9901,9 @@
 														"$ref": "AAAAAAGHNHS1Zm7WZUs="
 													},
 													"font": "Arial;13;0",
-													"left": 32,
+													"left": 33,
 													"top": 13,
-													"width": 83,
+													"width": 89,
 													"height": 13,
 													"text": "getRepoChoice"
 												},
@@ -9916,7 +9916,7 @@
 													"font": "Arial;13;1",
 													"left": 13,
 													"top": 13,
-													"width": 14,
+													"width": 15,
 													"height": 13,
 													"text": "sd"
 												}
@@ -9988,7 +9988,7 @@
 															"font": "Arial;13;0",
 															"left": -192,
 															"top": 32,
-															"width": 125,
+															"width": 127.88623046875,
 															"height": 13,
 															"text": "(from getRepoChoice)"
 														},
@@ -10107,7 +10107,7 @@
 															"font": "Arial;13;0",
 															"left": -192,
 															"top": 32,
-															"width": 125,
+															"width": 127.88623046875,
 															"height": 13,
 															"text": "(from getRepoChoice)"
 														},
@@ -10191,9 +10191,9 @@
 														"$ref": "AAAAAAGHNHsWZm9TQw8="
 													},
 													"font": "Arial;13;0",
-													"left": 424,
+													"left": 423,
 													"top": 123,
-													"width": 115,
+													"width": 116.33984375,
 													"height": 13,
 													"alpha": 1.5877428537293894,
 													"distance": 59.00847396772772,
@@ -10304,7 +10304,7 @@
 													"font": "Arial;13;0",
 													"left": 233,
 													"top": 156,
-													"width": 142,
+													"width": 143.634765625,
 													"height": 13,
 													"alpha": 1.5707963267948966,
 													"distance": 10,
@@ -10526,7 +10526,7 @@
 													"font": "Arial;13;0",
 													"left": 109,
 													"top": 208,
-													"width": 78,
+													"width": 78.76171875,
 													"height": 13,
 													"alpha": -1.7126926813989904,
 													"distance": 14.142135623730951,
@@ -10638,7 +10638,7 @@
 													"font": "Arial;13;0",
 													"left": 266,
 													"top": 193,
-													"width": 78,
+													"width": 78.76171875,
 													"height": 13,
 													"alpha": 1.5707963267948966,
 													"distance": 10,
@@ -10781,7 +10781,7 @@
 															"visible": false,
 															"font": "Arial;13;0",
 															"left": -210,
-															"width": 125,
+															"width": 127.88623046875,
 															"height": 13,
 															"text": "(from getRepoChoice)"
 														},
@@ -11063,9 +11063,9 @@
 														"$ref": "AAAAAAGHN+t5BnKASfs="
 													},
 													"font": "Arial;13;0",
-													"left": 32,
+													"left": 33,
 													"top": 13,
-													"width": 103,
+													"width": 114,
 													"height": 13,
 													"text": "SequenceDiagram1"
 												},
@@ -11078,7 +11078,7 @@
 													"font": "Arial;13;1",
 													"left": 13,
 													"top": 13,
-													"width": 14,
+													"width": 15,
 													"height": 13,
 													"text": "sd"
 												}

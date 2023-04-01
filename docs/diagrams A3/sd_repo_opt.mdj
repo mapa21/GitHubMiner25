@@ -5043,9 +5043,9 @@
 															"font": "Arial;13;0",
 															"left": 124,
 															"top": 782,
-															"width": 135,
+															"width": 253,
 															"height": 13,
-															"text": "[command != exitRepo]"
+															"text": "[command != exitRepo && ! inputCancelled]"
 														}
 													],
 													"lineColor": "#f4a261",
@@ -5580,7 +5580,7 @@
 											"font": "Arial;13;0",
 											"left": 583,
 											"top": 363,
-											"width": 88,
+											"width": 88.8798828125,
 											"height": 13,
 											"alpha": 1.5904006538089046,
 											"distance": 51.0098029794274,
@@ -6508,11 +6508,11 @@
 											"fontColor": "#f4a261",
 											"font": "Arial;13;0",
 											"left": 327,
-											"top": 790,
+											"top": 816,
 											"width": 204.33740234375,
 											"height": 13,
-											"alpha": -0.9420006349743151,
-											"distance": 13.601470508735444,
+											"alpha": 1.0516507510100777,
+											"distance": 16.1245154965971,
 											"hostEdge": {
 												"$ref": "AAAAAAGGxutDuZ51uKw="
 											},
@@ -9757,7 +9757,7 @@
 											"font": "Arial;13;0",
 											"left": 591,
 											"top": 1563,
-											"width": 118,
+											"width": 118.5107421875,
 											"height": 13,
 											"alpha": 1.5857195895578104,
 											"distance": 67.00746227100382,
@@ -9991,7 +9991,7 @@
 											"font": "Arial;13;0",
 											"left": 579,
 											"top": 1652,
-											"width": 100,
+											"width": 101.17529296875,
 											"height": 13,
 											"alpha": 1.5707963267948966,
 											"distance": 10,
@@ -12375,7 +12375,7 @@
 										"$ref": "AAAAAAGGxuGsXJ4+5fI="
 									},
 									"name": "while true",
-									"guard": "command != exitRepo"
+									"guard": "command != exitRepo && ! inputCancelled"
 								}
 							]
 						},
