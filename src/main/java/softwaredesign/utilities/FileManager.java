@@ -32,6 +32,8 @@ public final class FileManager {
             appPath += "\\AppData\\Roaming\\";
         } else if (OS.contains(MAC)){
             appPath += "/Library/Application Support/";
+        } else if (OS.contains("Linux")){
+            appPath = "/tmp/"; // it's not permanent anyway. Not adding it in user dir is intentional (missing "+")
         }
         return appPath + APP_NAME + SEPARATOR;
     }
@@ -39,7 +41,8 @@ public final class FileManager {
     private static String getSystemSeparator(){
         String separator = "";
         if (OS.contains(WIN)) separator = "\\";
-        else if (OS.contains(MAC)) separator = "/";
+        else separator = "/";
+
         return separator;
     }
 
