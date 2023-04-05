@@ -17,6 +17,7 @@ import java.util.TreeMap;
 public final class FileManager {
     private static final String WIN = "Windows";
     private static final String MAC = "Mac";
+    private static final String LINUX = "Linux";
     private static final String HOME_DIR = System.getProperty("user.home");
     private static final String APP_NAME = "GitHubMiner";
     private static final String OS = System.getProperty("os.name");
@@ -32,7 +33,7 @@ public final class FileManager {
             appPath += "\\AppData\\Roaming\\";
         } else if (OS.contains(MAC)){
             appPath += "/Library/Application Support/";
-        } else if (OS.contains("Linux")){
+        } else if (OS.contains(LINUX)){
             appPath = "/tmp/"; // it's not permanent anyway. Not adding it in user dir is intentional (missing "+")
         }
         return appPath + APP_NAME + SEPARATOR;
