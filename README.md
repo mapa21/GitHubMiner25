@@ -24,5 +24,10 @@ This project consists in the implementation of a system for mining relevant metr
 ## Usage
 To run our application, use `make run`
 
+## Snapshots
+
+### Home Screen
+![Alt text](homescreen.png)
+
 ## Application Notes
 * Cancelling the input via interrupt signal (control + c) without quitting the application is only possible on macOS. Here, the interrupt can even be used to exit repos or log out of an account.
